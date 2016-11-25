@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.monopoly.domke.sebastian.monoploy.com.monopoly.domke.sebastian.monopoly.SpielStartActivity"
+    tools:showIn="@layout/activity_spiel_start">
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/kapitalTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/kapital"
+        android:textSize="20sp"/>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/deinkapitalTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Dein Kapital"
+        android:textSize="20sp"
+        android:layout_marginLeft="17dp"
+        android:layout_marginStart="17dp"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/kapitalTextView"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <ImageView
+        android:id="@+id/eigenerSpielerFarbeButtonView"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="#f7ec11"
+        android:layout_below="@+id/kapitalTextView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="11dp" />
+
+    <ImageView
+        android:id="@+id/spielerFarbeRotButtonView"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="#f71911"
+        android:layout_marginTop="13dp"
+        android:layout_below="@+id/eigenerSpielerFarbeButtonView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <ImageView
+        android:id="@+id/spielerFarbeBlauButtonView"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="#1128f7"
+        android:layout_alignTop="@+id/spielerFarbeRotButtonView"
+        android:layout_toRightOf="@+id/kapitalTextView"
+        android:layout_toEndOf="@+id/kapitalTextView" />
+
+    <ImageView
+        android:id="@+id/spielerFarbeGrauButtonView"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="#a1a1a0"
+        android:layout_alignTop="@+id/spielerFarbeBlauButtonView"
+        android:layout_toRightOf="@+id/spielerFarbeBlauButtonView"
+        android:layout_toEndOf="@+id/spielerFarbeBlauButtonView"
+        android:layout_marginLeft="12dp"
+        android:layout_marginStart="12dp" />
+
+    <TextView
+        android:id="@+id/bankButtonView"
+        android:layout_height="wrap_content"
+        android:background="#98d4d5d6"
+        android:text="@string/bank_button_name"
+        android:textSize="20sp"
+        android:textAlignment="center"
+        android:layout_width="wrap_content"
+        android:layout_alignTop="@+id/eigenerSpielerFarbeButtonView"
+        android:layout_toLeftOf="@+id/spielerFarbeGrauButtonView"
+        android:layout_toStartOf="@+id/spielerFarbeGrauButtonView" />
+
+    <TextView
+        android:id="@+id/freiParkenButtonView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#65080808"
+        android:text="@string/frei_parken_button_name"
+        android:textSize="20sp"
+        android:textAlignment="center"
+        android:layout_alignBaseline="@+id/bankButtonView"
+        android:layout_alignBottom="@+id/bankButtonView"
+        android:layout_alignRight="@+id/spielerFarbeGrauButtonView"
+        android:layout_alignEnd="@+id/spielerFarbeGrauButtonView" />
+
+    <android.support.v7.widget.AppCompatEditText
+        android:id="@+id/betragTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Gewünschter Betrag"
+        android:textSize="20sp"
+        android:layout_alignBaseline="@+id/betragTextView"
+        android:layout_alignBottom="@+id/betragTextView"
+        android:layout_alignLeft="@+id/spielerFarbeBlauButtonView"
+        android:layout_alignStart="@+id/spielerFarbeBlauButtonView" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/betragTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/betrag"
+        android:textSize="20sp"
+        android:layout_marginTop="45dp"
+        android:layout_below="@+id/spielerFarbeRotButtonView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+</RelativeLayout>

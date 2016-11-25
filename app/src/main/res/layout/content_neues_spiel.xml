@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.monopoly.domke.sebastian.monoploy.com.monopoly.domke.sebastian.monopoly.NeuesSpielActivity"
+    tools:showIn="@layout/activity_neues_spiel">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/spielerHinzuButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/hinzufuegen"
+        android:background="#05510c"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/anzahlSpielerText"
+        android:layout_toEndOf="@+id/anzahlSpielerText"
+        android:layout_marginLeft="28dp"
+        android:layout_marginStart="28dp"
+        android:onClick="spielerHinzu"
+        android:clickable="true"/>
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/spielerEntfernenButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/entfernen_klein"
+        android:background="#c90606"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/spielerHinzuButton"
+        android:layout_toEndOf="@+id/spielerHinzuButton"
+        android:layout_marginLeft="28dp"
+        android:layout_marginStart="28dp"
+        android:onClick="spielerEntfernen"
+        android:clickable="true"/>
+
+    <TextView
+        android:id="@+id/anzahlSpielerText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/anzahl_spieler"
+        android:textSize="20sp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="17dp"
+        android:layout_marginStart="17dp"
+        android:layout_marginTop="13dp" />
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/spielerAnzahl1View"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/spieler"
+        android:clickable="false"
+        android:layout_marginTop="13dp"
+        android:layout_below="@+id/spielerHinzuButton"
+        android:layout_alignLeft="@+id/meineFarbeTextView"
+        android:layout_alignStart="@+id/meineFarbeTextView" />
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/spielerAnzahl4View"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/spieler"
+        android:clickable="false"
+        android:layout_alignTop="@+id/spielerAnzahl3View"
+        android:layout_toRightOf="@+id/spielerAnzahl3View"
+        android:layout_toEndOf="@+id/spielerAnzahl3View"
+        android:visibility="invisible"/>
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/spielerAnzahl2View"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/spieler"
+        android:clickable="false"
+        android:layout_alignTop="@+id/spielerAnzahl1View"
+        android:layout_toRightOf="@+id/spielerAnzahl1View"
+        android:layout_toEndOf="@+id/spielerAnzahl1View" />
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/spielerAnzahl3View"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/spieler"
+        android:clickable="false"
+        android:layout_alignTop="@+id/spielerAnzahl2View"
+        android:layout_toRightOf="@+id/spielerAnzahl2View"
+        android:layout_toEndOf="@+id/spielerAnzahl2View"
+        android:visibility="invisible"/>
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/spielerAnzahl5View"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/spieler"
+        android:clickable="false"
+        android:layout_alignTop="@+id/spielerAnzahl4View"
+        android:layout_toRightOf="@+id/spielerAnzahl4View"
+        android:layout_toEndOf="@+id/spielerAnzahl4View"
+        android:visibility="invisible"/>
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/spielerAnzahl6View"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/spieler"
+        android:clickable="false"
+        android:layout_alignTop="@+id/spielerAnzahl5View"
+        android:layout_toRightOf="@+id/spielerAnzahl5View"
+        android:layout_toEndOf="@+id/spielerAnzahl5View"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/meineFarbeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/startkapital"
+        android:textSize="20sp"
+        android:layout_marginTop="28dp"
+        android:layout_below="@+id/spielerAnzahl1View"
+        android:layout_alignLeft="@+id/anzahlSpielerText"
+        android:layout_alignStart="@+id/anzahlSpielerText" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:ems="20"
+        android:layout_marginTop="26dp"
+        android:id="@+id/startKapitelEditText"
+        android:hint="Monopoly-Dollar"
+        android:background="#a4f5ee0a"
+        android:layout_below="@+id/meineFarbeTextView"
+        android:layout_toRightOf="@+id/spielerAnzahl1View"
+        android:layout_alignRight="@+id/spielerAnzahl6View"
+        android:layout_alignEnd="@+id/spielerAnzahl6View" />
+
+    <RelativeLayout
+        android:id="@+id/spielLobbyBeitretenButtonLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:onClick="neuesSpielErstellen"
+        android:background="@drawable/layout_selector"
+        android:layout_below="@+id/startKapitelEditText"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="65dp">
+
+        <ImageView
+            android:id="@+id/neuesSpielButtonImage"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="#6af66a"
+            android:contentDescription="@string/neues_spiel_erstellen_button_name"
+            android:src="@drawable/spiel_start"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
+            android:id="@+id/neuesSpielButtonText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/neues_spiel_erstellen_button_name"
+            android:textSize="20sp"
+            android:layout_marginLeft="48dp"
+            android:layout_marginStart="48dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.monopoly.domke.sebastian.monoploy.com.monopoly.domke.sebastian.monopoly.MainMenuActivity"
+    tools:showIn="@layout/activity_main_menu">
+
+    <RelativeLayout
+        android:id="@+id/spielBeitretenButtonLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/spielLobbyBeitretenButtonLayout"
+        android:clickable="true"
+        android:onClick="spielBeitreten"
+        android:background="@drawable/layout_selector" >
+
+        <ImageView
+            android:id="@+id/spielBeitretenButtonImage"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="#6a94f6"
+            android:contentDescription="@string/spiel_beitreten_button_name"
+            android:src="@drawable/spiel_beitreten"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
+            android:id="@+id/spielBeitretenButtonText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/spiel_beitreten_button_name"
+            android:textSize="20sp"
+            android:layout_marginLeft="77dp"
+            android:layout_marginStart="77dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/spielLadenButtonLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/spielBeitretenButtonLayout"
+        android:clickable="true"
+        android:onClick="spielLaden"
+        android:background="@drawable/layout_selector" >
+
+        <ImageView
+            android:id="@+id/spielLadenButtonImage"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="#f6ae6a"
+            android:contentDescription="@string/spiel_laden_button_name"
+            android:src="@drawable/spiel_laden"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
+            android:id="@+id/spielLadenButtonText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/spiel_laden_button_name"
+            android:textSize="20sp"
+            android:layout_marginLeft="89dp"
+            android:layout_marginStart="89dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/einstellungenButtonLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/spielLadenButtonLayout"
+        android:clickable="true"
+        android:onClick="einstellungen"
+        android:background="@drawable/layout_selector" >
+
+        <ImageView
+            android:id="@+id/einstellungenButtonImage"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="#693a08"
+            android:contentDescription="@string/einstellungen_button_name"
+            android:src="@drawable/einstellungen"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
+            android:id="@+id/einstellungenButtonText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/einstellungen_button_name"
+            android:textSize="20sp"
+            android:layout_marginLeft="76dp"
+            android:layout_marginStart="76dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/highscoreButtonLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/einstellungenButtonLayout"
+        android:clickable="true"
+        android:onClick="highscore"
+        android:background="@drawable/layout_selector" >
+
+        <ImageView
+            android:id="@+id/highscoreButtonImage"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="#8b8b8b"
+            android:contentDescription="@string/highscore_button_name"
+            android:src="@drawable/highscore_liste"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
+            android:id="@+id/highscoreButtonText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/highscore_button_name"
+            android:textSize="20sp"
+            android:layout_marginLeft="96dp"
+            android:layout_marginStart="96dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/spielLobbyBeitretenButtonLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:onClick="neuesSpiel"
+        android:background="@drawable/layout_selector"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <ImageView
+            android:id="@+id/neuesSpielButtonImage"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="#6af66a"
+            android:contentDescription="@string/neues_spiel_button_name"
+            android:src="@drawable/spiel_start"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
+            android:id="@+id/neuesSpielButtonText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/neues_spiel_button_name"
+            android:textSize="20sp"
+            android:layout_marginLeft="87dp"
+            android:layout_marginStart="87dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+    </RelativeLayout>
+</RelativeLayout>
