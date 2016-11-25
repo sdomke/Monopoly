@@ -9,7 +9,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.monopoly.domke.sebastian.monopoly.MainMenuActivity"
+            android:name="com.monopoly.domke.sebastian.monopoly.view.MainMenuActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -19,19 +19,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.monopoly.domke.sebastian.monopoly.NeuesSpielActivity"
+            android:name="com.monopoly.domke.sebastian.monopoly.view.NeuesSpielActivity"
             android:label="@string/title_activity_neues_spiel"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.monopoly.domke.sebastian.monopoly.SpielBeitretenActivity"
+            android:name="com.monopoly.domke.sebastian.monopoly.view.SpielBeitretenActivity"
             android:label="@string/title_activity_spiel_beitreten"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.monopoly.domke.sebastian.monopoly.HighscoreActivity"
+            android:name="com.monopoly.domke.sebastian.monopoly.view.HighscoreActivity"
             android:label="@string/title_activity_highscore"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.monopoly.domke.sebastian.monopoly.SpielStartActivity"
+            android:name="com.monopoly.domke.sebastian.monopoly.view.SpielStartActivity"
             android:label="@string/title_activity_spiel_start"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -39,11 +39,11 @@
             android:label="@string/title_activity_scrolling"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.monopoly.domke.sebastian.monopoly.SpielLadenActivity"
+            android:name="com.monopoly.domke.sebastian.monopoly.view.SpielLadenActivity"
             android:label="@string/title_activity_spiel_laden"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.monopoly.domke.sebastian.monopoly.EinstellungenActivity"
+            android:name="com.monopoly.domke.sebastian.monopoly.view.EinstellungenActivity"
             android:label="@string/title_activity_einstellungen"></activity>
     </application>
 

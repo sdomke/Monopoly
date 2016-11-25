@@ -1,4 +1,4 @@
-package com.monopoly.domke.sebastian.monopoly;
+package com.monopoly.domke.sebastian.monopoly.view;
 
 import android.content.Intent;
 import android.os.Bundle;

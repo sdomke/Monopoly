@@ -30,6 +30,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	private static final String colMonopolySpielListeId = "MonopolySpielListeId";
 	private static final String colMonopolySpielListeDatum = "MonopolySpielListeDatum";
 	private static final String colMonopolySpielListeSpielerAnzahl = "MonopolySpielListeSpielerAnzahl";
+	private static final String colMonopolySpielListeStartkapital = "MonopolySpielListeStartkapital";
 
 	public DatabaseHandler(Context context) {
 
@@ -58,7 +59,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		String createSpielListeTABLE = "CREATE TABLE "
 				+ spielListeTable + "(" + colMonopolySpielListeId
 				+ " INTEGER PRIMARY KEY," + colMonopolySpielListeDatum + " TEXT,"
-				+ colMonopolySpielListeSpielerAnzahl + " INTEGER" + ")";
+				+ colMonopolySpielListeSpielerAnzahl + " INTEGER," + colMonopolySpielListeStartkapital + " INTEGER" + ")";
 
 		db.execSQL(createMonoploySpielTABLE);
 		db.execSQL(createSpielListeTABLE);

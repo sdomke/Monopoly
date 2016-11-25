@@ -1,4 +1,4 @@
-package com.monopoly.domke.sebastian.monopoly;
+package com.monopoly.domke.sebastian.monopoly.view;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,19 +8,19 @@ import android.view.View;
 
 import com.monopoly.domke.sebastian.monoploy.R;
 
-public class NeuesSpielActivity extends AppCompatActivity {
+public class SpielBeitretenActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_neues_spiel);
+        setContentView(R.layout.activity_spiel_beitreten);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
     }
 
-    public void neuesSpielErstellen(View view) {
+    public void spielLobbyBeitreten(View view) {
 
-        Intent intent = new Intent(this, SpielBeitretenActivity.class);
+        Intent intent = new Intent(this, SpielStartActivity.class);
         startActivity(intent);
 
     }
