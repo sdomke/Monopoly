@@ -22,6 +22,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	private static final String colSpielerFarbe = "SpielerFarbe";
 	private static final String colSpielerKapital = "SpielerKapital";
 	private static final String colFreiParken = "FreiParken";
+	private static final String colIdMonopolySpielListe = "IdMonopolySpielListe";
 
 	// training courses Table name
 	private static final String spielListeTable = "TableSpielListe";
@@ -54,7 +55,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 				+ "(" + colMonopolySpielerId + " INTEGER PRIMARY KEY,"
 				+ colSpielerName + " TEXT," + colSpielerFarbe
 				+ " INTEGER," + colSpielerKapital + " INTEGER,"
-				+ colFreiParken + " INTEGER" + ")";
+				+ colFreiParken + " INTEGER, " + colIdMonopolySpielListe + " INTEGER NOT NULL" + " FOREIGN KEY (" + colMonopolySpielListeId + ") REFERENCES " + spielListeTable + " (" + colIdMonopolySpielListe + ")" + " ON DELETE CASCADE" + ")";
 
 		String createSpielListeTABLE = "CREATE TABLE "
 				+ spielListeTable + "(" + colMonopolySpielListeId
