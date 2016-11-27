@@ -20,7 +20,7 @@ import android.preference.RingtonePreference;
 import android.text.TextUtils;
 import android.view.MenuItem;
 
-import com.monopoly.domke.sebastian.monoploy.R;
+import com.monopoly.domke.sebastian.monopoly.R;
 
 import java.util.List;
 

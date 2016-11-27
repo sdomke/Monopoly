@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.monopoly.domke.sebastian.monoploy.R;
+import com.monopoly.domke.sebastian.monopoly.R;
 
 public class SpielStartActivity extends AppCompatActivity {
 

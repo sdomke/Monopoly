@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.monopoly.domke.sebastian.monoploy.R;
+import com.monopoly.domke.sebastian.monopoly.R;
 
 public class MainMenuActivity extends AppCompatActivity {
 
