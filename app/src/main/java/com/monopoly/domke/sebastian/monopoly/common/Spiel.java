@@ -11,18 +11,22 @@ public class Spiel {
     private int spielerStartkapital;
 
     public void setSpielerAnzahl(int spielerAnzahl){
+
         this.spielerAnzahl = spielerAnzahl;
     }
 
     public int getSpielerAnzahl(){
+
         return this.spielerAnzahl;
     }
 
     public void setSpielDatum(String spielDatum){
+
         this.spielDatum = spielDatum;
     }
 
     public String getSpielDatum(){
+
         return this.spielDatum;
     }
 

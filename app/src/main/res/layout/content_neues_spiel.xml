@@ -12,7 +12,7 @@
     tools:context="com.monopoly.domke.sebastian.monoploy.com.monopoly.domke.sebastian.monopoly.NeuesSpielActivity"
     tools:showIn="@layout/activity_neues_spiel">
 
-    <android.support.v7.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/spielerHinzuButton"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -23,10 +23,9 @@
         android:layout_toEndOf="@+id/anzahlSpielerText"
         android:layout_marginLeft="28dp"
         android:layout_marginStart="28dp"
-        android:onClick="spielerHinzu"
         android:clickable="true"/>
 
-    <android.support.v7.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/spielerEntfernenButton"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -37,7 +36,6 @@
         android:layout_toEndOf="@+id/spielerHinzuButton"
         android:layout_marginLeft="28dp"
         android:layout_marginStart="28dp"
-        android:onClick="spielerEntfernen"
         android:clickable="true"/>
 
     <TextView
@@ -157,8 +155,8 @@
 
         <ImageView
             android:id="@+id/neuesSpielButtonImage"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:background="#6af66a"
             android:contentDescription="@string/neues_spiel_erstellen_button_name"
             android:src="@drawable/spiel_start"

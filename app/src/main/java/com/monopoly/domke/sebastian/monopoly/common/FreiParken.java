@@ -9,10 +9,12 @@ public class FreiParken {
     private int freiParkenWert;
 
     public void setFreiParken(int freiParkenWert){
+
         this.freiParkenWert = freiParkenWert;
     }
 
     public int getFreiParken(){
+
         return this.freiParkenWert;
     }
 

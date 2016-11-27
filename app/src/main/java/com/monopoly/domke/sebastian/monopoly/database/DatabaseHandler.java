@@ -1,8 +1,11 @@
 package com.monopoly.domke.sebastian.monopoly.database;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import com.monopoly.domke.sebastian.monopoly.common.Spiel;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
@@ -53,14 +56,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 		String createMonoploySpielTABLE = "CREATE TABLE " + monopolySpielTable
 				+ "(" + colMonopolySpielerId + " INTEGER PRIMARY KEY,"
-				+ colSpielerName + " TEXT," + colSpielerFarbe
-				+ " INTEGER," + colSpielerKapital + " INTEGER,"
-				+ colFreiParken + " INTEGER, " + colIdMonopolySpielListe + " INTEGER NOT NULL" + " FOREIGN KEY (" + colMonopolySpielListeId + ") REFERENCES " + spielListeTable + " (" + colIdMonopolySpielListe + ")" + " ON DELETE CASCADE" + ")";
+				+ colSpielerName + " TEXT,"
+                + colSpielerFarbe + " INTEGER,"
+                + colSpielerKapital + " INTEGER,"
+				+ colFreiParken + " INTEGER, "
+                + colIdMonopolySpielListe + " INTEGER NOT NULL"
+				+ " FOREIGN KEY (" + colMonopolySpielListeId + ") REFERENCES " + spielListeTable + " (" + colIdMonopolySpielListe + ")" + " ON DELETE CASCADE" + ")";
 
 		String createSpielListeTABLE = "CREATE TABLE "
-				+ spielListeTable + "(" + colMonopolySpielListeId
-				+ " INTEGER PRIMARY KEY," + colMonopolySpielListeDatum + " TEXT,"
-				+ colMonopolySpielListeSpielerAnzahl + " INTEGER," + colMonopolySpielListeStartkapital + " INTEGER" + ")";
+				+ spielListeTable + "(" + colMonopolySpielListeId + " INTEGER PRIMARY KEY,"
+                + colMonopolySpielListeDatum + " TEXT,"
+				+ colMonopolySpielListeSpielerAnzahl + " INTEGER,"
+                + colMonopolySpielListeStartkapital + " INTEGER" + ")";
 
 		db.execSQL(createMonoploySpielTABLE);
 		db.execSQL(createSpielListeTABLE);
@@ -88,6 +95,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	/**
 	 * All CRUD(Create, Read, Update, Delete) Operations
 	 */
+
+    public // Adding new game
+    void addNewMonopolyGame(Spiel spielEintellungen) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(colMonopolySpielListeSpielerAnzahl, spielEintellungen.getSpielerAnzahl());
+        values.put(colMonopolySpielListeStartkapital,
+                spielEintellungen.getSpielerStartkapital());
+        values.put(colMonopolySpielListeDatum,
+                spielEintellungen.getSpielDatum());
+
+        // Inserting Row
+        db.insert(spielListeTable, null, values);
+        db.close(); // Closing database connection
+    }
 
 	/*
 	public // Adding new siteInduction

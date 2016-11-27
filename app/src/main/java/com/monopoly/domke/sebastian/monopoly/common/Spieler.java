@@ -11,6 +11,7 @@ public class Spieler {
     private int spielerKapital;
 
     public void setSpielerName(String spielerName){
+
         this.spielerName = spielerName;
     }
 
@@ -19,18 +20,22 @@ public class Spieler {
     }
 
     public void setSpielerFarbe(int spielerFarbe){
+
         this.spielerFarbe = spielerFarbe;
     }
 
     public int getSpielerFarbe(){
+
         return this.spielerFarbe;
     }
 
     public void setSpielerKapital(int spielerKapital){
+
         this.spielerKapital = spielerKapital;
     }
 
     public int getSpielerKapital(){
+
         return this.spielerKapital;
     }
 
