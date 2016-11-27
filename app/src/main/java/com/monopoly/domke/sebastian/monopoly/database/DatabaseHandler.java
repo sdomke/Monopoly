@@ -1,9 +1,11 @@
 package com.monopoly.domke.sebastian.monopoly.database;
 
+import android.annotation.TargetApi;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Build;
 
 import com.monopoly.domke.sebastian.monopoly.common.Spiel;
 
@@ -60,8 +62,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + colSpielerFarbe + " INTEGER,"
                 + colSpielerKapital + " INTEGER,"
 				+ colFreiParken + " INTEGER, "
-                + colIdMonopolySpielListe + " INTEGER NOT NULL"
-				+ " FOREIGN KEY (" + colMonopolySpielListeId + ") REFERENCES " + spielListeTable + " (" + colIdMonopolySpielListe + ")" + " ON DELETE CASCADE" + ")";
+                + colIdMonopolySpielListe + " INTEGER NOT NULL,"
+				+ " FOREIGN KEY (" + colIdMonopolySpielListe + ") REFERENCES " + spielListeTable + " (" + colMonopolySpielListeId + ")" + " ON DELETE CASCADE" + ")";
 
 		String createSpielListeTABLE = "CREATE TABLE "
 				+ spielListeTable + "(" + colMonopolySpielListeId + " INTEGER PRIMARY KEY,"
@@ -90,6 +92,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		SQLiteDatabase db = this.getWritableDatabase();
 		db.execSQL("DROP TABLE IF EXISTS " + monopolySpielTable);
 		db.execSQL("DROP TABLE IF EXISTS " + spielListeTable);
+	}
+
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+	@Override
+	public void onConfigure(SQLiteDatabase db){
+
+		db.setForeignKeyConstraintsEnabled(true);
 	}
 
 	/**
