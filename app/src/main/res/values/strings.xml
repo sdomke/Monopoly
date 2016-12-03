@@ -25,6 +25,7 @@
     <string name="bank_button_name">Bank</string>
     <string name="los_button_name">Bank</string>
     <string name="frei_parken_button_name">Mitte</string>
+    <string name="spieler_einladen">Einladung an Spieler senden</string>
 
     <string name="title_activity_spiel_laden">SpielLadenActivity</string>
     <string name="title_activity_einstellungen">Settings</string>

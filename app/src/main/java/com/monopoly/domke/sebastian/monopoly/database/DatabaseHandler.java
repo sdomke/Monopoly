@@ -3,11 +3,15 @@ package com.monopoly.domke.sebastian.monopoly.database;
 import android.annotation.TargetApi;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Build;
 
 import com.monopoly.domke.sebastian.monopoly.common.Spiel;
+import com.monopoly.domke.sebastian.monopoly.common.Spieler;
+
+import java.util.ArrayList;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
@@ -122,6 +126,32 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.insert(spielListeTable, null, values);
         db.close(); // Closing database connection
     }
+
+
+	// Getting All spieler
+	public ArrayList<Spieler> getAllSpieler() {
+		ArrayList<Spieler> spielerListe = new ArrayList<Spieler>();
+		// Select All Query
+		String selectQuery = "SELECT  * FROM " + monopolySpielTable;
+
+		SQLiteDatabase db = this.getWritableDatabase();
+		Cursor cursor = db.rawQuery(selectQuery, null);
+
+		// looping through all rows and adding to list
+		if (cursor.moveToFirst()) {
+			do {
+				Spieler spieler = new Spieler();
+				spieler.setSpielerName(cursor.getString(1));
+				spieler.setSpielerFarbe(cursor.getInt(2));
+				// Adding contact to list
+				spielerListe.add(spieler);
+			} while (cursor.moveToNext());
+		}
+		cursor.close();
+		db.close();
+		// return spieler list
+		return spielerListe;
+	}
 
 	/*
 	public // Adding new siteInduction

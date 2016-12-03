@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.monopoly.domke.sebastian.monoploy.com.monopoly.domke.sebastian.monopoly.SpielBeitretenActivity">
+    <item
+        android:id="@+id/spieler_einladen_action"
+        android:icon="@drawable/hinzufuegen"
+        android:title="@string/spieler_einladen"
+        app:showAsAction="ifRoom" />
+</menu>

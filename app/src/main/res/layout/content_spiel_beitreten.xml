@@ -46,7 +46,8 @@
         android:layout_below="@+id/startkapitalTextView"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="14dp" />
+        android:layout_marginTop="14dp"
+        android:clickable="true"/>
 
     <ImageView
         android:id="@+id/spielerFarbeGrauButtonView"
@@ -56,17 +57,19 @@
         android:layout_marginRight="10dp"
         android:layout_alignTop="@+id/spielerFarbeBlauButtonView"
         android:layout_toRightOf="@+id/spielerFarbeBlauButtonView"
-        android:layout_toEndOf="@+id/spielerFarbeBlauButtonView" />
+        android:layout_toEndOf="@+id/spielerFarbeBlauButtonView"
+        android:clickable="true"/>
 
     <ImageView
-        android:id="@+id/bankButtonView"
+        android:id="@+id/spielerFarbeGruenButtonView"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:background="#11f715"
         android:layout_marginRight="10dp"
         android:layout_alignTop="@+id/spielerFarbeRotButtonView"
         android:layout_toRightOf="@+id/spielerFarbeRotButtonView"
-        android:layout_toEndOf="@+id/spielerFarbeRotButtonView" />
+        android:layout_toEndOf="@+id/spielerFarbeRotButtonView"
+        android:clickable="true"/>
 
     <ImageView
         android:id="@+id/spielerFarbeBlauButtonView"
@@ -74,9 +77,10 @@
         android:layout_height="50dp"
         android:background="#1128f7"
         android:layout_marginRight="10dp"
-        android:layout_alignTop="@+id/bankButtonView"
-        android:layout_toRightOf="@+id/bankButtonView"
-        android:layout_toEndOf="@+id/bankButtonView" />
+        android:layout_alignTop="@+id/spielerFarbeGruenButtonView"
+        android:layout_toRightOf="@+id/spielerFarbeGruenButtonView"
+        android:layout_toEndOf="@+id/spielerFarbeGruenButtonView"
+        android:clickable="true"/>
 
     <ImageView
         android:id="@+id/spielerFarbeSchwarzView"
@@ -85,7 +89,8 @@
         android:background="#080808"
         android:layout_alignTop="@+id/spielerFarbeGrauButtonView"
         android:layout_toRightOf="@+id/spielerFarbeGrauButtonView"
-        android:layout_toEndOf="@+id/spielerFarbeGrauButtonView" />
+        android:layout_toEndOf="@+id/spielerFarbeGrauButtonView"
+        android:clickable="true"/>
 
     <ImageView
         android:id="@+id/spielerFarbeRotButtonView"
@@ -95,7 +100,8 @@
         android:layout_marginRight="10dp"
         android:layout_alignTop="@+id/spielerFarbeGelbView"
         android:layout_toRightOf="@+id/spielerFarbeGelbView"
-        android:layout_toEndOf="@+id/spielerFarbeGelbView" />
+        android:layout_toEndOf="@+id/spielerFarbeGelbView"
+        android:clickable="true"/>
 
     <RelativeLayout
         android:id="@+id/spielLobbyBeitretenButtonLayout"
@@ -115,7 +121,7 @@
             android:layout_height="50dp"
             android:background="#6af66a"
             android:contentDescription="@string/spiel_lobby_beitreten_button_name"
-            android:src="@drawable/spiel_start"
+            android:src="@drawable/spiel_beitreten"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />
@@ -126,11 +132,11 @@
             android:layout_height="wrap_content"
             android:text="@string/spiel_lobby_beitreten_button_name"
             android:textSize="20sp"
-            android:layout_marginLeft="48dp"
-            android:layout_marginStart="48dp"
             android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:layout_toLeftOf="@+id/neuesSpielButtonImage"
+            android:layout_toStartOf="@+id/neuesSpielButtonImage"
+            android:layout_marginRight="70dp"
+            android:layout_marginEnd="70dp" />
     </RelativeLayout>
 
     <ImageView
@@ -165,7 +171,7 @@
         android:layout_marginTop="11dp" />
 
     <ListView
-        android:id="@+id/android:list"
+        android:id="@+id/gameLobbyList"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_below="@+id/spielLobbyTextView" />

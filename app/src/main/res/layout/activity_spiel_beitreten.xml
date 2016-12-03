@@ -23,4 +23,12 @@
 
     <include layout="@layout/content_spiel_beitreten" />
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/spielStartenFloatingButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/spiel_start"
+        app:backgroundTint="@android:color/holo_green_dark" />
 </android.support.design.widget.CoordinatorLayout>
