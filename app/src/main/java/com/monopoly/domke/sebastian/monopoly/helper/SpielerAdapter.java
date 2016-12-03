@@ -2,6 +2,7 @@ package com.monopoly.domke.sebastian.monopoly.helper;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +35,7 @@ public class SpielerAdapter extends ArrayAdapter<Spieler>{
 	 * we are overriding the getView method here - this is what defines how each
 	 * list item will look.
 	 */
-	public View getView(int position, View convertView, final ViewGroup parent){
+	public View getView(final int position, View convertView, final ViewGroup parent){
 
 		//imageLoader.clearCache();
 		
@@ -54,15 +55,12 @@ public class SpielerAdapter extends ArrayAdapter<Spieler>{
 		final int fischPosition = listView.getPositionForView(parentRow);
 		*/
 		spielerEntfernen = (ImageView) view.findViewById(R.id.spielerEntfernenItem);
-		spielerEntfernen.setTag(objects.get(position));
 
 		spielerEntfernen.setOnClickListener(new View.OnClickListener() {
 			 public void onClick(View v) {
-				 
-				 Spieler fisch = (Spieler) v.getTag();
 
-				 objects.remove(fisch);
-				 
+					objects.remove(position);
+				 	SpielerAdapter.super.notifyDataSetChanged();
 			 }
 		});
  		
@@ -84,7 +82,7 @@ public class SpielerAdapter extends ArrayAdapter<Spieler>{
 				spielerName.setText(i.getSpielerName());
 			}
 			if (spielerFarbe != null){
-				spielerFarbe.setBackgroundColor(i.getSpielerFarbe());
+				spielerFarbe.setBackgroundColor(ContextCompat.getColor(getContext(), i.getSpielerFarbe()));
 			}
 		}
 
