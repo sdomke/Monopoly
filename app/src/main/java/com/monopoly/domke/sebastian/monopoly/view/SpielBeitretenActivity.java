@@ -8,7 +8,10 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.format.Formatter;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -54,6 +57,8 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
         aktuellesSpiel = datasource.getSpielByDatum(sharedPreferences.getString("monopolySpielDatum", "Kein Spiel erzeugt"));
 
+        Log.i("SpielDatum", sharedPreferences.getString("monopolySpielDatum", "Kein Spiel erzeugt"));
+
         //ipAdresseHost = intToInetAddress(wifiManager.getDhcpInfo().serverAddress).getHostAddress();
 
         ipAdresseHost = "192.168.43.1";
@@ -62,16 +67,32 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         eigenerSpieler.setSpielerName(eigenerSpielerName);
         eigenerSpieler.setSpielerFarbe(eigenerSpielerFarbe);
 
-        datasource.addSpieler(eigenerSpieler);
-
-        eigenerSpieler = datasource.getSpielerBySpielIdAndSpielerIp( aktuellesSpiel.getSpielID(), ipAdresseHost);
-
         FloatingActionButton spielStartenFB = (FloatingActionButton) findViewById(R.id.spielStartenFloatingButton);
         spielStartenFB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), SpielStartActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        final EditText meinNameEditText = (EditText) findViewById(R.id.meinSpielerNameEditText);
+        meinNameEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                eigenerSpieler.setSpielerName(meinNameEditText.getText().toString());
+                datasource.updateSpieler(eigenerSpieler);
+                spieler_adapter.notifyDataSetChanged();
             }
         });
 
@@ -146,12 +167,18 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
         gamelobbyListView = (ListView) findViewById(R.id.gameLobbyList);
 
-        ArrayList<Spieler> values = datasource.getAllSpieler();
+        ArrayList<Spieler> values = datasource.getAllSpieler(aktuellesSpiel.getSpielID());
 
         spieler_adapter = new SpielerAdapter(this,
                 R.layout.list_item_spieler, values);
         gamelobbyListView.setAdapter(spieler_adapter);
 
+        try {
+            datasource.getSpielerBySpielIdAndSpielerIp(aktuellesSpiel.getSpielID(), ipAdresseHost);
+        }catch (Exception e){
+            datasource.addSpieler(eigenerSpieler);
+        }
+            eigenerSpieler = datasource.getSpielerBySpielIdAndSpielerIp(aktuellesSpiel.getSpielID(), ipAdresseHost);
     }
 
     public void spielLobbyBeitreten(View view) {
