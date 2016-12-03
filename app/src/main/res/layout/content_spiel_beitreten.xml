@@ -27,7 +27,7 @@
         android:layout_marginStart="19dp" />
 
     <TextView
-        android:id="@+id/meineFarbeTextView"
+        android:id="@+id/startkapitalTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/mein_spieler_farbe"
@@ -43,7 +43,7 @@
         android:layout_height="50dp"
         android:background="#f7ec11"
         android:layout_marginRight="10dp"
-        android:layout_below="@+id/meineFarbeTextView"
+        android:layout_below="@+id/startkapitalTextView"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginTop="14dp" />

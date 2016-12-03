@@ -59,8 +59,8 @@
         android:clickable="false"
         android:layout_marginTop="13dp"
         android:layout_below="@+id/spielerHinzuButton"
-        android:layout_alignLeft="@+id/meineFarbeTextView"
-        android:layout_alignStart="@+id/meineFarbeTextView" />
+        android:layout_alignLeft="@+id/startkapitalTextView"
+        android:layout_alignStart="@+id/startkapitalTextView" />
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/spielerAnzahl4View"
@@ -116,31 +116,6 @@
         android:layout_toEndOf="@+id/spielerAnzahl5View"
         android:visibility="invisible"/>
 
-    <TextView
-        android:id="@+id/meineFarbeTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/startkapital"
-        android:textSize="20sp"
-        android:layout_marginTop="28dp"
-        android:layout_below="@+id/spielerAnzahl1View"
-        android:layout_alignLeft="@+id/anzahlSpielerText"
-        android:layout_alignStart="@+id/anzahlSpielerText" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="numberDecimal"
-        android:ems="20"
-        android:layout_marginTop="26dp"
-        android:id="@+id/startKapitelEditText"
-        android:hint="Monopoly-Dollar"
-        android:background="#a4f5ee0a"
-        android:layout_below="@+id/meineFarbeTextView"
-        android:layout_toRightOf="@+id/spielerAnzahl1View"
-        android:layout_alignRight="@+id/spielerAnzahl6View"
-        android:layout_alignEnd="@+id/spielerAnzahl6View" />
-
     <RelativeLayout
         android:id="@+id/spielLobbyBeitretenButtonLayout"
         android:layout_width="match_parent"
@@ -176,5 +151,49 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
     </RelativeLayout>
+
+    <TextView
+        android:id="@+id/startkapitalTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/startkapital"
+        android:textSize="20sp"
+        android:layout_marginTop="27dp"
+        android:layout_below="@+id/waehrungSpinner"
+        android:layout_alignLeft="@+id/anzahlSpielerText"
+        android:layout_alignStart="@+id/anzahlSpielerText" />
+
+    <Spinner
+        android:id="@+id/waehrungSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="59dp"
+        android:layout_below="@+id/spielerAnzahl1View"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"></Spinner>
+
+    <TextView
+        android:id="@+id/waehrungTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/waehrung"
+        android:textSize="20sp"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/spielerAnzahl1View"
+        android:layout_alignLeft="@+id/spielerAnzahl1View"
+        android:layout_alignStart="@+id/spielerAnzahl1View" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:ems="20"
+        android:layout_marginTop="28dp"
+        android:id="@+id/startKapitelEditText"
+        android:hint="Monopoly-Dollar"
+        android:background="#a4f5ee0a"
+        android:layout_below="@+id/startkapitalTextView"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>

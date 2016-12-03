@@ -2,27 +2,29 @@ package com.monopoly.domke.sebastian.monopoly.view;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.IntegerRes;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 
 import com.monopoly.domke.sebastian.monopoly.R;
 import com.monopoly.domke.sebastian.monopoly.common.Spiel;
 import com.monopoly.domke.sebastian.monopoly.database.DatabaseHandler;
 
-import java.util.Date;
-
-public class NeuesSpielActivity extends AppCompatActivity {
+public class NeuesSpielActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private DatabaseHandler databaseHandler;
     private Spiel neuesSpiel;
     private int spielerAnzahl = 2;
     private int startkapital = 12000000;
     private String spielDatum;
+    private Spinner spinner;
+    private String waehrung;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +61,15 @@ public class NeuesSpielActivity extends AppCompatActivity {
             }
         });
 
+        spinner = (Spinner) findViewById(R.id.waehrungSpinner);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.waehrungenArray, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(this);
     }
 
     public void neuesSpielErstellen(View view) {
@@ -154,4 +165,18 @@ public class NeuesSpielActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+        neuesSpiel.setWaehrung(parent.getItemAtPosition(position).toString());
+
+        EditText startKapitelEditText = (EditText) findViewById(R.id.startKapitelEditText);
+        startKapitelEditText.setHint(neuesSpiel.getWaehrung());
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+        neuesSpiel.setWaehrung("Monopoly-Dollar");
+    }
 }

@@ -9,6 +9,7 @@ public class Spiel {
     private int spielerAnzahl;
     private String spielDatum;
     private int spielerStartkapital;
+    private String waehrung;
 
     public void setSpielerAnzahl(int spielerAnzahl){
 
@@ -28,6 +29,16 @@ public class Spiel {
     public String getSpielDatum(){
 
         return this.spielDatum;
+    }
+
+    public void setWaehrung(String waehrung){
+
+        this.waehrung = waehrung;
+    }
+
+    public String getWaehrung(){
+
+        return this.waehrung;
     }
 
     public void setSpielerStartkapital(int spielerStartkapital){
