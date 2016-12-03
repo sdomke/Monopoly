@@ -1,6 +1,7 @@
 package com.monopoly.domke.sebastian.monopoly.view;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -26,6 +27,8 @@ public class NeuesSpielActivity extends AppCompatActivity implements AdapterView
     private Spinner spinner;
     private String waehrung;
 
+    private SharedPreferences sharedPreferences = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,14 +36,12 @@ public class NeuesSpielActivity extends AppCompatActivity implements AdapterView
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        sharedPreferences = getSharedPreferences("monopoly", MODE_PRIVATE);
+
         databaseHandler = new DatabaseHandler(this);
         neuesSpiel = new Spiel();
 
         neuesSpiel.setSpielerAnzahl(spielerAnzahl);
-
-        java.util.Date datumErzeugenJetzt = new java.util.Date();
-        spielDatum = (String) DateFormat.format("dd.MM.yyyy HH:mm:ss", datumErzeugenJetzt);
-        neuesSpiel.setSpielDatum(spielDatum);
 
         neuesSpiel.setSpielerStartkapital(startkapital);
 
@@ -76,6 +77,10 @@ public class NeuesSpielActivity extends AppCompatActivity implements AdapterView
 
         EditText startKapitelEditText = (EditText) findViewById(R.id.startKapitelEditText);
 
+        java.util.Date datumErzeugenJetzt = new java.util.Date();
+        spielDatum = (String) DateFormat.format("dd.MM.yyyy HH:mm:ss", datumErzeugenJetzt);
+        neuesSpiel.setSpielDatum(spielDatum);
+
         if(startKapitelEditText.getText().toString().length() != 0) {
             String tmpStartKapital = startKapitelEditText.getText().toString();
 
@@ -84,6 +89,8 @@ public class NeuesSpielActivity extends AppCompatActivity implements AdapterView
         }
 
         databaseHandler.addNewMonopolyGame(neuesSpiel);
+
+        sharedPreferences.edit().putString("monopolySpielDatum", spielDatum).commit();
 
         Intent intent = new Intent(this, SpielBeitretenActivity.class);
         startActivity(intent);

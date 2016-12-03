@@ -38,10 +38,10 @@
         android:layout_alignParentStart="true" />
 
     <ImageView
-        android:id="@+id/spielerFarbeGelbView"
+        android:id="@+id/spielerFarbeGelbButtonView"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:background="#f7ec11"
+        android:background="@color/gelb_spieler_farbe"
         android:layout_marginRight="10dp"
         android:layout_below="@+id/startkapitalTextView"
         android:layout_alignParentLeft="true"
@@ -53,7 +53,7 @@
         android:id="@+id/spielerFarbeGrauButtonView"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:background="#a1a1a0"
+        android:background="@color/grau_spieler_farbe"
         android:layout_marginRight="10dp"
         android:layout_alignTop="@+id/spielerFarbeBlauButtonView"
         android:layout_toRightOf="@+id/spielerFarbeBlauButtonView"
@@ -64,7 +64,7 @@
         android:id="@+id/spielerFarbeGruenButtonView"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:background="#11f715"
+        android:background="@color/gruen_spieler_farbe"
         android:layout_marginRight="10dp"
         android:layout_alignTop="@+id/spielerFarbeRotButtonView"
         android:layout_toRightOf="@+id/spielerFarbeRotButtonView"
@@ -75,7 +75,7 @@
         android:id="@+id/spielerFarbeBlauButtonView"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:background="#1128f7"
+        android:background="@color/blau_spieler_farbe"
         android:layout_marginRight="10dp"
         android:layout_alignTop="@+id/spielerFarbeGruenButtonView"
         android:layout_toRightOf="@+id/spielerFarbeGruenButtonView"
@@ -83,10 +83,10 @@
         android:clickable="true"/>
 
     <ImageView
-        android:id="@+id/spielerFarbeSchwarzView"
+        android:id="@+id/spielerFarbeWeißButtonView"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:background="#080808"
+        android:background="@color/weiß_spieler_farbe"
         android:layout_alignTop="@+id/spielerFarbeGrauButtonView"
         android:layout_toRightOf="@+id/spielerFarbeGrauButtonView"
         android:layout_toEndOf="@+id/spielerFarbeGrauButtonView"
@@ -96,11 +96,11 @@
         android:id="@+id/spielerFarbeRotButtonView"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:background="#f71911"
+        android:background="@color/rot_spieler_farbe"
         android:layout_marginRight="10dp"
-        android:layout_alignTop="@+id/spielerFarbeGelbView"
-        android:layout_toRightOf="@+id/spielerFarbeGelbView"
-        android:layout_toEndOf="@+id/spielerFarbeGelbView"
+        android:layout_alignTop="@+id/spielerFarbeGelbButtonView"
+        android:layout_toRightOf="@+id/spielerFarbeGelbButtonView"
+        android:layout_toEndOf="@+id/spielerFarbeGelbButtonView"
         android:clickable="true"/>
 
     <RelativeLayout
@@ -111,7 +111,7 @@
         android:onClick="spielLobbyBeitreten"
         android:background="@drawable/layout_selector"
         android:layout_marginTop="13dp"
-        android:layout_below="@+id/spielerFarbeGelbView"
+        android:layout_below="@+id/spielerFarbeGelbButtonView"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
 

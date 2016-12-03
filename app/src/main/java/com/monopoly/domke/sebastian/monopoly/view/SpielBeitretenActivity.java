@@ -1,29 +1,31 @@
 package com.monopoly.domke.sebastian.monopoly.view;
 
-import android.app.ListActivity;
 import android.content.Intent;
-import android.graphics.Color;
+import android.content.SharedPreferences;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.format.Formatter;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.monopoly.domke.sebastian.monopoly.R;
+import com.monopoly.domke.sebastian.monopoly.common.Spiel;
 import com.monopoly.domke.sebastian.monopoly.common.Spieler;
 import com.monopoly.domke.sebastian.monopoly.database.DatabaseHandler;
 import com.monopoly.domke.sebastian.monopoly.helper.SpielerAdapter;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 public class SpielBeitretenActivity extends AppCompatActivity {
@@ -34,6 +36,10 @@ public class SpielBeitretenActivity extends AppCompatActivity {
     private String eigenerSpielerName = "Spieler";
     private int eigenerSpielerFarbe = R.color.weiß_spieler_farbe;
     private ListView gamelobbyListView;
+    private SharedPreferences sharedPreferences = null;
+    private Spiel aktuellesSpiel;
+    private String ipAdresseHost;
+    private WifiManager wifiManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,11 +48,23 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        sharedPreferences = getSharedPreferences("monopoly", MODE_PRIVATE);
+
         datasource = new DatabaseHandler(this);
 
-        eigenerSpieler = new Spieler();
+        aktuellesSpiel = datasource.getSpielByDatum(sharedPreferences.getString("monopolySpielDatum", "Kein Spiel erzeugt"));
+
+        //ipAdresseHost = intToInetAddress(wifiManager.getDhcpInfo().serverAddress).getHostAddress();
+
+        ipAdresseHost = "192.168.43.1";
+
+        eigenerSpieler = new Spieler(ipAdresseHost, aktuellesSpiel.getSpielID());
         eigenerSpieler.setSpielerName(eigenerSpielerName);
         eigenerSpieler.setSpielerFarbe(eigenerSpielerFarbe);
+
+        datasource.addSpieler(eigenerSpieler);
+
+        eigenerSpieler = datasource.getSpielerBySpielIdAndSpielerIp( aktuellesSpiel.getSpielID(), ipAdresseHost);
 
         FloatingActionButton spielStartenFB = (FloatingActionButton) findViewById(R.id.spielStartenFloatingButton);
         spielStartenFB.setOnClickListener(new View.OnClickListener() {
@@ -59,18 +77,20 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
         final ImageView meineEinstellungenImageView = (ImageView) findViewById(R.id.meineEinstellungenView);
 
-        ImageView farbeGelbImageView = (ImageView) findViewById(R.id.spielerFarbeGelbView);
+        ImageView farbeGelbImageView = (ImageView) findViewById(R.id.spielerFarbeGelbButtonView);
         ImageView farbeGruenImageView = (ImageView) findViewById(R.id.spielerFarbeGruenButtonView);
         ImageView farbeBlauImageView = (ImageView) findViewById(R.id.spielerFarbeBlauButtonView);
         ImageView farbeRotImageView = (ImageView) findViewById(R.id.spielerFarbeRotButtonView);
         ImageView farbeGrauImageView = (ImageView) findViewById(R.id.spielerFarbeGrauButtonView);
-        ImageView farbeSchwarzImageView = (ImageView) findViewById(R.id.spielerFarbeSchwarzView);
+        ImageView farbeSchwarzImageView = (ImageView) findViewById(R.id.spielerFarbeWeißButtonView);
 
         farbeGelbImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 eigenerSpieler.setSpielerFarbe(R.color.gelb_spieler_farbe);
+                datasource.updateSpieler(eigenerSpieler);
                 meineEinstellungenImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.gelb_spieler_farbe));
+                spieler_adapter.notifyDataSetChanged();
             }
         });
 
@@ -78,7 +98,9 @@ public class SpielBeitretenActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 eigenerSpieler.setSpielerFarbe(R.color.gruen_spieler_farbe);
+                datasource.updateSpieler(eigenerSpieler);
                 meineEinstellungenImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.gruen_spieler_farbe));
+                spieler_adapter.notifyDataSetChanged();
             }
         });
 
@@ -86,7 +108,9 @@ public class SpielBeitretenActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 eigenerSpieler.setSpielerFarbe(R.color.blau_spieler_farbe);
+                datasource.updateSpieler(eigenerSpieler);
                 meineEinstellungenImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.blau_spieler_farbe));
+                spieler_adapter.notifyDataSetChanged();
             }
         });
 
@@ -94,7 +118,9 @@ public class SpielBeitretenActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 eigenerSpieler.setSpielerFarbe(R.color.rot_spieler_farbe);
+                datasource.updateSpieler(eigenerSpieler);
                 meineEinstellungenImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.rot_spieler_farbe));
+                spieler_adapter.notifyDataSetChanged();
             }
         });
 
@@ -102,15 +128,19 @@ public class SpielBeitretenActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 eigenerSpieler.setSpielerFarbe(R.color.grau_spieler_farbe);
+                datasource.updateSpieler(eigenerSpieler);
                 meineEinstellungenImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.grau_spieler_farbe));
+                spieler_adapter.notifyDataSetChanged();
             }
         });
 
         farbeSchwarzImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                eigenerSpieler.setSpielerFarbe(R.color.schwarz_spieler_farbe);
-                meineEinstellungenImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.schwarz_spieler_farbe));
+                eigenerSpieler.setSpielerFarbe(R.color.weiß_spieler_farbe);
+                datasource.updateSpieler(eigenerSpieler);
+                meineEinstellungenImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.weiß_spieler_farbe));
+                spieler_adapter.notifyDataSetChanged();
             }
         });
 
@@ -135,6 +165,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         }
 
         adapter.add(eigenerSpieler);
+        datasource.updateSpieler(eigenerSpieler);
 
     }
 
@@ -155,6 +186,19 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         }
 
         return true;
+    }
+
+    public InetAddress intToInetAddress(int hostAddress) {
+        byte[] addressBytes = {(byte) (0xff & hostAddress),
+                (byte) (0xff & (hostAddress >> 8)),
+                (byte) (0xff & (hostAddress >> 16)),
+                (byte) (0xff & (hostAddress >> 24))};
+
+        try {
+            return InetAddress.getByAddress(addressBytes);
+        } catch (UnknownHostException e) {
+            throw new AssertionError();
+        }
     }
 
 }

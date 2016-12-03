@@ -6,10 +6,21 @@ package com.monopoly.domke.sebastian.monopoly.common;
 
 public class Spiel {
 
+    private int spielID;
     private int spielerAnzahl;
     private String spielDatum;
     private int spielerStartkapital;
     private String waehrung;
+
+    public void setSpielID(int spielID){
+
+        this.spielID = spielID;
+    }
+
+    public int getSpielID(){
+
+        return this.spielID;
+    }
 
     public void setSpielerAnzahl(int spielerAnzahl){
 
@@ -42,10 +53,12 @@ public class Spiel {
     }
 
     public void setSpielerStartkapital(int spielerStartkapital){
+
         this.spielerStartkapital = spielerStartkapital;
     }
 
     public int getSpielerStartkapital(){
+
         return this.spielerStartkapital;
     }
 }

@@ -17,7 +17,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 	// All Static variables
 	// Database Version
-	private static final int dbVersion = 1;
+	private static final int dbVersion = 2;
 
 	// Database Name
 	private static final String dbName = "MonopolyAppDB";
@@ -26,10 +26,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	private static final String monopolySpielTable = "TableMonopolySpiel";
 
 	// monopoly spiel table column name
-	private static final String colMonopolySpielerId = "MonopolySpielId";
+	private static final String colSpielerId = "SpielerId";
 	private static final String colSpielerName = "SpielerName";
 	private static final String colSpielerFarbe = "SpielerFarbe";
 	private static final String colSpielerKapital = "SpielerKapital";
+	private static final String colSpielerIpAdresse = "SpielerIpAdresse";
 	private static final String colFreiParken = "FreiParken";
 	private static final String colIdMonopolySpielListe = "IdMonopolySpielListe";
 
@@ -62,11 +63,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 
 		String createMonoploySpielTABLE = "CREATE TABLE " + monopolySpielTable
-				+ "(" + colMonopolySpielerId + " INTEGER PRIMARY KEY,"
+				+ "(" + colSpielerId + " INTEGER PRIMARY KEY,"
 				+ colSpielerName + " TEXT,"
                 + colSpielerFarbe + " INTEGER,"
                 + colSpielerKapital + " INTEGER,"
 				+ colFreiParken + " INTEGER, "
+				+ colSpielerIpAdresse + " TEXT, "
                 + colIdMonopolySpielListe + " INTEGER NOT NULL,"
 				+ " FOREIGN KEY (" + colIdMonopolySpielListe + ") REFERENCES " + spielListeTable + " (" + colMonopolySpielListeId + ")" + " ON DELETE CASCADE" + ")";
 
@@ -110,9 +112,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	/**
 	 * All CRUD(Create, Read, Update, Delete) Operations
 	 */
-
-    public // Adding new game
-    void addNewMonopolyGame(Spiel spielEintellungen) {
+	// Adding new game
+    public void addNewMonopolyGame(Spiel spielEintellungen) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -121,12 +122,89 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 spielEintellungen.getSpielerStartkapital());
         values.put(colMonopolySpielListeDatum,
                 spielEintellungen.getSpielDatum());
+		values.put(colMonopolySpielListeWaehrung,
+				spielEintellungen.getWaehrung());
 
         // Inserting Row
         db.insert(spielListeTable, null, values);
         db.close(); // Closing database connection
     }
 
+	// get game by date
+	public Spiel getSpielByDatum(String datum) {
+		SQLiteDatabase db = this.getReadableDatabase();
+
+		Cursor cursor = db.query(spielListeTable, new String[] { colMonopolySpielListeId,
+						colMonopolySpielListeDatum, colMonopolySpielListeSpielerAnzahl, colMonopolySpielListeStartkapital, colMonopolySpielListeWaehrung}, colMonopolySpielListeDatum + "=?",
+				new String[] { String.valueOf(datum) }, null, null, null, null);
+		if (cursor != null)
+			cursor.moveToFirst();
+
+		Spiel spiel = new Spiel();
+		spiel.setSpielID(Integer.parseInt(cursor.getString(0)));
+		spiel.setSpielDatum(cursor.getString(1));
+		spiel.setSpielerAnzahl(cursor.getInt(2));
+		spiel.setSpielerStartkapital(cursor.getInt(3));
+		spiel.setWaehrung(cursor.getString(4));
+
+		// return spiel
+		cursor.close();
+		db.close();
+		return spiel;
+	}
+
+	public void addSpieler(Spieler spieler) {
+		SQLiteDatabase db = this.getWritableDatabase();
+
+		ContentValues values = new ContentValues();
+		values.put(colSpielerName, spieler.getSpielerName());
+		values.put(colSpielerFarbe, spieler.getSpielerFarbe());
+		values.put(colSpielerKapital, spieler.getSpielerKapital());
+		values.put(colSpielerIpAdresse, spieler.getSpielerIpAdresse());
+		values.put(colIdMonopolySpielListe, spieler.getIdMonopolySpiel());
+
+		// Inserting Row
+		db.insert(monopolySpielTable, null, values);
+		db.close(); // Closing database connection
+	}
+
+	// get spieler by spielID and ipAdress
+	public Spieler getSpielerBySpielIdAndSpielerIp(int spielID, String spielerIpAdress) {
+		SQLiteDatabase db = this.getReadableDatabase();
+
+		Cursor cursor = db.query(monopolySpielTable, new String[] { colSpielerId,
+						colSpielerName, colSpielerFarbe, colSpielerKapital, colSpielerIpAdresse, colIdMonopolySpielListe}, colSpielerIpAdresse + "=? and " + colIdMonopolySpielListe + "=?",
+				new String[] { String.valueOf(spielerIpAdress), String.valueOf(spielID) }, null, null, null, null);
+		if (cursor != null)
+			cursor.moveToFirst();
+
+		Spieler spieler = new Spieler(cursor.getString(4), cursor.getInt(5));
+		spieler.setSpielerID(Integer.parseInt(cursor.getString(0)));
+		spieler.setSpielerName(cursor.getString(1));
+		spieler.setSpielerFarbe(cursor.getInt(2));
+		spieler.setSpielerKapital(cursor.getInt(3));
+
+		// return spieler
+		cursor.close();
+		db.close();
+		return spieler;
+	}
+
+	public void updateSpieler(Spieler spieler) {
+		SQLiteDatabase db = this.getWritableDatabase();
+
+		ContentValues values = new ContentValues();
+		values.put(colSpielerName, spieler.getSpielerName());
+		values.put(colSpielerFarbe, spieler.getSpielerFarbe());
+		values.put(colSpielerKapital, spieler.getSpielerKapital());
+		values.put(colSpielerIpAdresse, spieler.getSpielerIpAdresse());
+		values.put(colIdMonopolySpielListe, spieler.getIdMonopolySpiel());
+
+		// updating row
+		int row = db.update(monopolySpielTable, values, colSpielerId + " = ?",
+				new String[] { String.valueOf(spieler.getSpielerID()) });
+		db.close(); // Closing database connection
+	}
 
 	// Getting All spieler
 	public ArrayList<Spieler> getAllSpieler() {
@@ -140,9 +218,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		// looping through all rows and adding to list
 		if (cursor.moveToFirst()) {
 			do {
-				Spieler spieler = new Spieler();
+				Spieler spieler = new Spieler(cursor.getString(4), cursor.getInt(5));
+				spieler.setSpielerID(Integer.parseInt(cursor.getString(0)));
 				spieler.setSpielerName(cursor.getString(1));
 				spieler.setSpielerFarbe(cursor.getInt(2));
+				spieler.setSpielerKapital(cursor.getInt(3));
+
 				// Adding contact to list
 				spielerListe.add(spieler);
 			} while (cursor.moveToNext());

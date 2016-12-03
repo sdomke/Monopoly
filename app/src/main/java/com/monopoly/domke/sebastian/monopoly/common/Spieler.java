@@ -6,9 +6,27 @@ package com.monopoly.domke.sebastian.monopoly.common;
 
 public class Spieler {
 
+    private int spielerID;
     private String spielerName;
     private int spielerFarbe;
     private int spielerKapital;
+    private String spielerIpAdresse;
+    private int idMonopolySpiel;
+
+    public Spieler (String spielerIPAdresse, int idMonopolySpiel){
+        this.spielerIpAdresse = spielerIPAdresse;
+        this.idMonopolySpiel = idMonopolySpiel;
+    }
+
+    public void setSpielerID(int spielerID){
+
+        this.spielerID = spielerID;
+    }
+
+    public int getSpielerID(){
+
+        return this.spielerID;
+    }
 
     public void setSpielerName(String spielerName){
 
@@ -16,6 +34,7 @@ public class Spieler {
     }
 
     public String getSpielerName(){
+
         return this.spielerName;
     }
 
@@ -39,4 +58,23 @@ public class Spieler {
         return this.spielerKapital;
     }
 
+    public void setSpielerIpAdresse(String spielerIpAdresse){
+
+        this.spielerIpAdresse = spielerIpAdresse;
+    }
+
+    public String getSpielerIpAdresse(){
+
+        return this.spielerIpAdresse;
+    }
+
+    public void setIdMonopolySpiel(int idMonopolySpiel){
+
+        this.idMonopolySpiel = idMonopolySpiel;
+    }
+
+    public int getIdMonopolySpiel(){
+
+        return this.idMonopolySpiel;
+    }
 }
