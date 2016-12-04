@@ -25,8 +25,8 @@
         android:layout_height="wrap_content"
         android:hint="Dein Kapital"
         android:textSize="20sp"
-        android:layout_marginLeft="17dp"
-        android:layout_marginStart="17dp"
+        android:layout_marginLeft="17sp"
+        android:layout_marginStart="17sp"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/kapitalTextView"
         android:layout_alignParentRight="true"
@@ -48,8 +48,8 @@
 
     <TextView
         android:id="@+id/bankButtonView"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
+        android:layout_width="100sp"
+        android:layout_height="50sp"
         android:background="@android:color/darker_gray"
         android:text="@string/bank_button_name"
         android:gravity="center"
@@ -60,25 +60,25 @@
 
     <ImageView
         android:id="@+id/spielerFarbeBlauButtonView"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="50sp"
+        android:layout_height="50sp"
         android:background="@color/blau_spieler_farbe"
         android:layout_above="@+id/betragTextView"
         android:layout_toRightOf="@+id/betragTextView"
         android:layout_toEndOf="@+id/betragTextView"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp" />
+        android:layout_marginLeft="8sp"
+        android:layout_marginStart="8sp" />
 
     <ImageView
         android:id="@+id/spielerFarbeGrauButtonView"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="50sp"
+        android:layout_height="50sp"
         android:background="@color/gruen_spieler_farbe"
         android:layout_alignTop="@+id/spielerFarbeBlauButtonView"
         android:layout_alignLeft="@+id/bankButtonView"
         android:layout_alignStart="@+id/bankButtonView"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp" />
+        android:layout_marginLeft="8sp"
+        android:layout_marginStart="8sp" />
 
     <TextView
         android:id="@+id/betragTextView"
@@ -86,19 +86,19 @@
         android:layout_height="wrap_content"
         android:text="@string/betrag"
         android:textSize="20sp"
-        android:layout_marginTop="26dp"
+        android:layout_marginTop="26sp"
         android:layout_below="@+id/spielerFarbeRotButtonView"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
     <TextView
         android:id="@+id/freiParkenButtonView"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
+        android:layout_width="100sp"
+        android:layout_height="50sp"
         android:background="@android:color/holo_blue_bright"
         android:text="@string/frei_parken_button_name"
         android:textSize="20sp"
-        android:textAlignment="center"
+        android:gravity="center"
         android:layout_alignTop="@+id/bankButtonView"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
@@ -107,23 +107,23 @@
         android:id="@+id/eineMillionenDollar"
         android:text="1 M$"
         android:textSize="20sp"
-        android:layout_height="50dp"
+        android:layout_height="50sp"
         android:gravity="center"
         android:background="@android:color/holo_blue_dark"
         android:layout_below="@+id/betragEditTextView"
         android:layout_toRightOf="@+id/spielerFarbeGrauButtonView"
         android:layout_toLeftOf="@+id/freiParkenButtonView"
         android:layout_toStartOf="@+id/freiParkenButtonView"
-        android:layout_width="80dp" />
+        android:layout_width="80sp" />
 
     <TextView
         android:id="@+id/zweiMillionenDollar"
         android:text="2 M$"
         android:textSize="20sp"
-        android:layout_height="50dp"
+        android:layout_height="50sp"
         android:gravity="center"
         android:background="@android:color/holo_blue_dark"
-        android:layout_width="80dp"
+        android:layout_width="80sp"
         android:layout_below="@+id/betragEditTextView"
         android:layout_toRightOf="@+id/eigenerSpielerFarbeButtonView"
         android:layout_toEndOf="@+id/eigenerSpielerFarbeButtonView" />
@@ -132,10 +132,10 @@
         android:id="@+id/fuenfhundertTausendDollar"
         android:text="500 K$"
         android:textSize="20sp"
-        android:layout_height="50dp"
+        android:layout_height="50sp"
         android:gravity="center"
         android:background="@android:color/holo_blue_dark"
-        android:layout_width="80dp"
+        android:layout_width="80sp"
         android:layout_below="@+id/betragEditTextView"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
@@ -144,11 +144,11 @@
         android:id="@+id/vierhundertTausendDollar"
         android:text="400 K$"
         android:textSize="20sp"
-        android:layout_height="50dp"
+        android:layout_height="50sp"
         android:gravity="center"
         android:background="@android:color/holo_blue_dark"
-        android:layout_width="80dp"
-        android:layout_marginTop="24dp"
+        android:layout_width="80sp"
+        android:layout_marginTop="24sp"
         android:layout_below="@+id/fuenfhundertTausendDollar"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
@@ -157,11 +157,11 @@
         android:id="@+id/fuenfTausendDollar"
         android:text="5 K$"
         android:textSize="20sp"
-        android:layout_height="50dp"
+        android:layout_height="50sp"
         android:gravity="center"
         android:background="@android:color/holo_blue_dark"
-        android:layout_width="80dp"
-        android:layout_marginTop="22dp"
+        android:layout_width="80sp"
+        android:layout_marginTop="22sp"
         android:layout_below="@+id/fuenfzigTausendDollar"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
@@ -170,10 +170,10 @@
         android:id="@+id/zweihundertTausendDollar"
         android:text="200 K$"
         android:textSize="20sp"
-        android:layout_height="50dp"
+        android:layout_height="50sp"
         android:gravity="center"
         android:background="@android:color/holo_blue_dark"
-        android:layout_width="80dp"
+        android:layout_width="80sp"
         android:layout_alignTop="@+id/vierhundertTausendDollar"
         android:layout_alignLeft="@+id/zweiMillionenDollar"
         android:layout_alignStart="@+id/zweiMillionenDollar" />
@@ -182,10 +182,10 @@
         android:id="@+id/hundertTausendDollar"
         android:text="100 K$"
         android:textSize="20sp"
-        android:layout_height="50dp"
+        android:layout_height="50sp"
         android:gravity="center"
         android:background="@android:color/holo_blue_dark"
-        android:layout_width="80dp"
+        android:layout_width="80sp"
         android:layout_alignTop="@+id/zweihundertTausendDollar"
         android:layout_alignLeft="@+id/eineMillionenDollar"
         android:layout_alignStart="@+id/eineMillionenDollar"  />
@@ -194,10 +194,10 @@
         android:id="@+id/fuenfzigTausendDollar"
         android:text="50 K$"
         android:textSize="20sp"
-        android:layout_height="50dp"
+        android:layout_height="50sp"
         android:gravity="center"
         android:background="@android:color/holo_blue_dark"
-        android:layout_width="80dp"
+        android:layout_width="80sp"
         android:layout_alignTop="@+id/hundertTausendDollar"
         android:layout_alignLeft="@+id/fuenfhundertTausendDollar"
         android:layout_alignStart="@+id/fuenfhundertTausendDollar" />
@@ -206,10 +206,10 @@
         android:id="@+id/zehnTausendDollar"
         android:text="10 K$"
         android:textSize="20sp"
-        android:layout_height="50dp"
+        android:layout_height="50sp"
         android:gravity="center"
         android:background="@android:color/holo_blue_dark"
-        android:layout_width="80dp"
+        android:layout_width="80sp"
         android:layout_alignTop="@+id/fuenfTausendDollar"
         android:layout_alignLeft="@+id/hundertTausendDollar"
         android:layout_alignStart="@+id/hundertTausendDollar" />
@@ -218,18 +218,18 @@
         android:id="@+id/vierMillionenDollar"
         android:text="4 M$"
         android:textSize="20sp"
-        android:layout_height="50dp"
+        android:layout_height="50sp"
         android:gravity="center"
         android:background="@android:color/holo_blue_dark"
-        android:layout_width="80dp"
+        android:layout_width="80sp"
         android:layout_above="@+id/vierhundertTausendDollar"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
     <ImageView
         android:id="@+id/transaktionButton"
-        android:layout_width="200dp"
-        android:layout_height="50dp"
+        android:layout_width="200sp"
+        android:layout_height="50sp"
         android:src="@android:drawable/ic_menu_share"
         android:background="@color/colorAccent"
         android:layout_alignTop="@+id/zehnTausendDollar"
@@ -237,115 +237,102 @@
         android:layout_alignEnd="@+id/zweihundertTausendDollar" />
 
     <ImageView
-        android:id="@+id/toggleKapitelUebersicht"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:id="@+id/toggleKapitalUebersicht"
+        android:layout_width="20sp"
+        android:layout_height="20sp"
         android:src="@android:drawable/arrow_down_float"
         android:background="@android:color/black"
         android:layout_below="@+id/kapitalTextView"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="14dp" />
+        android:layout_marginTop="14sp" />
 
     <ImageView
         android:id="@+id/spielerFarbeRotButtonView"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="50sp"
+        android:layout_height="50sp"
         android:background="@color/rot_spieler_farbe"
-        android:layout_marginTop="17dp"
+        android:layout_marginTop="17sp"
         android:layout_below="@+id/eigenerSpielerFarbeButtonView"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
-
-    <ImageView
-        android:id="@+id/eigenerSpielerFarbeButtonView"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:background="@color/gelb_spieler_farbe"
-        android:layout_marginTop="21dp"
-        android:layout_below="@+id/toggleKapitelUebersicht"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:id="@+id/zahleBetrag"
-        android:text="@string/zahleBetrag"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:layout_width="80dp"
-        android:background="@android:color/holo_red_dark"
-        android:layout_marginBottom="6dp"
-        android:layout_height="30dp"
-        android:layout_above="@+id/zahleGefaengnis"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignLeft="@+id/zehnTausendDollar"
-        android:layout_alignStart="@+id/zehnTausendDollar" />
 
     <TextView
         android:id="@+id/zahleGefaengnis"
         android:text="@string/zahleGefaengnis"
         android:textSize="20sp"
         android:gravity="center"
-        android:layout_width="80dp"
-        android:layout_height="50dp"
+        android:layout_width="80sp"
+        android:layout_height="50sp"
         android:background="@android:color/holo_red_light"
-        android:layout_marginBottom="47dp"
+        android:layout_marginBottom="47sp"
         android:layout_alignParentBottom="true"
         android:layout_alignLeft="@+id/zahleBetrag"
         android:layout_alignStart="@+id/zahleBetrag" />
-
-    <TextView
-        android:id="@+id/erhalteBetrag"
-        android:text="@string/erhalteBetrag"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:layout_width="80dp"
-        android:background="@android:color/holo_green_dark"
-        android:layout_height="30dp"
-        android:layout_alignBaseline="@+id/zahleBetrag"
-        android:layout_alignBottom="@+id/zahleBetrag"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/erhalteHypothek"
-        android:layout_alignEnd="@+id/erhalteHypothek" />
 
     <TextView
         android:id="@+id/erhalteHypothek"
         android:text="@string/erhalteHypothek"
         android:textSize="20sp"
         android:gravity="center"
-        android:layout_height="50dp"
+        android:layout_height="50sp"
         android:background="@android:color/holo_green_light"
-        android:layout_width="50dp"
-        android:layout_alignBaseline="@+id/zahleGefaengnis"
-        android:layout_alignBottom="@+id/zahleGefaengnis"
-        android:layout_alignRight="@+id/transaktionButton"
-        android:layout_alignEnd="@+id/transaktionButton" />
+        android:layout_width="50sp"
+        android:layout_alignTop="@+id/erhalteLos"
+        android:layout_alignLeft="@+id/deinkapitalTextView"
+        android:layout_alignStart="@+id/deinkapitalTextView" />
+
+    <TextView
+        android:id="@+id/zahleBetrag"
+        android:text="@string/zahleBetrag"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:layout_width="80sp"
+        android:background="@android:color/holo_red_dark"
+        android:layout_alignBaseline="@+id/erhalteBetrag"
+        android:layout_alignBottom="@+id/erhalteBetrag"
+        android:layout_alignLeft="@+id/zehnTausendDollar"
+        android:layout_alignStart="@+id/zehnTausendDollar"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_height="20sp" />
 
     <TextView
         android:id="@+id/erhalteLos"
         android:text="@string/erhalteLos"
         android:textSize="20sp"
         android:gravity="center"
-        android:layout_height="50dp"
+        android:layout_height="50sp"
         android:background="@android:color/holo_green_light"
-        android:layout_width="50dp"
-        android:layout_alignTop="@+id/zahleGefaengnis"
+        android:layout_width="50sp"
+        android:layout_below="@+id/erhalteBetrag"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/erhalteBetrag"
+        android:text="@string/erhalteBetrag"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:layout_width="80sp"
+        android:background="@android:color/holo_green_dark"
+        android:layout_above="@+id/zahleGefaengnis"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="6dp" />
+        android:layout_marginBottom="11sp"
+        android:layout_alignRight="@+id/erhalteHypothek"
+        android:layout_alignEnd="@+id/erhalteHypothek"
+        android:layout_height="20sp" />
 
     <TextView
         android:id="@+id/erhalteFreiParken"
         android:text="@string/erhalteFreiParken"
         android:textSize="20sp"
         android:gravity="center"
-        android:layout_height="50dp"
+        android:layout_height="50sp"
         android:background="@android:color/holo_green_light"
-        android:layout_width="50dp"
-        android:layout_alignBaseline="@+id/erhalteLos"
-        android:layout_alignBottom="@+id/erhalteLos"
+        android:layout_width="50sp"
+        android:layout_below="@+id/erhalteBetrag"
         android:layout_toRightOf="@+id/betragTextView"
         android:layout_toEndOf="@+id/betragTextView" />
 
@@ -354,12 +341,50 @@
         android:text="@string/zahleHypothek"
         android:textSize="20sp"
         android:gravity="center"
-        android:layout_width="80dp"
-        android:layout_height="50dp"
+        android:layout_width="80sp"
+        android:layout_height="50sp"
         android:background="@android:color/holo_red_light"
-        android:layout_alignBaseline="@+id/zahleGefaengnis"
-        android:layout_alignBottom="@+id/zahleGefaengnis"
+        android:layout_below="@+id/erhalteBetrag"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:background="#c9c9c9"
+        android:layout_width="match_parent"
+        android:layout_height="4sp"
+        android:layout_alignTop="@+id/betragEditTextView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <ImageView
+        android:id="@+id/eigenerSpielerFarbeButtonView"
+        android:layout_width="100sp"
+        android:layout_height="50sp"
+        android:background="@color/gelb_spieler_farbe"
+        android:layout_marginTop="28sp"
+        android:layout_below="@+id/toggleKapitalUebersicht"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <ImageView
+        android:id="@+id/trenner1ImageView"
+        android:background="#c9c9c9"
+        android:layout_width="match_parent"
+        android:layout_height="4sp"
+        android:layout_marginBottom="10sp"
+        android:layout_above="@+id/bankButtonView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <ImageView
+        android:id="@+id/trenner2ImageView"
+        android:background="#c9c9c9"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="15sp"
+        android:layout_height="4sp"
+        android:layout_above="@+id/zahleBetrag"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>
