@@ -20,12 +20,19 @@
     <string name="mein_spieler_farbe">Meine Farbe</string>
     <string name="spiel_lobby_beitreten_button_name">Spiellobby beitreten</string>
     <string name="spiellobby">Spiellobby</string>
-    <string name="kapital">Kapital</string>
-    <string name="betrag">Betrag</string>
+    <string name="kapital">Dein Kapital:</string>
+    <string name="betrag">Betrag:</string>
     <string name="bank_button_name">Bank</string>
     <string name="los_button_name">Bank</string>
-    <string name="frei_parken_button_name">Mitte</string>
+    <string name="frei_parken_button_name">Frei Parken</string>
     <string name="spieler_einladen">Einladung an Spieler senden</string>
+    <string name="erhalteFreiParken">FP</string>
+    <string name="erhalteLos">Los</string>
+    <string name="erhalteHypothek">H</string>
+    <string name="zahleHypothek">H</string>
+    <string name="zahleGefaengnis">G</string>
+    <string name="zahleBetrag">Zahle</string>
+    <string name="erhalteBetrag">Erhalte</string>
 
     <string name="title_activity_spiel_laden">SpielLadenActivity</string>
     <string name="title_activity_einstellungen">Settings</string>

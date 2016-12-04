@@ -49,60 +49,6 @@
         android:layout_marginTop="14dp"
         android:clickable="true"/>
 
-    <ImageView
-        android:id="@+id/spielerFarbeGrauButtonView"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:background="@color/grau_spieler_farbe"
-        android:layout_marginRight="10dp"
-        android:layout_alignTop="@+id/spielerFarbeBlauButtonView"
-        android:layout_toRightOf="@+id/spielerFarbeBlauButtonView"
-        android:layout_toEndOf="@+id/spielerFarbeBlauButtonView"
-        android:clickable="true"/>
-
-    <ImageView
-        android:id="@+id/spielerFarbeGruenButtonView"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:background="@color/gruen_spieler_farbe"
-        android:layout_marginRight="10dp"
-        android:layout_alignTop="@+id/spielerFarbeRotButtonView"
-        android:layout_toRightOf="@+id/spielerFarbeRotButtonView"
-        android:layout_toEndOf="@+id/spielerFarbeRotButtonView"
-        android:clickable="true"/>
-
-    <ImageView
-        android:id="@+id/spielerFarbeBlauButtonView"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:background="@color/blau_spieler_farbe"
-        android:layout_marginRight="10dp"
-        android:layout_alignTop="@+id/spielerFarbeGruenButtonView"
-        android:layout_toRightOf="@+id/spielerFarbeGruenButtonView"
-        android:layout_toEndOf="@+id/spielerFarbeGruenButtonView"
-        android:clickable="true"/>
-
-    <ImageView
-        android:id="@+id/spielerFarbeWeißButtonView"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:background="@color/weiß_spieler_farbe"
-        android:layout_alignTop="@+id/spielerFarbeGrauButtonView"
-        android:layout_toRightOf="@+id/spielerFarbeGrauButtonView"
-        android:layout_toEndOf="@+id/spielerFarbeGrauButtonView"
-        android:clickable="true"/>
-
-    <ImageView
-        android:id="@+id/spielerFarbeRotButtonView"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:background="@color/rot_spieler_farbe"
-        android:layout_marginRight="10dp"
-        android:layout_alignTop="@+id/spielerFarbeGelbButtonView"
-        android:layout_toRightOf="@+id/spielerFarbeGelbButtonView"
-        android:layout_toEndOf="@+id/spielerFarbeGelbButtonView"
-        android:clickable="true"/>
-
     <RelativeLayout
         android:id="@+id/spielLobbyBeitretenButtonLayout"
         android:layout_width="match_parent"
@@ -188,5 +134,61 @@
         android:layout_below="@+id/spielLobbyBeitretenButtonLayout"
         android:layout_alignLeft="@+id/meinSpielerNameEditText"
         android:layout_alignStart="@+id/meinSpielerNameEditText" />
+
+    <ImageView
+        android:id="@+id/spielerFarbeWeißButtonView"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@color/weiß_spieler_farbe"
+        android:clickable="true"
+        android:layout_above="@+id/spielLobbyBeitretenButtonLayout"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <ImageView
+        android:id="@+id/spielerFarbeGrauButtonView"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@color/grau_spieler_farbe"
+        android:clickable="true"
+        android:layout_above="@+id/spielLobbyBeitretenButtonLayout"
+        android:layout_toLeftOf="@+id/spielerFarbeWeißButtonView"
+        android:layout_toStartOf="@+id/spielerFarbeWeißButtonView"
+        android:layout_marginRight="11dp"
+        android:layout_marginEnd="11dp" />
+
+    <ImageView
+        android:id="@+id/spielerFarbeBlauButtonView"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@color/blau_spieler_farbe"
+        android:clickable="true"
+        android:layout_above="@+id/spielLobbyBeitretenButtonLayout"
+        android:layout_toLeftOf="@+id/spielerFarbeGrauButtonView"
+        android:layout_toStartOf="@+id/spielerFarbeGrauButtonView"
+        android:layout_marginRight="14dp"
+        android:layout_marginEnd="14dp" />
+
+    <ImageView
+        android:id="@+id/spielerFarbeGruenButtonView"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@color/gruen_spieler_farbe"
+        android:clickable="true"
+        android:layout_above="@+id/spielLobbyBeitretenButtonLayout"
+        android:layout_alignLeft="@+id/meinSpielerNameEditText"
+        android:layout_alignStart="@+id/meinSpielerNameEditText"
+        android:layout_marginLeft="15dp"
+        android:layout_marginStart="15dp" />
+
+    <ImageView
+        android:id="@+id/spielerFarbeRotButtonView"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@color/rot_spieler_farbe"
+        android:clickable="true"
+        android:layout_above="@+id/spielLobbyBeitretenButtonLayout"
+        android:layout_toLeftOf="@+id/spielLobbyTextView"
+        android:layout_toStartOf="@+id/spielLobbyTextView" />
 
 </RelativeLayout>
