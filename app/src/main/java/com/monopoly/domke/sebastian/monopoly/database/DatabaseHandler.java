@@ -234,6 +234,35 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		return spielerListe;
 	}
 
+	// Getting All spiele
+	public ArrayList<Spiel> getAllSpiele() {
+		ArrayList<Spiel> spieleListe = new ArrayList<Spiel>();
+		// Select All Query
+		String selectQuery = "SELECT  * FROM " + spielListeTable;
+
+		SQLiteDatabase db = this.getWritableDatabase();
+		Cursor cursor = db.rawQuery(selectQuery, null);
+
+		// looping through all rows and adding to list
+		if (cursor.moveToFirst()) {
+			do {
+				Spiel spiel = new Spiel();
+				spiel.setSpielID(Integer.parseInt(cursor.getString(0)));
+				spiel.setSpielDatum(cursor.getString(1));
+				spiel.setSpielerAnzahl(cursor.getInt(2));
+				spiel.setSpielerStartkapital(cursor.getInt(3));
+				spiel.setWaehrung(cursor.getString(4));
+
+				// Adding contact to list
+				spieleListe.add(spiel);
+			} while (cursor.moveToNext());
+		}
+		cursor.close();
+		db.close();
+		// return spieler list
+		return spieleListe;
+	}
+
 	/*
 	public // Adding new siteInduction
 	void addSiteInduction(SiteInduction siteInduction) {

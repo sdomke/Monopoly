@@ -6,10 +6,20 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ListView;
 
 import com.monopoly.domke.sebastian.monopoly.R;
+import com.monopoly.domke.sebastian.monopoly.common.Spiel;
+import com.monopoly.domke.sebastian.monopoly.database.DatabaseHandler;
+import com.monopoly.domke.sebastian.monopoly.helper.MonopolySpieleAdapter;
+
+import java.util.ArrayList;
 
 public class SpielLadenActivity extends AppCompatActivity {
+
+    private DatabaseHandler datasource;
+    private MonopolySpieleAdapter spiele_adapter;
+    private ListView monopolySpieleListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,14 +28,15 @@ public class SpielLadenActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        datasource = new DatabaseHandler(this);
+
+        monopolySpieleListView = (ListView) findViewById(R.id.monopolySpieleListeListView);
+
+        ArrayList<Spiel> values = datasource.getAllSpiele();
+
+        spiele_adapter = new MonopolySpieleAdapter(this,
+                R.layout.list_item_monopoly_spiel, values);
+        monopolySpieleListView.setAdapter(spiele_adapter);
     }
 
 }

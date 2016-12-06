@@ -10,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.format.Formatter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,7 +24,7 @@ import com.monopoly.domke.sebastian.monopoly.R;
 import com.monopoly.domke.sebastian.monopoly.common.Spiel;
 import com.monopoly.domke.sebastian.monopoly.common.Spieler;
 import com.monopoly.domke.sebastian.monopoly.database.DatabaseHandler;
-import com.monopoly.domke.sebastian.monopoly.helper.SpielerAdapter;
+import com.monopoly.domke.sebastian.monopoly.helper.GamelobbySpielerAdapter;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -34,7 +33,7 @@ import java.util.ArrayList;
 public class SpielBeitretenActivity extends AppCompatActivity {
 
     private DatabaseHandler datasource;
-    private SpielerAdapter spieler_adapter;
+    private GamelobbySpielerAdapter spieler_adapter;
     private Spieler eigenerSpieler;
     private String eigenerSpielerName = "Spieler";
     private int eigenerSpielerFarbe = R.color.weiß_spieler_farbe;
@@ -169,7 +168,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
         ArrayList<Spieler> values = datasource.getAllSpieler(aktuellesSpiel.getSpielID());
 
-        spieler_adapter = new SpielerAdapter(this,
+        spieler_adapter = new GamelobbySpielerAdapter(this,
                 R.layout.list_item_spieler, values);
         gamelobbyListView.setAdapter(spieler_adapter);
 
@@ -183,7 +182,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
     public void spielLobbyBeitreten(View view) {
 
-        SpielerAdapter adapter = (SpielerAdapter) gamelobbyListView.getAdapter();
+        GamelobbySpielerAdapter adapter = (GamelobbySpielerAdapter) gamelobbyListView.getAdapter();
 
         EditText eigenerSpielerNameEditText = (EditText) findViewById(R.id.meinSpielerNameEditText);
 

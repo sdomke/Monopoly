@@ -1,0 +1,71 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/spielerItemBeschriftung"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:padding="6dip">
+
+	<!-- spielerNamedataItem -->
+
+	<TextView
+		android:id="@+id/spielerRankingDataItem"
+		android:layout_width="40dip"
+		android:layout_height="40dip"
+		android:text="1#"
+		android:textSize="30sp"
+		android:textColor="#000000"
+		android:gravity="center"
+		android:layout_centerVertical="true"
+		android:layout_alignParentLeft="true"
+		android:layout_alignParentStart="true" />
+
+	<ImageView
+		android:id="@+id/trennlinie"
+		android:layout_height="50dip"
+		android:background="#b7b7b7"
+		android:layout_width="2dip"
+		android:layout_alignTop="@+id/spielerRankingDataItem"
+		android:layout_toRightOf="@+id/spielerRankingDataItem"
+		android:layout_toEndOf="@+id/spielerRankingDataItem"
+		android:layout_marginLeft="9dp"
+		android:layout_marginStart="9dp" />
+
+	<TextView
+		android:id="@+id/spielerKapitalHighscoreDataItem"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textSize="15sp"
+		android:ellipsize="marquee"
+		android:text="Kapital: 120.000.000 M$"
+		android:gravity="center"
+		android:layout_marginLeft="54dp"
+		android:layout_alignBottom="@+id/trennlinie"
+		android:layout_toRightOf="@+id/spielerHighscoreItem"
+		android:layout_toEndOf="@+id/spielerHighscoreItem"
+		android:layout_marginStart="54dp" />
+
+	<TextView
+         android:id="@+id/spielerNameHighscoreDataItem"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:textSize="25sp"
+         android:textStyle="bold"
+         android:ellipsize="marquee"
+         android:text="Spielername"
+		 android:gravity="center"
+		android:layout_alignParentTop="true"
+		android:layout_alignLeft="@+id/spielerKapitalHighscoreDataItem"
+		android:layout_alignStart="@+id/spielerKapitalHighscoreDataItem" />
+
+	<ImageView
+		android:id="@+id/spielerHighscoreItem"
+		android:layout_width="60dip"
+		android:layout_height="60dip"
+		android:src="@drawable/spieler"
+		android:background="#ffffff"
+		android:layout_marginLeft="9dp"
+		android:layout_marginStart="9dp"
+		android:layout_alignParentTop="true"
+		android:layout_toRightOf="@+id/trennlinie"
+		android:layout_toEndOf="@+id/trennlinie" />
+</RelativeLayout>
+    

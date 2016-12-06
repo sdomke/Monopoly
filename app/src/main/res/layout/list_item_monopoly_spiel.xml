@@ -1,0 +1,70 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/spielerItemBeschriftung"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:padding="6dip">
+
+	<!-- spielerNamedataItem -->
+
+	<ImageView
+		android:id="@+id/monopolySpielLadenItem"
+		android:layout_width="80dip"
+		android:layout_height="80dip"
+		android:clickable="true"
+		android:src="@drawable/spiel_laden"
+		android:background="#eda200"/>
+
+	<ImageView
+        android:id="@+id/monopolySpielEntfernenItem"
+        android:layout_width="30dip"
+        android:layout_height="30dip"
+        android:clickable="true"
+        android:src="@drawable/entfernen_klein"
+        android:background="#c90606"
+		android:layout_centerVertical="true"
+		android:layout_alignParentRight="true"
+		android:layout_alignParentEnd="true"
+		android:layout_marginRight="16dp"
+		android:layout_marginEnd="16dp" />
+
+	<TextView
+         android:id="@+id/monopolySpielDatumDataItem"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:textSize="15sp"
+         android:textStyle="bold"
+         android:ellipsize="marquee"
+         android:text="Spieldatum"
+		 android:gravity="center"
+		android:layout_alignParentTop="true"
+		android:layout_alignLeft="@+id/monopolySpielStartkapitalDataItem"
+		android:layout_alignStart="@+id/monopolySpielStartkapitalDataItem" />
+
+	<TextView
+		android:id="@+id/monopolySpielStartkapitalDataItem"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textSize="15sp"
+		android:ellipsize="marquee"
+		android:text="Startkapital: 12.000.000 M$"
+		android:gravity="center"
+		android:layout_marginLeft="12dp"
+		android:layout_marginStart="12dp"
+		android:layout_alignBottom="@+id/monopolySpielLadenItem"
+		android:layout_toRightOf="@+id/monopolySpielLadenItem"
+		android:layout_toEndOf="@+id/monopolySpielLadenItem"
+		android:layout_marginBottom="6dp" />
+
+	<TextView
+		android:id="@+id/monopolySpielSpielerAnzahlDataItem"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textSize="15sp"
+		android:ellipsize="marquee"
+		android:text="Spieleranzahl: 4"
+		android:gravity="center"
+		android:layout_above="@+id/monopolySpielStartkapitalDataItem"
+		android:layout_alignLeft="@+id/monopolySpielStartkapitalDataItem"
+		android:layout_alignStart="@+id/monopolySpielStartkapitalDataItem" />
+</RelativeLayout>
+    
