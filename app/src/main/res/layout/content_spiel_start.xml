@@ -37,6 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="Gewünschter Betrag"
+        android:inputType="number"
         android:textSize="20sp"
         android:layout_alignBaseline="@+id/betragTextView"
         android:layout_alignBottom="@+id/betragTextView"
@@ -258,19 +259,6 @@
         android:layout_alignParentStart="true" />
 
     <TextView
-        android:id="@+id/zahleGefaengnis"
-        android:text="@string/zahleGefaengnis"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:layout_width="80sp"
-        android:layout_height="50sp"
-        android:background="@android:color/holo_red_light"
-        android:layout_marginBottom="47sp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignLeft="@+id/zahleBetrag"
-        android:layout_alignStart="@+id/zahleBetrag" />
-
-    <TextView
         android:id="@+id/erhalteHypothek"
         android:text="@string/erhalteHypothek"
         android:textSize="20sp"
@@ -298,45 +286,6 @@
         android:layout_height="20sp" />
 
     <TextView
-        android:id="@+id/erhalteLos"
-        android:text="@string/erhalteLos"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:layout_height="50sp"
-        android:background="@android:color/holo_green_light"
-        android:layout_width="50sp"
-        android:layout_below="@+id/erhalteBetrag"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:id="@+id/erhalteBetrag"
-        android:text="@string/erhalteBetrag"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:layout_width="80sp"
-        android:background="@android:color/holo_green_dark"
-        android:layout_above="@+id/zahleGefaengnis"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="11sp"
-        android:layout_alignRight="@+id/erhalteHypothek"
-        android:layout_alignEnd="@+id/erhalteHypothek"
-        android:layout_height="20sp" />
-
-    <TextView
-        android:id="@+id/erhalteFreiParken"
-        android:text="@string/erhalteFreiParken"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:layout_height="50sp"
-        android:background="@android:color/holo_green_light"
-        android:layout_width="50sp"
-        android:layout_below="@+id/erhalteBetrag"
-        android:layout_toRightOf="@+id/betragTextView"
-        android:layout_toEndOf="@+id/betragTextView" />
-
-    <TextView
         android:id="@+id/zahleHypothek"
         android:text="@string/zahleHypothek"
         android:textSize="20sp"
@@ -346,7 +295,8 @@
         android:background="@android:color/holo_red_light"
         android:layout_below="@+id/erhalteBetrag"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dip"/>
 
     <ImageView
         android:id="@+id/imageView2"
@@ -377,14 +327,58 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
-    <ImageView
-        android:id="@+id/trenner2ImageView"
-        android:background="#c9c9c9"
-        android:layout_width="match_parent"
-        android:layout_marginBottom="15sp"
-        android:layout_height="4sp"
-        android:layout_above="@+id/zahleBetrag"
+    <TextView
+        android:id="@+id/erhalteBetrag"
+        android:text="@string/erhalteBetrag"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:layout_width="80sp"
+        android:background="@android:color/holo_green_dark"
+        android:layout_height="20sp"
+        android:layout_below="@+id/transaktionButton"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="20dp"
+        android:layout_alignRight="@+id/transaktionButton"
+        android:layout_alignEnd="@+id/transaktionButton" />
+
+    <TextView
+        android:id="@+id/erhalteLos"
+        android:text="@string/erhalteLos"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:layout_height="50sp"
+        android:background="@android:color/holo_green_light"
+        android:layout_width="50sp"
+        android:layout_below="@+id/erhalteBetrag"
+        android:layout_marginTop="10dip"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/zahleGefaengnis"
+        android:text="@string/zahleGefaengnis"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:layout_width="80sp"
+        android:layout_height="50sp"
+        android:background="@android:color/holo_red_light"
+        android:layout_below="@+id/zahleBetrag"
+        android:layout_alignLeft="@+id/zahleBetrag"
+        android:layout_alignStart="@+id/zahleBetrag"
+        android:layout_marginTop="10dip"/>
+
+    <TextView
+        android:id="@+id/erhalteFreiParken"
+        android:text="@string/erhalteFreiParken"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:layout_height="50sp"
+        android:background="@android:color/holo_green_light"
+        android:layout_width="50sp"
+        android:layout_alignTop="@+id/erhalteHypothek"
+        android:layout_toRightOf="@+id/erhalteLos"
+        android:layout_toEndOf="@+id/erhalteLos"
+        android:layout_marginLeft="15dip"/>
 
 </RelativeLayout>

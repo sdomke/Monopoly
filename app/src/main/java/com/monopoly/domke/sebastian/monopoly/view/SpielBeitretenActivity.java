@@ -65,17 +65,21 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         eigenerSpieler = new Spieler(ipAdresseHost, aktuellesSpiel.getSpielID());
         eigenerSpieler.setSpielerName(eigenerSpielerName);
         eigenerSpieler.setSpielerFarbe(eigenerSpielerFarbe);
+        eigenerSpieler.setSpielerKapital(aktuellesSpiel.getSpielerStartkapital());
 
         FloatingActionButton spielStartenFB = (FloatingActionButton) findViewById(R.id.spielStartenFloatingButton);
         spielStartenFB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), SpielStartActivity.class);
+                intent.putExtra("eigenerSpielerIpAdresse", eigenerSpieler.getSpielerIpAdresse());
+                intent.putExtra("aktuellesSpielID", aktuellesSpiel.getSpielID());
                 startActivity(intent);
             }
         });
 
         final EditText meinNameEditText = (EditText) findViewById(R.id.meinSpielerNameEditText);
+        meinNameEditText.setActivated(false);
         meinNameEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
