@@ -80,6 +80,7 @@ public class NeuesSpielActivity extends AppCompatActivity implements AdapterView
         java.util.Date datumErzeugenJetzt = new java.util.Date();
         spielDatum = (String) DateFormat.format("dd.MM.yyyy HH:mm:ss", datumErzeugenJetzt);
         neuesSpiel.setSpielDatum(spielDatum);
+        neuesSpiel.setFreiParken(0);
 
         if(startKapitelEditText.getText().toString().length() != 0) {
             String tmpStartKapital = startKapitelEditText.getText().toString();

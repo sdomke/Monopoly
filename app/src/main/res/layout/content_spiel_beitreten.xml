@@ -146,7 +146,7 @@
         android:layout_alignParentEnd="true" />
 
     <ImageView
-        android:id="@+id/spielerFarbeGrauButtonView"
+        android:id="@+id/spielerFarbeGruenButtonView"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:background="@color/grau_spieler_farbe"

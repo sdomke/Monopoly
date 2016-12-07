@@ -11,6 +11,7 @@ public class Spiel {
     private String spielDatum;
     private int spielerStartkapital;
     private String waehrung;
+    private int freiParkenWert;
 
     public void setSpielID(int spielID){
 
@@ -60,5 +61,15 @@ public class Spiel {
     public int getSpielerStartkapital(){
 
         return this.spielerStartkapital;
+    }
+
+    public void setFreiParken(int freiParkenWert){
+
+        this.freiParkenWert = freiParkenWert;
+    }
+
+    public int getFreiParken(){
+
+        return this.freiParkenWert;
     }
 }

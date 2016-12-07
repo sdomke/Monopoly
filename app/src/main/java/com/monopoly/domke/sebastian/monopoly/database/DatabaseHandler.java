@@ -17,13 +17,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 	// All Static variables
 	// Database Version
-	private static final int dbVersion = 2;
+	private static final int dbVersion = 3;
 
 	// Database Name
 	private static final String dbName = "MonopolyAppDB";
 
 	// site induction table name
-	private static final String monopolySpielTable = "TableMonopolySpiel";
+	private static final String monopolySpielerTable = "TableMonopolySpiel";
 
 	// monopoly spiel table column name
 	private static final String colSpielerId = "SpielerId";
@@ -62,12 +62,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 
-		String createMonoploySpielTABLE = "CREATE TABLE " + monopolySpielTable
+		String createMonoploySpielTABLE = "CREATE TABLE " + monopolySpielerTable
 				+ "(" + colSpielerId + " INTEGER PRIMARY KEY,"
 				+ colSpielerName + " TEXT,"
                 + colSpielerFarbe + " INTEGER,"
                 + colSpielerKapital + " INTEGER,"
-				+ colFreiParken + " INTEGER, "
 				+ colSpielerIpAdresse + " TEXT, "
                 + colIdMonopolySpielListe + " INTEGER NOT NULL,"
 				+ " FOREIGN KEY (" + colIdMonopolySpielListe + ") REFERENCES " + spielListeTable + " (" + colMonopolySpielListeId + ")" + " ON DELETE CASCADE" + ")";
@@ -77,7 +76,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + colMonopolySpielListeDatum + " TEXT,"
 				+ colMonopolySpielListeSpielerAnzahl + " INTEGER,"
                 + colMonopolySpielListeStartkapital + " INTEGER,"
-				+ colMonopolySpielListeWaehrung + " TEXT" + ")";
+				+ colMonopolySpielListeWaehrung + " TEXT,"
+				+ colFreiParken + " INTEGER"+ ")";
 
 		db.execSQL(createMonoploySpielTABLE);
 		db.execSQL(createSpielListeTABLE);
@@ -87,7 +87,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		// Drop older table if existed
-		db.execSQL("DROP TABLE IF EXISTS " + monopolySpielTable);
+		db.execSQL("DROP TABLE IF EXISTS " + monopolySpielerTable);
 		db.execSQL("DROP TABLE IF EXISTS " + spielListeTable);
 
 		// Create tables again
@@ -98,7 +98,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	public void deleteTables() {
 		// Drop table if existed
 		SQLiteDatabase db = this.getWritableDatabase();
-		db.execSQL("DROP TABLE IF EXISTS " + monopolySpielTable);
+		db.execSQL("DROP TABLE IF EXISTS " + monopolySpielerTable);
 		db.execSQL("DROP TABLE IF EXISTS " + spielListeTable);
 	}
 
@@ -135,7 +135,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		SQLiteDatabase db = this.getReadableDatabase();
 
 		Cursor cursor = db.query(spielListeTable, new String[] { colMonopolySpielListeId,
-						colMonopolySpielListeDatum, colMonopolySpielListeSpielerAnzahl, colMonopolySpielListeStartkapital, colMonopolySpielListeWaehrung}, colMonopolySpielListeDatum + "=?",
+						colMonopolySpielListeDatum, colMonopolySpielListeSpielerAnzahl, colMonopolySpielListeStartkapital, colMonopolySpielListeWaehrung, colFreiParken}, colMonopolySpielListeDatum + "=?",
 				new String[] { String.valueOf(datum) }, null, null, null, null);
 		if (cursor != null)
 			cursor.moveToFirst();
@@ -146,6 +146,31 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		spiel.setSpielerAnzahl(cursor.getInt(2));
 		spiel.setSpielerStartkapital(cursor.getInt(3));
 		spiel.setWaehrung(cursor.getString(4));
+		spiel.setFreiParken(cursor.getInt(5));
+
+		// return spiel
+		cursor.close();
+		db.close();
+		return spiel;
+	}
+
+	// get game by id
+	public Spiel getSpielByID(int id) {
+		SQLiteDatabase db = this.getReadableDatabase();
+
+		Cursor cursor = db.query(spielListeTable, new String[] { colMonopolySpielListeId,
+						colMonopolySpielListeDatum, colMonopolySpielListeSpielerAnzahl, colMonopolySpielListeStartkapital, colMonopolySpielListeWaehrung, colFreiParken}, colMonopolySpielListeId + "=?",
+				new String[] { String.valueOf(id) }, null, null, null, null);
+		if (cursor != null)
+			cursor.moveToFirst();
+
+		Spiel spiel = new Spiel();
+		spiel.setSpielID(Integer.parseInt(cursor.getString(0)));
+		spiel.setSpielDatum(cursor.getString(1));
+		spiel.setSpielerAnzahl(cursor.getInt(2));
+		spiel.setSpielerStartkapital(cursor.getInt(3));
+		spiel.setWaehrung(cursor.getString(4));
+		spiel.setFreiParken(cursor.getInt(5));
 
 		// return spiel
 		cursor.close();
@@ -164,7 +189,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		values.put(colIdMonopolySpielListe, spieler.getIdMonopolySpiel());
 
 		// Inserting Row
-		db.insert(monopolySpielTable, null, values);
+		db.insert(monopolySpielerTable, null, values);
 		db.close(); // Closing database connection
 	}
 
@@ -172,7 +197,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	public Spieler getSpielerBySpielIdAndSpielerIp(int spielID, String spielerIpAdress) {
 		SQLiteDatabase db = this.getReadableDatabase();
 
-		Cursor cursor = db.query(monopolySpielTable, new String[] { colSpielerId,
+		Cursor cursor = db.query(monopolySpielerTable, new String[] { colSpielerId,
 						colSpielerName, colSpielerFarbe, colSpielerKapital, colSpielerIpAdresse, colIdMonopolySpielListe}, colSpielerIpAdresse + "=? and " + colIdMonopolySpielListe + "=?",
 				new String[] { String.valueOf(spielerIpAdress), String.valueOf(spielID) }, null, null, null, null);
 		if (cursor != null)
@@ -201,7 +226,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		values.put(colIdMonopolySpielListe, spieler.getIdMonopolySpiel());
 
 		// updating row
-		int row = db.update(monopolySpielTable, values, colSpielerId + " = ?",
+		int row = db.update(monopolySpielerTable, values, colSpielerId + " = ?",
 				new String[] { String.valueOf(spieler.getSpielerID()) });
 		db.close(); // Closing database connection
 	}
@@ -210,7 +235,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	public ArrayList<Spieler> getAllSpielerBySpielID(int spielListeID) {
 		ArrayList<Spieler> spielerListe = new ArrayList<Spieler>();
 		// Select All Query
-		String selectQuery = "SELECT  * FROM " + monopolySpielTable + " WHERE " + colIdMonopolySpielListe + " LIKE " + spielListeID;
+		String selectQuery = "SELECT  * FROM " + monopolySpielerTable + " WHERE " + colIdMonopolySpielListe + " LIKE " + spielListeID;
 
 		SQLiteDatabase db = this.getWritableDatabase();
 		Cursor cursor = db.rawQuery(selectQuery, null);
@@ -238,7 +263,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	public ArrayList<Spieler> getAllSpieler() {
 		ArrayList<Spieler> spielerListe = new ArrayList<Spieler>();
 		// Select All Query
-		String selectQuery = "SELECT  * FROM " + monopolySpielTable;
+		String selectQuery = "SELECT  * FROM " + monopolySpielerTable;
 
 		SQLiteDatabase db = this.getWritableDatabase();
 		Cursor cursor = db.rawQuery(selectQuery, null);
@@ -280,6 +305,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 				spiel.setSpielerAnzahl(cursor.getInt(2));
 				spiel.setSpielerStartkapital(cursor.getInt(3));
 				spiel.setWaehrung(cursor.getString(4));
+				spiel.setFreiParken(cursor.getInt(5));
 
 				// Adding contact to list
 				spieleListe.add(spiel);

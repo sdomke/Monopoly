@@ -79,7 +79,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         });
 
         final EditText meinNameEditText = (EditText) findViewById(R.id.meinSpielerNameEditText);
-        meinNameEditText.setActivated(false);
+        meinNameEditText.setSelected(false);
         meinNameEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -105,7 +105,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         ImageView farbeGruenImageView = (ImageView) findViewById(R.id.spielerFarbeGruenButtonView);
         ImageView farbeBlauImageView = (ImageView) findViewById(R.id.spielerFarbeBlauButtonView);
         ImageView farbeRotImageView = (ImageView) findViewById(R.id.spielerFarbeRotButtonView);
-        ImageView farbeGrauImageView = (ImageView) findViewById(R.id.spielerFarbeGrauButtonView);
+        ImageView farbeGrauImageView = (ImageView) findViewById(R.id.spielerFarbeGruenButtonView);
         ImageView farbeSchwarzImageView = (ImageView) findViewById(R.id.spielerFarbeWeißButtonView);
 
         farbeGelbImageView.setOnClickListener(new View.OnClickListener() {
