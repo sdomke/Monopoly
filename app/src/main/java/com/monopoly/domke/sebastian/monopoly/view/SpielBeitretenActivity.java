@@ -166,7 +166,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
         gamelobbyListView = (ListView) findViewById(R.id.gameLobbyList);
 
-        ArrayList<Spieler> values = datasource.getAllSpieler(aktuellesSpiel.getSpielID());
+        ArrayList<Spieler> values = datasource.getAllSpielerBySpielID(aktuellesSpiel.getSpielID());
 
         spieler_adapter = new GamelobbySpielerAdapter(this,
                 R.layout.list_item_spieler, values);

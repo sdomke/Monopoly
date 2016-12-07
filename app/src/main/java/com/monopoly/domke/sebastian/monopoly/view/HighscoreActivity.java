@@ -13,6 +13,7 @@ import com.monopoly.domke.sebastian.monopoly.common.Spiel;
 import com.monopoly.domke.sebastian.monopoly.common.Spieler;
 import com.monopoly.domke.sebastian.monopoly.database.DatabaseHandler;
 import com.monopoly.domke.sebastian.monopoly.helper.GamelobbySpielerAdapter;
+import com.monopoly.domke.sebastian.monopoly.helper.HighscoreSpielerAdapter;
 import com.monopoly.domke.sebastian.monopoly.helper.MonopolySpieleAdapter;
 
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 public class HighscoreActivity extends AppCompatActivity {
 
     private DatabaseHandler datasource;
-    private MonopolySpieleAdapter spiele_adapter;
+    private HighscoreSpielerAdapter spieler_adapter;
     private ListView highscoreListView;
 
     @Override
@@ -34,10 +35,10 @@ public class HighscoreActivity extends AppCompatActivity {
 
         highscoreListView = (ListView) findViewById(R.id.highscoreListeListView);
 
-        //ArrayList<Spieler> values = datasource.getAllSpieler();
+        ArrayList<Spieler> values = datasource.getAllSpieler();
 
-        //spiele_adapter = new MonopolySpieleAdapter(this, R.layout.list_item_highscoreliste, values);
-        //highscoreListView.setAdapter(spiele_adapter);
+        spieler_adapter = new HighscoreSpielerAdapter(this, R.layout.list_item_highscoreliste, values);
+        highscoreListView.setAdapter(spieler_adapter);
     }
 
 }

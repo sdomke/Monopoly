@@ -60,24 +60,26 @@ public class HighscoreSpielerAdapter extends ArrayAdapter<Spieler>{
 
 			TextView spielerName = (TextView) view.findViewById(R.id.spielerNameHighscoreDataItem);
 			TextView spielerKapital = (TextView) view.findViewById(R.id.spielerKapitalHighscoreDataItem);
-			TextView spielerRanking = (TextView) view.findViewById(R.id.spielerRankingDataItem);
-			ImageView spielerFarbe = (ImageView) view.findViewById(R.id.spielerHighscoreItem);
+			TextView spielerRanking = (TextView) view.findViewById(R.id.spielerRankingHighscoreDataItem);
+			ImageView spielerFarbe = (ImageView) view.findViewById(R.id.spielerIconHighscoreItem);
 
 			if (spielerName != null){
 				spielerName.setText(i.getSpielerName());
 			}
 
 			if (spielerKapital != null){
-				spielerKapital.setText(i.getSpielerKapital());
+				spielerKapital.setText(Integer.toString(i.getSpielerKapital()));
 			}
 
 			if (spielerRanking != null){
-				spielerRanking.setText(Integer.toString(position)+"#");
+				spielerRanking.setText(Integer.toString(position+1)+"#");
 			}
 
 			if (spielerFarbe != null){
 				spielerFarbe.setBackgroundColor(ContextCompat.getColor(getContext(), i.getSpielerFarbe()));
 			}
+
+
 		}
 
 		// the view must be returned to our activity

@@ -206,11 +206,39 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		db.close(); // Closing database connection
 	}
 
-	// Getting All spieler
-	public ArrayList<Spieler> getAllSpieler(int spielListeID) {
+	// Getting All spieler by spiel ID
+	public ArrayList<Spieler> getAllSpielerBySpielID(int spielListeID) {
 		ArrayList<Spieler> spielerListe = new ArrayList<Spieler>();
 		// Select All Query
 		String selectQuery = "SELECT  * FROM " + monopolySpielTable + " WHERE " + colIdMonopolySpielListe + " LIKE " + spielListeID;
+
+		SQLiteDatabase db = this.getWritableDatabase();
+		Cursor cursor = db.rawQuery(selectQuery, null);
+
+		// looping through all rows and adding to list
+		if (cursor.moveToFirst()) {
+			do {
+				Spieler spieler = new Spieler(cursor.getString(4), cursor.getInt(5));
+				spieler.setSpielerID(Integer.parseInt(cursor.getString(0)));
+				spieler.setSpielerName(cursor.getString(1));
+				spieler.setSpielerFarbe(cursor.getInt(2));
+				spieler.setSpielerKapital(cursor.getInt(3));
+
+				// Adding contact to list
+				spielerListe.add(spieler);
+			} while (cursor.moveToNext());
+		}
+		cursor.close();
+		db.close();
+		// return spieler list
+		return spielerListe;
+	}
+
+	// Getting All spieler by spiel ID
+	public ArrayList<Spieler> getAllSpieler() {
+		ArrayList<Spieler> spielerListe = new ArrayList<Spieler>();
+		// Select All Query
+		String selectQuery = "SELECT  * FROM " + monopolySpielTable;
 
 		SQLiteDatabase db = this.getWritableDatabase();
 		Cursor cursor = db.rawQuery(selectQuery, null);
