@@ -134,70 +134,70 @@ public class SpielStartActivity extends AppCompatActivity {
         plus4MButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                betragHinzu(4000000);
             }
         });
 
         plus2MButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                betragHinzu(2000000);
             }
         });
 
         plus1MButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                betragHinzu(1000000);
             }
         });
 
         plus500KButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                betragHinzu(500000);
             }
         });
 
         plus400KButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                betragHinzu(400000);
             }
         });
 
         plus200KButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                betragHinzu(200000);
             }
         });
 
         plus100KButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                betragHinzu(100000);
             }
         });
 
         plus50KButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                betragHinzu(50000);
             }
         });
 
         plus10KButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                betragHinzu(10000);
             }
         });
 
         plus5KButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                betragHinzu(5000);
             }
         });
 
@@ -245,6 +245,18 @@ public class SpielStartActivity extends AppCompatActivity {
 
     public void transaktionDurchfuehren(){
 
+        eigenerSpieler.setSpielerKapital(Integer.valueOf(aktuellerBetragEditText.getText().toString()));
+
+    }
+
+    public void betragHinzu(int betrag){
+
+        if(aktuellerBetragEditText.getText().toString().isEmpty()){
+            aktuellerBetragEditText.setText(betrag);
+        }
+        else{
+            aktuellerBetragEditText.setText(Integer.valueOf(aktuellerBetragEditText.getText().toString()) + betrag);
+        }
     }
 
 }
