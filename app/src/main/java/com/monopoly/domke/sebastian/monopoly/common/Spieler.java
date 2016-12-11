@@ -11,6 +11,7 @@ public class Spieler {
     private int spielerFarbe;
     private int spielerKapital;
     private String spielerIpAdresse;
+    private String spielerMacAdresse;
     private int idMonopolySpiel;
 
     public Spieler (String spielerIPAdresse, int idMonopolySpiel){
@@ -66,6 +67,16 @@ public class Spieler {
     public String getSpielerIpAdresse(){
 
         return this.spielerIpAdresse;
+    }
+
+    public void setSpielerMacAdresse(String spielerMacAdresse){
+
+        this.spielerMacAdresse = spielerMacAdresse;
+    }
+
+    public String getSpielerMacAdresse(){
+
+        return this.spielerMacAdresse;
     }
 
     public void setIdMonopolySpiel(int idMonopolySpiel){

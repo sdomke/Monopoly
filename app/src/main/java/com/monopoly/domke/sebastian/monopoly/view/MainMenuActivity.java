@@ -27,6 +27,7 @@ public class MainMenuActivity extends AppCompatActivity {
 
     }
 
+    //todo ausblenden solange keine Einladung
     public void spielBeitreten(View view) {
 
         Intent intent = new Intent(this, SpielBeitretenActivity.class);

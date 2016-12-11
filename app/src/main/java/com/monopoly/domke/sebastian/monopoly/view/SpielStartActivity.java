@@ -24,10 +24,7 @@ public class SpielStartActivity extends AppCompatActivity {
     TextView aktuellesKapitalEigenerSpielerTextView;
     EditText aktuellerBetragEditText;
     int hypothek = 0;
-
     int empfaengerAuswahl = 0;
-
-    int aktuelleHypothek = 0;
 
     DatabaseHandler databaseHandler;
 
@@ -51,6 +48,9 @@ public class SpielStartActivity extends AppCompatActivity {
 
         init();
 
+        //Todo Nachrichten an die Spieler bei Transaktionen und Schnelltasten
+
+        //Todo Spiel speichern und Spiel beenden Funktion hinzufügen
     }
 
     public void init(){
@@ -99,6 +99,7 @@ public class SpielStartActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 empfaengerAuswahl = 1;
+                Toast.makeText(getApplicationContext(), "Eigener Spieler ausgewählt", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -107,6 +108,7 @@ public class SpielStartActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 empfaengerAuswahl = 4;
+                Toast.makeText(getApplicationContext(), "Spieler 1 ausgewählt", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -115,6 +117,7 @@ public class SpielStartActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 empfaengerAuswahl = 5;
+                Toast.makeText(getApplicationContext(), "Spieler 2 ausgewählt", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -123,6 +126,7 @@ public class SpielStartActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 empfaengerAuswahl = 6;
+                Toast.makeText(getApplicationContext(), "Spieler 2 ausgewählt", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -131,6 +135,7 @@ public class SpielStartActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 empfaengerAuswahl = 2;
+                Toast.makeText(getApplicationContext(), "Bank ausgewählt", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -139,6 +144,7 @@ public class SpielStartActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 empfaengerAuswahl = 3;
+                Toast.makeText(getApplicationContext(), "Mitte ausgewählt", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -216,7 +222,7 @@ public class SpielStartActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 eigenerSpieler.setSpielerKapital(eigenerSpieler.getSpielerKapital() + 2000000);
-                aktuellesKapitalEigenerSpielerTextView.setText(eigenerSpieler.getSpielerKapital());
+                aktuellesKapitalEigenerSpielerTextView.setText(String.valueOf(eigenerSpieler.getSpielerKapital()));
             }
         });
 
@@ -224,7 +230,7 @@ public class SpielStartActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 eigenerSpieler.setSpielerKapital(eigenerSpieler.getSpielerKapital() + aktuellesSpiel.getFreiParken());
-                aktuellesKapitalEigenerSpielerTextView.setText(eigenerSpieler.getSpielerKapital());
+                aktuellesKapitalEigenerSpielerTextView.setText(String.valueOf(eigenerSpieler.getSpielerKapital()));
                 aktuellesSpiel.setFreiParken(0);
             }
         });
@@ -278,10 +284,7 @@ public class SpielStartActivity extends AppCompatActivity {
 
         if(aktuellerBetragEditText.getText().toString().length() != 0) {
 
-            eigenerSpieler.setSpielerKapital(Integer.valueOf(aktuellerBetragEditText.getText().toString()) + eigenerSpieler.getSpielerKapital());
-            aktuellesKapitalEigenerSpielerTextView.setText(String.valueOf(eigenerSpieler.getSpielerKapital()));
-
-            aktuellerBetragEditText.setText("");
+            transaktionEmpfaenger();
         }
         else{
             Toast.makeText(getApplicationContext(), "Bitte zuerst gewünschten Betrag für die Überweisung eingeben", Toast.LENGTH_SHORT).show();
@@ -317,17 +320,49 @@ public class SpielStartActivity extends AppCompatActivity {
 
     public void transaktionAnMich() {
 
+        eigenerSpieler.setSpielerKapital(Integer.valueOf(aktuellerBetragEditText.getText().toString()) + eigenerSpieler.getSpielerKapital());
+        aktuellesKapitalEigenerSpielerTextView.setText(String.valueOf(eigenerSpieler.getSpielerKapital()));
+
+        aktuellerBetragEditText.setText("");
+        empfaengerAuswahl = 0;
+
+
     }
 
     public void transaktionAnDieBank() {
 
+        eigenerSpieler.setSpielerKapital(eigenerSpieler.getSpielerKapital() - Integer.valueOf(aktuellerBetragEditText.getText().toString()));
+        aktuellesKapitalEigenerSpielerTextView.setText(String.valueOf(eigenerSpieler.getSpielerKapital()));
+
+        aktuellerBetragEditText.setText("");
+        empfaengerAuswahl = 0;
     }
 
     public void transaktionInDieMitte() {
 
+        eigenerSpieler.setSpielerKapital(eigenerSpieler.getSpielerKapital() - Integer.valueOf(aktuellerBetragEditText.getText().toString()));
+        aktuellesKapitalEigenerSpielerTextView.setText(String.valueOf(eigenerSpieler.getSpielerKapital()));
+
+        aktuellesSpiel.setFreiParken(aktuellesSpiel.getFreiParken() + Integer.valueOf(aktuellerBetragEditText.getText().toString()));
+
+        aktuellerBetragEditText.setText("");
+        empfaengerAuswahl = 0;
     }
 
     public void transaktionAnEinenSpieler() {
 
+        eigenerSpieler.setSpielerKapital(eigenerSpieler.getSpielerKapital() - Integer.valueOf(aktuellerBetragEditText.getText().toString()));
+        aktuellesKapitalEigenerSpielerTextView.setText(String.valueOf(eigenerSpieler.getSpielerKapital()));
+
+        //Todo Überweisung an den ausgewählten Spieler
+
+        aktuellerBetragEditText.setText("");
+        empfaengerAuswahl = 0;
     }
+
+    public void gegenspielerInit(){
+        //Todo Initialisieren der Gegenspieler
+    }
+
+
 }

@@ -60,6 +60,8 @@ public class GamelobbySpielerAdapter extends ArrayAdapter<Spieler>{
 
 					objects.remove(position);
 				 	GamelobbySpielerAdapter.super.notifyDataSetChanged();
+
+				 //Todo Nachricht Gamelobby verlassen an Spieler
 			 }
 		});
  		

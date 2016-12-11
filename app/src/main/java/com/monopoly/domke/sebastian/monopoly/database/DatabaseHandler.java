@@ -17,13 +17,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 	// All Static variables
 	// Database Version
-	private static final int dbVersion = 3;
+	private static final int dbVersion = 4;
 
 	// Database Name
 	private static final String dbName = "MonopolyAppDB";
 
 	// site induction table name
-	private static final String monopolySpielerTable = "TableMonopolySpiel";
+	private static final String monopolySpielerTable = "TableMonopolySpieler";
 
 	// monopoly spiel table column name
 	private static final String colSpielerId = "SpielerId";
@@ -32,6 +32,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	private static final String colSpielerKapital = "SpielerKapital";
 	private static final String colSpielerIpAdresse = "SpielerIpAdresse";
 	private static final String colFreiParken = "FreiParken";
+	private static final String colSpielerMacAdresse = "SpielerMacAdresse";
 	private static final String colIdMonopolySpielListe = "IdMonopolySpielListe";
 
 	// training courses Table name
@@ -62,12 +63,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 
-		String createMonoploySpielTABLE = "CREATE TABLE " + monopolySpielerTable
+		String createMonoploySpielerTABLE = "CREATE TABLE " + monopolySpielerTable
 				+ "(" + colSpielerId + " INTEGER PRIMARY KEY,"
 				+ colSpielerName + " TEXT,"
                 + colSpielerFarbe + " INTEGER,"
                 + colSpielerKapital + " INTEGER,"
-				+ colSpielerIpAdresse + " TEXT, "
+				+ colSpielerIpAdresse + " TEXT,"
+				+ colSpielerMacAdresse + " TEXT,"
                 + colIdMonopolySpielListe + " INTEGER NOT NULL,"
 				+ " FOREIGN KEY (" + colIdMonopolySpielListe + ") REFERENCES " + spielListeTable + " (" + colMonopolySpielListeId + ")" + " ON DELETE CASCADE" + ")";
 
@@ -79,7 +81,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 				+ colMonopolySpielListeWaehrung + " TEXT,"
 				+ colFreiParken + " INTEGER"+ ")";
 
-		db.execSQL(createMonoploySpielTABLE);
+		db.execSQL(createMonoploySpielerTABLE);
 		db.execSQL(createSpielListeTABLE);
 	}
 
@@ -186,6 +188,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		values.put(colSpielerFarbe, spieler.getSpielerFarbe());
 		values.put(colSpielerKapital, spieler.getSpielerKapital());
 		values.put(colSpielerIpAdresse, spieler.getSpielerIpAdresse());
+		values.put(colSpielerMacAdresse, spieler.getSpielerMacAdresse());
 		values.put(colIdMonopolySpielListe, spieler.getIdMonopolySpiel());
 
 		// Inserting Row
@@ -198,16 +201,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		SQLiteDatabase db = this.getReadableDatabase();
 
 		Cursor cursor = db.query(monopolySpielerTable, new String[] { colSpielerId,
-						colSpielerName, colSpielerFarbe, colSpielerKapital, colSpielerIpAdresse, colIdMonopolySpielListe}, colSpielerIpAdresse + "=? and " + colIdMonopolySpielListe + "=?",
+						colSpielerName, colSpielerFarbe, colSpielerKapital, colSpielerIpAdresse, colSpielerMacAdresse, colIdMonopolySpielListe}, colSpielerIpAdresse + "=? and " + colIdMonopolySpielListe + "=?",
 				new String[] { String.valueOf(spielerIpAdress), String.valueOf(spielID) }, null, null, null, null);
 		if (cursor != null)
 			cursor.moveToFirst();
 
-		Spieler spieler = new Spieler(cursor.getString(4), cursor.getInt(5));
+		Spieler spieler = new Spieler(cursor.getString(4), cursor.getInt(6));
 		spieler.setSpielerID(Integer.parseInt(cursor.getString(0)));
 		spieler.setSpielerName(cursor.getString(1));
 		spieler.setSpielerFarbe(cursor.getInt(2));
 		spieler.setSpielerKapital(cursor.getInt(3));
+		spieler.setSpielerMacAdresse(cursor.getString(5));
 
 		// return spieler
 		cursor.close();
@@ -223,6 +227,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		values.put(colSpielerFarbe, spieler.getSpielerFarbe());
 		values.put(colSpielerKapital, spieler.getSpielerKapital());
 		values.put(colSpielerIpAdresse, spieler.getSpielerIpAdresse());
+		values.put(colSpielerMacAdresse, spieler.getSpielerMacAdresse());
 		values.put(colIdMonopolySpielListe, spieler.getIdMonopolySpiel());
 
 		// updating row
@@ -243,11 +248,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		// looping through all rows and adding to list
 		if (cursor.moveToFirst()) {
 			do {
-				Spieler spieler = new Spieler(cursor.getString(4), cursor.getInt(5));
+				Spieler spieler = new Spieler(cursor.getString(4), cursor.getInt(6));
 				spieler.setSpielerID(Integer.parseInt(cursor.getString(0)));
 				spieler.setSpielerName(cursor.getString(1));
 				spieler.setSpielerFarbe(cursor.getInt(2));
 				spieler.setSpielerKapital(cursor.getInt(3));
+				spieler.setSpielerMacAdresse(cursor.getString(5));
 
 				// Adding contact to list
 				spielerListe.add(spieler);
@@ -271,11 +277,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		// looping through all rows and adding to list
 		if (cursor.moveToFirst()) {
 			do {
-				Spieler spieler = new Spieler(cursor.getString(4), cursor.getInt(5));
+				Spieler spieler = new Spieler(cursor.getString(4), cursor.getInt(6));
 				spieler.setSpielerID(Integer.parseInt(cursor.getString(0)));
 				spieler.setSpielerName(cursor.getString(1));
 				spieler.setSpielerFarbe(cursor.getInt(2));
 				spieler.setSpielerKapital(cursor.getInt(3));
+				spieler.setSpielerMacAdresse(cursor.getString(5));
 
 				// Adding contact to list
 				spielerListe.add(spieler);

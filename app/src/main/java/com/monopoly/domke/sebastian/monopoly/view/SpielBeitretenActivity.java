@@ -50,6 +50,8 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //Todo Intent von NeuesSpiel-, MainMenu- oder SpielLaden-Activity mit den Spieldaten
+
         sharedPreferences = getSharedPreferences("monopoly", MODE_PRIVATE);
 
         datasource = new DatabaseHandler(this);
@@ -60,21 +62,34 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
         //ipAdresseHost = intToInetAddress(wifiManager.getDhcpInfo().serverAddress).getHostAddress();
 
+        //Todo Eigene IPAdresse und MacAdresse auslesen
+
         ipAdresseHost = "192.168.43.1";
 
+        //Todo Überprüfen ob es schon einen Spieler mit der MacAdresse passend zum Spiel gibt (dann wiederherstellen)
         eigenerSpieler = new Spieler(ipAdresseHost, aktuellesSpiel.getSpielID());
         eigenerSpieler.setSpielerName(eigenerSpielerName);
         eigenerSpieler.setSpielerFarbe(eigenerSpielerFarbe);
         eigenerSpieler.setSpielerKapital(aktuellesSpiel.getSpielerStartkapital());
 
+        //Todo FloatingButton nur für SpielHost sichtbar machen
         FloatingActionButton spielStartenFB = (FloatingActionButton) findViewById(R.id.spielStartenFloatingButton);
         spielStartenFB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), SpielStartActivity.class);
-                intent.putExtra("eigenerSpielerIpAdresse", eigenerSpieler.getSpielerIpAdresse());
-                intent.putExtra("aktuellesSpielID", aktuellesSpiel.getSpielID());
-                startActivity(intent);
+
+                if(!gamelobbyListView.getAdapter().isEmpty()) {
+
+                    //Todo Spiel gestartet Nachricht an andere Spieler
+
+                    Intent intent = new Intent(getApplicationContext(), SpielStartActivity.class);
+                    intent.putExtra("eigenerSpielerIpAdresse", eigenerSpieler.getSpielerIpAdresse());
+                    intent.putExtra("aktuellesSpielID", aktuellesSpiel.getSpielID());
+                    startActivity(intent);
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "Das Spiel kann nicht gestartet werden, da bisher keine Spieler beigetreten sind", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -95,6 +110,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
                 eigenerSpieler.setSpielerName(meinNameEditText.getText().toString());
                 datasource.updateSpieler(eigenerSpieler);
                 spieler_adapter.notifyDataSetChanged();
+
             }
         });
 
@@ -198,6 +214,10 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         adapter.add(eigenerSpieler);
         datasource.updateSpieler(eigenerSpieler);
 
+        //Todo Spiel beigetreten Nachricht an andere Spieler
+
+        //Todo Auswahl der SpielerName und SpielerFarbe ausgrauen solange in Spiellobby
+
     }
 
     @Override
@@ -214,6 +234,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.spieler_einladen_action) {
 
             Toast.makeText(getApplicationContext(), "Einladung an Spieler gesendet", Toast.LENGTH_SHORT).show();
+            //Todo Spieler einladen Nachricht an andere Spieler
         }
 
         return true;
@@ -230,6 +251,11 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         } catch (UnknownHostException e) {
             throw new AssertionError();
         }
+    }
+
+    //Todo Gegenspieler initiieren
+    public void gegenspielerInit(){
+
     }
 
 }
