@@ -33,6 +33,10 @@
     <string name="zahleGefaengnis">G</string>
     <string name="zahleBetrag">Zahle</string>
     <string name="erhalteBetrag">Erhalte</string>
+    <string name="waehrungDM">DM</string>
+    <string name="waehrungEuro">€</string>
+    <string name="waehrungDollar">$</string>
+    <string name="waehrungMonopolyDollar">M$</string>
 
     <string name="title_activity_spiel_laden">SpielLadenActivity</string>
     <string name="title_activity_einstellungen">Settings</string>

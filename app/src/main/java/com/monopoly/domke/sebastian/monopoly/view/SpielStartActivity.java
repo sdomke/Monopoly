@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.monopoly.domke.sebastian.monopoly.R;
 import com.monopoly.domke.sebastian.monopoly.common.Spiel;
@@ -22,6 +23,9 @@ public class SpielStartActivity extends AppCompatActivity {
     Spieler eigenerSpieler;
     TextView aktuellesKapitalEigenerSpielerTextView;
     EditText aktuellerBetragEditText;
+    int hypothek = 0;
+
+    int empfaengerAuswahl = 0;
 
     int aktuelleHypothek = 0;
 
@@ -50,17 +54,17 @@ public class SpielStartActivity extends AppCompatActivity {
     }
 
     public void init(){
-        aktuellesKapitalEigenerSpielerTextView = (TextView) findViewById(R.id.deinkapitalTextView);
-        aktuellesKapitalEigenerSpielerTextView.setText(eigenerSpieler.getSpielerKapital() + " M$");
+        aktuellesKapitalEigenerSpielerTextView = (TextView) findViewById(R.id.deinKapitalTextView);
+        aktuellesKapitalEigenerSpielerTextView.setText(String.valueOf(eigenerSpieler.getSpielerKapital()));
 
-        ImageView eigenerSpielerIconImageView = (ImageView) findViewById(R.id.eigenerSpielerFarbeButtonView);
+        final ImageView eigenerSpielerIconImageView = (ImageView) findViewById(R.id.eigenerSpielerFarbeButtonView);
         ImageView gegenspieler1IconImageView = (ImageView) findViewById(R.id.spielerFarbeRotButtonView);
         ImageView gegenspieler2IconImageView = (ImageView) findViewById(R.id.spielerFarbeBlauButtonView);
         ImageView gegenspieler3IconImageView = (ImageView) findViewById(R.id.spielerFarbeGruenButtonView);
         TextView bankIconImageView = (TextView) findViewById(R.id.bankButtonView);
         TextView mitteIconImageView = (TextView) findViewById(R.id.mitteButtonView);
 
-        aktuellerBetragEditText = (EditText) findViewById(R.id.betragEditTextView);
+        aktuellerBetragEditText = (EditText) findViewById(R.id.aktuellerBetragEditTextView);
 
         TextView plus4MButtonView = (TextView) findViewById(R.id.vierMillionenDollar);
         TextView plus2MButtonView = (TextView) findViewById(R.id.zweiMillionenDollar);
@@ -85,6 +89,7 @@ public class SpielStartActivity extends AppCompatActivity {
         transaktionButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 transaktionDurchfuehren();
             }
         });
@@ -93,6 +98,7 @@ public class SpielStartActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                empfaengerAuswahl = 1;
             }
         });
 
@@ -100,6 +106,7 @@ public class SpielStartActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                empfaengerAuswahl = 4;
             }
         });
 
@@ -107,6 +114,7 @@ public class SpielStartActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                empfaengerAuswahl = 5;
             }
         });
 
@@ -114,6 +122,7 @@ public class SpielStartActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                empfaengerAuswahl = 6;
             }
         });
 
@@ -121,6 +130,7 @@ public class SpielStartActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                empfaengerAuswahl = 2;
             }
         });
 
@@ -128,6 +138,7 @@ public class SpielStartActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                empfaengerAuswahl = 3;
             }
         });
 
@@ -205,7 +216,7 @@ public class SpielStartActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 eigenerSpieler.setSpielerKapital(eigenerSpieler.getSpielerKapital() + 2000000);
-                aktuellesKapitalEigenerSpielerTextView.setText(eigenerSpieler.getSpielerKapital() + " M$");
+                aktuellesKapitalEigenerSpielerTextView.setText(eigenerSpieler.getSpielerKapital());
             }
         });
 
@@ -213,7 +224,7 @@ public class SpielStartActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 eigenerSpieler.setSpielerKapital(eigenerSpieler.getSpielerKapital() + aktuellesSpiel.getFreiParken());
-                aktuellesKapitalEigenerSpielerTextView.setText(eigenerSpieler.getSpielerKapital() + " M$");
+                aktuellesKapitalEigenerSpielerTextView.setText(eigenerSpieler.getSpielerKapital());
                 aktuellesSpiel.setFreiParken(0);
             }
         });
@@ -221,7 +232,17 @@ public class SpielStartActivity extends AppCompatActivity {
         erhalteHypothekButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(aktuellerBetragEditText.getText().toString().length() != 0) {
 
+                    eigenerSpieler.setSpielerKapital(Integer.valueOf(aktuellerBetragEditText.getText().toString()) + eigenerSpieler.getSpielerKapital());
+                    aktuellesKapitalEigenerSpielerTextView.setText(String.valueOf(eigenerSpieler.getSpielerKapital()));
+
+                    hypothek += Integer.valueOf(aktuellerBetragEditText.getText().toString());
+                    aktuellerBetragEditText.setText("");
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "Bitte zuerst gewünschten Betrag für die Hypothek eingeben", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -229,7 +250,7 @@ public class SpielStartActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 eigenerSpieler.setSpielerKapital(eigenerSpieler.getSpielerKapital() - 500000);
-                aktuellesKapitalEigenerSpielerTextView.setText(eigenerSpieler.getSpielerKapital() + " M$");
+                aktuellesKapitalEigenerSpielerTextView.setText(String.valueOf(eigenerSpieler.getSpielerKapital()));
                 aktuellesSpiel.setFreiParken(aktuellesSpiel.getFreiParken() + 500000);
             }
         });
@@ -237,7 +258,17 @@ public class SpielStartActivity extends AppCompatActivity {
         bezahleHypothekButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(aktuellerBetragEditText.getText().toString().length() != 0) {
 
+                    eigenerSpieler.setSpielerKapital(eigenerSpieler.getSpielerKapital() - Integer.valueOf(aktuellerBetragEditText.getText().toString()));
+                    aktuellesKapitalEigenerSpielerTextView.setText(String.valueOf(eigenerSpieler.getSpielerKapital()));
+
+                    hypothek -= Integer.valueOf(aktuellerBetragEditText.getText().toString());
+                    aktuellerBetragEditText.setText("");
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "Bitte zuerst gewünschten Betrag für die Hypothek eingeben", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -245,18 +276,58 @@ public class SpielStartActivity extends AppCompatActivity {
 
     public void transaktionDurchfuehren(){
 
-        eigenerSpieler.setSpielerKapital(Integer.valueOf(aktuellerBetragEditText.getText().toString()));
+        if(aktuellerBetragEditText.getText().toString().length() != 0) {
 
+            eigenerSpieler.setSpielerKapital(Integer.valueOf(aktuellerBetragEditText.getText().toString()) + eigenerSpieler.getSpielerKapital());
+            aktuellesKapitalEigenerSpielerTextView.setText(String.valueOf(eigenerSpieler.getSpielerKapital()));
+
+            aktuellerBetragEditText.setText("");
+        }
+        else{
+            Toast.makeText(getApplicationContext(), "Bitte zuerst gewünschten Betrag für die Überweisung eingeben", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void betragHinzu(int betrag){
 
         if(aktuellerBetragEditText.getText().toString().isEmpty()){
-            aktuellerBetragEditText.setText(betrag);
+            aktuellerBetragEditText.setText(String.valueOf(betrag));
         }
         else{
-            aktuellerBetragEditText.setText(Integer.valueOf(aktuellerBetragEditText.getText().toString()) + betrag);
+            aktuellerBetragEditText.setText(String.valueOf(Integer.valueOf(aktuellerBetragEditText.getText().toString()) + betrag));
         }
     }
 
+    public void transaktionEmpfaenger(){
+
+        switch (empfaengerAuswahl){
+            case 0: Toast.makeText(getApplicationContext(), "Bitte zuerst einen Empfänger für die Überweisung auswählen", Toast.LENGTH_SHORT).show();
+                break;
+            case 1: transaktionAnMich();
+                break;
+            case 2: transaktionAnDieBank();
+                break;
+            case 3:  transaktionInDieMitte();
+                break;
+            case 4: case 5: case 6: case 7: case 8: case 9: case 10: transaktionAnEinenSpieler();
+                break;
+
+        }
+    }
+
+    public void transaktionAnMich() {
+
+    }
+
+    public void transaktionAnDieBank() {
+
+    }
+
+    public void transaktionInDieMitte() {
+
+    }
+
+    public void transaktionAnEinenSpieler() {
+
+    }
 }

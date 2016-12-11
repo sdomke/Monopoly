@@ -79,7 +79,6 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         });
 
         final EditText meinNameEditText = (EditText) findViewById(R.id.meinSpielerNameEditText);
-        meinNameEditText.setSelected(false);
         meinNameEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -98,6 +97,8 @@ public class SpielBeitretenActivity extends AppCompatActivity {
                 spieler_adapter.notifyDataSetChanged();
             }
         });
+
+        meinNameEditText.clearFocus();
 
         final ImageView meineEinstellungenImageView = (ImageView) findViewById(R.id.meineEinstellungenView);
 

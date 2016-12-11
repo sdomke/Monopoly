@@ -20,20 +20,19 @@
         android:textSize="20sp"/>
 
     <TextView
-        android:id="@+id/deinkapitalTextView"
+        android:id="@+id/deinKapitalTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="Dein Kapital"
         android:textSize="20sp"
-        android:layout_marginLeft="17dp"
-        android:layout_marginStart="17dp"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/kapitalTextView"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_toLeftOf="@+id/waehrungKapitalImageView"
+        android:layout_alignLeft="@+id/bankButtonView"
+        android:layout_alignStart="@+id/bankButtonView"
+        android:gravity="end"/>
 
     <EditText
-        android:id="@+id/betragEditTextView"
+        android:id="@+id/aktuellerBetragEditTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="Gewünschter Betrag"
@@ -41,10 +40,10 @@
         android:textSize="20sp"
         android:layout_alignBaseline="@+id/betragTextView"
         android:layout_alignBottom="@+id/betragTextView"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_toRightOf="@+id/vierMillionenDollar"
-        android:layout_toEndOf="@+id/vierMillionenDollar" />
+        android:layout_toLeftOf="@+id/waehrungBetragImageView"
+        android:layout_alignLeft="@+id/zweiMillionenDollar"
+        android:layout_alignStart="@+id/zweiMillionenDollar"
+        android:gravity="end"/>
 
     <TextView
         android:id="@+id/bankButtonView"
@@ -88,7 +87,7 @@
         android:gravity="center"
         android:background="@android:color/holo_blue_dark"
         android:layout_width="70dp"
-        android:layout_below="@+id/betragEditTextView"
+        android:layout_below="@+id/aktuellerBetragEditTextView"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="10dp"/>
@@ -240,7 +239,7 @@
         android:gravity="center"
         android:background="@android:color/holo_blue_dark"
         android:layout_width="70dp"
-        android:layout_below="@+id/betragEditTextView"
+        android:layout_below="@+id/aktuellerBetragEditTextView"
         android:layout_alignLeft="@+id/zweihundertTausendDollar"
         android:layout_alignStart="@+id/zweihundertTausendDollar"
         android:layout_marginTop="10dp"/>
@@ -253,7 +252,7 @@
         android:gravity="center"
         android:background="@android:color/holo_blue_dark"
         android:layout_width="70dp"
-        android:layout_below="@+id/betragEditTextView"
+        android:layout_below="@+id/aktuellerBetragEditTextView"
         android:layout_alignLeft="@+id/hundertTausendDollar"
         android:layout_alignStart="@+id/hundertTausendDollar"
         android:layout_marginTop="10dp"/>
@@ -361,5 +360,30 @@
         android:layout_alignTop="@+id/erhalteFreiParken"
         android:layout_alignRight="@+id/erhalteBetrag"
         android:layout_alignEnd="@+id/erhalteBetrag" />
+
+    <TextView
+        android:id="@+id/waehrungKapitalImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/waehrungMonopolyDollar"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginLeft="5dp"/>
+
+    <TextView
+        android:id="@+id/waehrungBetragImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/waehrungMonopolyDollar"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_alignBaseline="@+id/aktuellerBetragEditTextView"
+        android:layout_alignBottom="@+id/aktuellerBetragEditTextView"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginLeft="5dp"/>
 
 </RelativeLayout>
