@@ -2,7 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.monopoly.domke.sebastian.monopoly">
 
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:required="true" android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:required="true" android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -35,10 +36,6 @@
         <activity
             android:name="com.monopoly.domke.sebastian.monopoly.view.SpielStartActivity"
             android:label="@string/title_activity_spiel_start"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".ScrollingActivity"
-            android:label="@string/title_activity_scrolling"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="com.monopoly.domke.sebastian.monopoly.view.SpielLadenActivity"

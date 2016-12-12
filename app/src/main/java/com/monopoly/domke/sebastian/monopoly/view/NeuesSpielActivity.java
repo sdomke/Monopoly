@@ -25,7 +25,6 @@ public class NeuesSpielActivity extends AppCompatActivity implements AdapterView
     private int startkapital = 12000000;
     private String spielDatum;
     private Spinner spinner;
-    private String waehrung;
 
     private SharedPreferences sharedPreferences = null;
 
@@ -75,15 +74,15 @@ public class NeuesSpielActivity extends AppCompatActivity implements AdapterView
 
     public void neuesSpielErstellen(View view) {
 
-        EditText startKapitelEditText = (EditText) findViewById(R.id.startKapitelEditText);
+        EditText startKapitalEditText = (EditText) findViewById(R.id.startKapitalEditText);
 
         java.util.Date datumErzeugenJetzt = new java.util.Date();
         spielDatum = (String) DateFormat.format("dd.MM.yyyy HH:mm:ss", datumErzeugenJetzt);
         neuesSpiel.setSpielDatum(spielDatum);
         neuesSpiel.setFreiParken(0);
 
-        if(startKapitelEditText.getText().toString().length() != 0) {
-            String tmpStartKapital = startKapitelEditText.getText().toString();
+        if(startKapitalEditText.getText().toString().length() != 0) {
+            String tmpStartKapital = startKapitalEditText.getText().toString();
 
             //ToDO Catch exception
             neuesSpiel.setSpielerStartkapital(Integer.parseInt(tmpStartKapital));
@@ -178,7 +177,7 @@ public class NeuesSpielActivity extends AppCompatActivity implements AdapterView
 
         neuesSpiel.setWaehrung(parent.getItemAtPosition(position).toString());
 
-        EditText startKapitelEditText = (EditText) findViewById(R.id.startKapitelEditText);
+        EditText startKapitelEditText = (EditText) findViewById(R.id.startKapitalEditText);
         startKapitelEditText.setHint(neuesSpiel.getWaehrung());
     }
 

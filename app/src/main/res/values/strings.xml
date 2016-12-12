@@ -1,11 +1,10 @@
 <resources>
     <string name="app_name">Monopoly SmartBank</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_neues_spiel">NeuesSpielActivity</string>
-    <string name="title_activity_spiel_beitreten">SpielBeitretenActivity</string>
-    <string name="title_activity_highscore">HighscoreActivity</string>
-    <string name="title_activity_spiel_start">SpielStartActivity</string>
-    <string name="title_activity_scrolling">ScrollingActivity</string>
+    <string name="title_activity_neues_spiel">Neues Spiel erstellen</string>
+    <string name="title_activity_spiel_beitreten">Spiel beitreten</string>
+    <string name="title_activity_highscore">Highscoreliste</string>
+    <string name="title_activity_spiel_start">Spielstart </string>
     <string name="neues_spiel_button_name">Neues Spiel</string>
     <string name="spiel_beitreten_button_name">Spiel beitreten</string>
     <string name="spiel_laden_button_name">Spiel laden</string>

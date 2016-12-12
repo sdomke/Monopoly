@@ -123,7 +123,7 @@
         android:clickable="true"
         android:onClick="neuesSpielErstellen"
         android:background="@drawable/layout_selector"
-        android:layout_below="@+id/startKapitelEditText"
+        android:layout_below="@+id/startKapitalEditText"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginTop="65dp">
@@ -189,7 +189,7 @@
         android:inputType="numberDecimal"
         android:ems="20"
         android:layout_marginTop="28dp"
-        android:id="@+id/startKapitelEditText"
+        android:id="@+id/startKapitalEditText"
         android:hint="Monopoly-Dollar"
         android:background="#a4f5ee0a"
         android:layout_below="@+id/startkapitalTextView"

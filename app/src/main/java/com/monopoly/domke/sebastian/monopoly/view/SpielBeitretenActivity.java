@@ -82,6 +82,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
                     //Todo Spiel gestartet Nachricht an andere Spieler
 
+                    //Todo Intent mit den MacAdressen aller aktiven Spieler und Datum des Spiels
                     Intent intent = new Intent(getApplicationContext(), SpielStartActivity.class);
                     intent.putExtra("eigenerSpielerIpAdresse", eigenerSpieler.getSpielerIpAdresse());
                     intent.putExtra("aktuellesSpielID", aktuellesSpiel.getSpielID());

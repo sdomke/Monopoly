@@ -364,5 +364,13 @@ public class SpielStartActivity extends AppCompatActivity {
         //Todo Initialisieren der Gegenspieler
     }
 
+    public void spielBeenden(){
+
+        //Todo Spiel speichern (alles in die Datenbank) und Spiel beendet Nachricht an die Spieler
+    }
+
+    public void spielSpeichern(){
+
+    }
 
 }
