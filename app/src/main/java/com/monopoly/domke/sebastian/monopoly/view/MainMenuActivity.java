@@ -52,7 +52,6 @@ public class MainMenuActivity extends AppCompatActivity {
         Bundle bundle = new Bundle();
 
         bundle.putSerializable("GameConnection", mGameConnection);
-        bundle.putSerializable("NsdHelper", mNsdHelper);
 
         Intent intent = new Intent(this, NeuesSpielActivity.class);
         intent.putExtras(bundle);
@@ -63,9 +62,13 @@ public class MainMenuActivity extends AppCompatActivity {
     //todo ausblenden solange keine Einladung
     public void spielBeitreten(View view) {
 
+
+        Bundle bundle = new Bundle();
+
+        bundle.putSerializable("NsdHelper", mGameConnection);
+
         Intent intent = new Intent(this, SpielBeitretenActivity.class);
-        intent.putExtra("GameConnection", mGameConnection);
-        intent.putExtra("NsdHelper", mNsdHelper);
+        intent.putExtras(bundle);
         startActivity(intent);
 
     }

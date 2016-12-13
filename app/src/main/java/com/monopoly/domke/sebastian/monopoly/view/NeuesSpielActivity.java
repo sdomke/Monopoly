@@ -47,8 +47,10 @@ public class NeuesSpielActivity extends AppCompatActivity implements AdapterView
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
 
-        mNsdHelper = (NsdHelper) bundle.getSerializable("NsdHelper");
         mGameConnection = (GameConnection) bundle.getSerializable("GameConnection");
+
+        mNsdHelper = new NsdHelper(this);
+        mNsdHelper.initializeNsd();
 
         sharedPreferences = getSharedPreferences("monopoly", MODE_PRIVATE);
 
@@ -109,9 +111,13 @@ public class NeuesSpielActivity extends AppCompatActivity implements AdapterView
 
         advertiseGame();
 
+        Bundle bundle = new Bundle();
+
+        bundle.putSerializable("NsdHelper", mNsdHelper);
+
         Intent intent = new Intent(this, SpielBeitretenActivity.class);
-        intent.putExtra("GameConnection", mGameConnection);
-        intent.putExtra("NsdHelper", mNsdHelper);
+
+        intent.putExtras(bundle);
         startActivity(intent);
 
     }
