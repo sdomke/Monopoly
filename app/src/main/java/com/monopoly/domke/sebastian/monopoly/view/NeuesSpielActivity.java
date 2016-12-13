@@ -3,9 +3,11 @@ package com.monopoly.domke.sebastian.monopoly.view;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -14,8 +16,10 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 
 import com.monopoly.domke.sebastian.monopoly.R;
+import com.monopoly.domke.sebastian.monopoly.common.GameConnection;
 import com.monopoly.domke.sebastian.monopoly.common.Spiel;
 import com.monopoly.domke.sebastian.monopoly.database.DatabaseHandler;
+import com.monopoly.domke.sebastian.monopoly.helper.NsdHelper;
 
 public class NeuesSpielActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -26,6 +30,11 @@ public class NeuesSpielActivity extends AppCompatActivity implements AdapterView
     private String spielDatum;
     private Spinner spinner;
 
+    private NsdHelper mNsdHelper;
+    private GameConnection mGameConnection;
+
+    public static final String TAG = "NsdGame";
+
     private SharedPreferences sharedPreferences = null;
 
     @Override
@@ -34,6 +43,12 @@ public class NeuesSpielActivity extends AppCompatActivity implements AdapterView
         setContentView(R.layout.activity_neues_spiel);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+
+        mNsdHelper = (NsdHelper) bundle.getSerializable("NsdHelper");
+        mGameConnection = (GameConnection) bundle.getSerializable("GameConnection");
 
         sharedPreferences = getSharedPreferences("monopoly", MODE_PRIVATE);
 
@@ -92,7 +107,11 @@ public class NeuesSpielActivity extends AppCompatActivity implements AdapterView
 
         sharedPreferences.edit().putString("monopolySpielDatum", spielDatum).commit();
 
+        advertiseGame();
+
         Intent intent = new Intent(this, SpielBeitretenActivity.class);
+        intent.putExtra("GameConnection", mGameConnection);
+        intent.putExtra("NsdHelper", mNsdHelper);
         startActivity(intent);
 
     }
@@ -185,5 +204,14 @@ public class NeuesSpielActivity extends AppCompatActivity implements AdapterView
     public void onNothingSelected(AdapterView<?> parent) {
 
         neuesSpiel.setWaehrung("Monopoly-Dollar");
+    }
+
+    public void advertiseGame() {
+        // Register service
+        if(mGameConnection.getLocalPort() > -1) {
+            mNsdHelper.registerService(mGameConnection.getLocalPort());
+        } else {
+            Log.d(TAG, "ServerSocket isn't bound.");
+        }
     }
 }

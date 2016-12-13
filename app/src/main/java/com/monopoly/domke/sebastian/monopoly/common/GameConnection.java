@@ -20,52 +20,56 @@ package com.monopoly.domke.sebastian.monopoly.common;
  * limitations under the License.
  */
 
-        import android.os.Bundle;
-        import android.os.Handler;
-        import android.os.Message;
-        import android.util.Log;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
+import android.widget.Toast;
 
-        import java.io.BufferedReader;
-        import java.io.BufferedWriter;
-        import java.io.IOException;
-        import java.io.InputStreamReader;
-        import java.io.OutputStreamWriter;
-        import java.io.PrintWriter;
-        import java.net.InetAddress;
-        import java.net.ServerSocket;
-        import java.net.Socket;
-        import java.net.UnknownHostException;
-        import java.util.concurrent.ArrayBlockingQueue;
-        import java.util.concurrent.BlockingQueue;
+import com.monopoly.domke.sebastian.monopoly.view.SpielBeitretenActivity;
 
-public class GameConnection {
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.Serializable;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+
+public class GameConnection implements Serializable {
 
     private Handler mUpdateHandler;
-    private GameServer mChatServer;
-    private GameClient mChatClient;
+    private GameServer mGameServer;
+    private GameClient mGameClient;
 
-    private static final String TAG = "ChatConnection";
+    private static final String TAG = "GameConnection";
 
     private Socket mSocket;
     private int mPort = -1;
 
     public GameConnection(Handler handler) {
         mUpdateHandler = handler;
-        mChatServer = new GameServer(handler);
+        mGameServer = new GameServer(handler);
     }
 
     public void tearDown() {
-        mChatServer.tearDown();
-        mChatClient.tearDown();
+        mGameServer.tearDown();
+        mGameClient.tearDown();
     }
 
     public void connectToServer(InetAddress address, int port) {
-        mChatClient = new GameClient(address, port);
+        mGameClient = new GameClient(address, port);
     }
 
     public void sendMessage(String msg) {
-        if (mChatClient != null) {
-            mChatClient.sendMessage(msg);
+        if (mGameClient != null) {
+            mGameClient.sendMessage(msg);
         }
     }
 
@@ -93,6 +97,8 @@ public class GameConnection {
         Message message = new Message();
         message.setData(messageBundle);
         mUpdateHandler.sendMessage(message);
+
+        Log.i("updateMessage", msg);
 
     }
 
@@ -151,7 +157,7 @@ public class GameConnection {
                         Log.d(TAG, "ServerSocket Created, awaiting connection");
                         setSocket(mServerSocket.accept());
                         Log.d(TAG, "Connected.");
-                        if (mChatClient == null) {
+                        if (mGameClient == null) {
                             int port = mSocket.getPort();
                             InetAddress address = mSocket.getInetAddress();
                             connectToServer(address, port);
@@ -170,14 +176,14 @@ public class GameConnection {
         private InetAddress mAddress;
         private int PORT;
 
-        private final String CLIENT_TAG = "ChatClient";
+        private final String CLIENT_TAG = "GameClient";
 
         private Thread mSendThread;
         private Thread mRecThread;
 
         public GameClient(InetAddress address, int port) {
 
-            Log.d(CLIENT_TAG, "Creating chatClient");
+            Log.d(CLIENT_TAG, "Creating gameClient");
             this.mAddress = address;
             this.PORT = port;
 

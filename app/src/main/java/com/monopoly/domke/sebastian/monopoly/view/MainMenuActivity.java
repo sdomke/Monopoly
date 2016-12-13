@@ -2,15 +2,27 @@ package com.monopoly.domke.sebastian.monopoly.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.RelativeLayout;
 
 import com.monopoly.domke.sebastian.monopoly.R;
+import com.monopoly.domke.sebastian.monopoly.common.GameConnection;
+import com.monopoly.domke.sebastian.monopoly.helper.NsdHelper;
+
+import java.io.Serializable;
 
 public class MainMenuActivity extends AppCompatActivity {
+
+    private NsdHelper mNsdHelper;
+    private Handler mUpdateHandler;
+    private GameConnection mGameConnection;
+
+    private RelativeLayout spielBeitretenRelativeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,11 +30,32 @@ public class MainMenuActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main_menu);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        spielBeitretenRelativeLayout = (RelativeLayout) findViewById(R.id.spielBeitretenButtonLayout);
+
+        spielBeitretenRelativeLayout.setEnabled(false);
+
+        mUpdateHandler = new Handler();
+
+        mGameConnection = new GameConnection(mUpdateHandler);
+
+        mNsdHelper = new NsdHelper(this);
+        mNsdHelper.initializeNsd();
+
+        mNsdHelper.discoverServices();
+
+
     }
 
     public void neuesSpiel(View view) {
 
+        Bundle bundle = new Bundle();
+
+        bundle.putSerializable("GameConnection", mGameConnection);
+        bundle.putSerializable("NsdHelper", mNsdHelper);
+
         Intent intent = new Intent(this, NeuesSpielActivity.class);
+        intent.putExtras(bundle);
         startActivity(intent);
 
     }
@@ -31,6 +64,8 @@ public class MainMenuActivity extends AppCompatActivity {
     public void spielBeitreten(View view) {
 
         Intent intent = new Intent(this, SpielBeitretenActivity.class);
+        intent.putExtra("GameConnection", mGameConnection);
+        intent.putExtra("NsdHelper", mNsdHelper);
         startActivity(intent);
 
     }
@@ -38,6 +73,8 @@ public class MainMenuActivity extends AppCompatActivity {
     public void spielLaden(View view) {
 
         Intent intent = new Intent(this, SpielLadenActivity.class);
+        intent.putExtra("GameConnection", mGameConnection);
+        intent.putExtra("NsdHelper", mNsdHelper);
         startActivity(intent);
 
     }
@@ -76,5 +113,12 @@ public class MainMenuActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        mNsdHelper.tearDown();
+        mGameConnection.tearDown();
+        super.onDestroy();
     }
 }

@@ -7,11 +7,13 @@ import android.net.nsd.NsdServiceInfo;
 import android.os.Build;
 import android.util.Log;
 
+import java.io.Serializable;
+
 /**
  * Created by Basti on 12.12.2016.
  */
 
-public class NsdHelper {
+public class NsdHelper implements Serializable {
 
     Context mContext;
 
@@ -23,7 +25,7 @@ public class NsdHelper {
     public static final String SERVICE_TYPE = "_http._tcp.";
 
     public static final String TAG = "NsdHelper";
-    public String mServiceName = "NsdChat";
+    public String mServiceName = "NsdGame";
 
     NsdServiceInfo mService;
 
@@ -41,7 +43,6 @@ public class NsdHelper {
 
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void initializeDiscoveryListener() {
         mDiscoveryListener = new NsdManager.DiscoveryListener() {
 
@@ -89,7 +90,6 @@ public class NsdHelper {
         };
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void initializeResolveListener() {
         mResolveListener = new NsdManager.ResolveListener() {
 
@@ -111,7 +111,6 @@ public class NsdHelper {
         };
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void initializeRegistrationListener() {
         mRegistrationListener = new NsdManager.RegistrationListener() {
 
@@ -135,7 +134,6 @@ public class NsdHelper {
         };
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void registerService(int port) {
         NsdServiceInfo serviceInfo  = new NsdServiceInfo();
         serviceInfo.setPort(port);
@@ -147,13 +145,11 @@ public class NsdHelper {
 
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void discoverServices() {
         mNsdManager.discoverServices(
                 SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void stopDiscovery() {
         mNsdManager.stopServiceDiscovery(mDiscoveryListener);
     }
@@ -162,7 +158,6 @@ public class NsdHelper {
         return mService;
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void tearDown() {
         mNsdManager.unregisterService(mRegistrationListener);
     }

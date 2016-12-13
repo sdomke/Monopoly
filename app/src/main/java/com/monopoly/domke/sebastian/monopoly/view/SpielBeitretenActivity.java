@@ -2,6 +2,7 @@ package com.monopoly.domke.sebastian.monopoly.view;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.nsd.NsdServiceInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -21,10 +22,12 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.monopoly.domke.sebastian.monopoly.R;
+import com.monopoly.domke.sebastian.monopoly.common.GameConnection;
 import com.monopoly.domke.sebastian.monopoly.common.Spiel;
 import com.monopoly.domke.sebastian.monopoly.common.Spieler;
 import com.monopoly.domke.sebastian.monopoly.database.DatabaseHandler;
 import com.monopoly.domke.sebastian.monopoly.helper.GamelobbySpielerAdapter;
+import com.monopoly.domke.sebastian.monopoly.helper.NsdHelper;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -43,6 +46,11 @@ public class SpielBeitretenActivity extends AppCompatActivity {
     private String ipAdresseHost;
     private WifiManager wifiManager;
 
+    private NsdHelper mNsdHelper;
+    private GameConnection mGameConnection;
+
+    public static final String TAG = "NsdGame";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +61,11 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         //Todo Intent von NeuesSpiel-, MainMenu- oder SpielLaden-Activity mit den Spieldaten
 
         sharedPreferences = getSharedPreferences("monopoly", MODE_PRIVATE);
+
+        Intent intent = getIntent();
+
+        mNsdHelper = (NsdHelper) intent.getSerializableExtra("NsdHelper");
+        mGameConnection = (GameConnection) intent.getSerializableExtra("GameConnection");
 
         datasource = new DatabaseHandler(this);
 
@@ -215,6 +228,8 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         adapter.add(eigenerSpieler);
         datasource.updateSpieler(eigenerSpieler);
 
+        connectToGame();
+
         //Todo Spiel beigetreten Nachricht an andere Spieler
 
         //Todo Auswahl der SpielerName und SpielerFarbe ausgrauen solange in Spiellobby
@@ -235,6 +250,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.spieler_einladen_action) {
 
             Toast.makeText(getApplicationContext(), "Einladung an Spieler gesendet", Toast.LENGTH_SHORT).show();
+            mGameConnection.sendMessage("Einladung");
             //Todo Spieler einladen Nachricht an andere Spieler
         }
 
@@ -257,6 +273,17 @@ public class SpielBeitretenActivity extends AppCompatActivity {
     //Todo Gegenspieler initiieren
     public void gegenspielerInit(){
 
+    }
+
+    public void connectToGame() {
+        NsdServiceInfo service = mNsdHelper.getChosenServiceInfo();
+        if (service != null) {
+            Log.d(TAG, "Connecting.");
+            mGameConnection.connectToServer(service.getHost(),
+                    service.getPort());
+        } else {
+            Log.d(TAG, "No service to connect to!");
+        }
     }
 
 }

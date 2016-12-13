@@ -264,6 +264,8 @@ public class SpielStartActivity extends AppCompatActivity {
         bezahleHypothekButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                //Todo Hypothek darf nicht negativ werden (nur so viel bezahlen so hoch wie die Hypothek)
                 if(aktuellerBetragEditText.getText().toString().length() != 0) {
 
                     eigenerSpieler.setSpielerKapital(eigenerSpieler.getSpielerKapital() - Integer.valueOf(aktuellerBetragEditText.getText().toString()));
