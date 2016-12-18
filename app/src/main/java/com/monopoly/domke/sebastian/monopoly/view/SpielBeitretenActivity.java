@@ -6,6 +6,7 @@ import android.net.nsd.NsdServiceInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -65,13 +66,19 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        Bundle bundle = intent.getExtras();
-
-        mNsdHelper = (NsdHelper) bundle.getSerializable("NsdHelper");
-
-        mUpdateHandler = new Handler();
+        mUpdateHandler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                Toast.makeText(getApplicationContext(), msg.toString(), Toast.LENGTH_SHORT).show();
+            }
+        };
 
         mGameConnection = new GameConnection(mUpdateHandler);
+
+        mNsdHelper = new NsdHelper(this);
+        mNsdHelper.initializeNsd();
+
+        advertiseGame();
 
         datasource = new DatabaseHandler(this);
 
@@ -292,4 +299,33 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         }
     }
 
+    public void advertiseGame() {
+        // Register service
+        if(mGameConnection.getLocalPort() > -1) {
+            mNsdHelper.registerService(mGameConnection.getLocalPort());
+        } else {
+            Log.d(TAG, "ServerSocket isn't bound.");
+        }
+    }
+
+    public void discoverGames() {
+
+        mNsdHelper.discoverServices();
+    }
+
+    @Override
+    protected void onPause() {
+        if (mNsdHelper != null) {
+            mNsdHelper.stopDiscovery();
+        }
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mNsdHelper != null) {
+            mNsdHelper.discoverServices();
+        }
+    }
 }

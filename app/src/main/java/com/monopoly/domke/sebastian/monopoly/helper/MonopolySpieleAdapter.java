@@ -28,25 +28,14 @@ public class MonopolySpieleAdapter extends ArrayAdapter<Spiel>{
 	ImageView spielLaden;
 	View view;
 	SharedPreferences sharedPreferences = null;
-	Intent intent;
-
-	private NsdHelper mNsdHelper;
-	private GameConnection mGameConnection;
-
-	public static final String TAG = "NsdGame";
 
 	/* here we must override the constructor for ArrayAdapter
 	* the only variable we care about now is ArrayList<Item> objects,
 	* because it is the list of objects we want to display.
 	*/
-	public MonopolySpieleAdapter(Context context, int textViewResourceId, ArrayList<Spiel> objects, Intent intent) {
+	public MonopolySpieleAdapter(Context context, int textViewResourceId, ArrayList<Spiel> objects) {
 		super(context, textViewResourceId, objects);
 		this.objects = objects;
-		this.intent = intent;
-
-		mNsdHelper = (NsdHelper) intent.getSerializableExtra("NsdHelper");
-		mGameConnection = (GameConnection) intent.getSerializableExtra("GameConnection");
-
 	}
 
 	/*
@@ -93,11 +82,8 @@ public class MonopolySpieleAdapter extends ArrayAdapter<Spiel>{
 
 				sharedPreferences.edit().putString("monopolySpielDatum", i.getSpielDatum()).commit();
 
-				advertiseGame();
-
 				Intent intent = new Intent(getContext(), SpielBeitretenActivity.class);
-				intent.putExtra("GameConnection", mGameConnection);
-				intent.putExtra("NsdHelper", mNsdHelper);
+				intent.putExtra("SpielLaden", "true");
 				getContext().startActivity(intent);
 			}
 		});
@@ -131,14 +117,5 @@ public class MonopolySpieleAdapter extends ArrayAdapter<Spiel>{
 		// the view must be returned to our activity
 		return view;
 
-	}
-
-	public void advertiseGame() {
-		// Register service
-		if(mGameConnection.getLocalPort() > -1) {
-			mNsdHelper.registerService(mGameConnection.getLocalPort());
-		} else {
-			Log.d(TAG, "ServerSocket isn't bound.");
-		}
 	}
 }

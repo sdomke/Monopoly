@@ -6,6 +6,7 @@ import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 import android.os.Build;
 import android.util.Log;
+import android.widget.RelativeLayout;
 
 import java.io.Serializable;
 
@@ -13,7 +14,7 @@ import java.io.Serializable;
  * Created by Basti on 12.12.2016.
  */
 
-public class NsdHelper implements Serializable {
+public class NsdHelper {
 
     Context mContext;
 

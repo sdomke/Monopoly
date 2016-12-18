@@ -42,33 +42,17 @@ public class MainMenuActivity extends AppCompatActivity {
         mNsdHelper = new NsdHelper(this);
         mNsdHelper.initializeNsd();
 
-        mNsdHelper.discoverServices();
-
-
     }
 
     public void neuesSpiel(View view) {
-
-        Bundle bundle = new Bundle();
-
-        bundle.putSerializable("GameConnection", mGameConnection);
-
         Intent intent = new Intent(this, NeuesSpielActivity.class);
-        intent.putExtras(bundle);
         startActivity(intent);
 
     }
 
     //todo ausblenden solange keine Einladung
     public void spielBeitreten(View view) {
-
-
-        Bundle bundle = new Bundle();
-
-        bundle.putSerializable("NsdHelper", mGameConnection);
-
         Intent intent = new Intent(this, SpielBeitretenActivity.class);
-        intent.putExtras(bundle);
         startActivity(intent);
 
     }
@@ -76,8 +60,6 @@ public class MainMenuActivity extends AppCompatActivity {
     public void spielLaden(View view) {
 
         Intent intent = new Intent(this, SpielLadenActivity.class);
-        intent.putExtra("GameConnection", mGameConnection);
-        intent.putExtra("NsdHelper", mNsdHelper);
         startActivity(intent);
 
     }
@@ -118,10 +100,36 @@ public class MainMenuActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    @Override
+    protected void onPause() {
+        if (mNsdHelper != null) {
+            mNsdHelper.stopDiscovery();
+        }
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mNsdHelper != null) {
+            mNsdHelper.discoverServices();
+        }
+    }
+
     @Override
     protected void onDestroy() {
         mNsdHelper.tearDown();
         mGameConnection.tearDown();
         super.onDestroy();
+    }
+
+    public void serviceFound(){
+        RelativeLayout spielBeitretenRelativeLayout = (RelativeLayout) findViewById(R.id.spielBeitretenButtonLayout);
+        spielBeitretenRelativeLayout.setEnabled(true);
+    }
+
+    public interface onServiceFoundListener{
+        void serviceFound();
     }
 }

@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/spielLobbyBeitretenButtonLayout"
+        android:layout_below="@+id/neuesSpielButtonLayout"
         android:clickable="true"
         android:onClick="spielBeitreten"
         android:background="@drawable/layout_selector" >
@@ -145,7 +145,7 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/spielLobbyBeitretenButtonLayout"
+        android:id="@+id/neuesSpielButtonLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"

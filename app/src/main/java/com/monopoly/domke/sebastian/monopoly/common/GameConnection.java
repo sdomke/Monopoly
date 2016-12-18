@@ -42,7 +42,7 @@ import java.net.UnknownHostException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-public class GameConnection implements Serializable {
+public class GameConnection {
 
     private Handler mUpdateHandler;
     private GameServer mGameServer;
@@ -59,8 +59,8 @@ public class GameConnection implements Serializable {
     }
 
     public void tearDown() {
-        mGameServer.tearDown();
         mGameClient.tearDown();
+        mGameServer.tearDown();
     }
 
     public void connectToServer(InetAddress address, int port) {
@@ -68,6 +68,7 @@ public class GameConnection implements Serializable {
     }
 
     public void sendMessage(String msg) {
+        Log.d("gameSendMessage", "send Message");
         if (mGameClient != null) {
             mGameClient.sendMessage(msg);
         }
@@ -98,7 +99,7 @@ public class GameConnection implements Serializable {
         message.setData(messageBundle);
         mUpdateHandler.sendMessage(message);
 
-        Log.i("updateMessage", msg);
+        Log.d("updateGameMessage", msg);
 
     }
 

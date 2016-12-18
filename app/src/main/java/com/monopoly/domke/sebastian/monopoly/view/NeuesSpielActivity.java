@@ -30,11 +30,6 @@ public class NeuesSpielActivity extends AppCompatActivity implements AdapterView
     private String spielDatum;
     private Spinner spinner;
 
-    private NsdHelper mNsdHelper;
-    private GameConnection mGameConnection;
-
-    public static final String TAG = "NsdGame";
-
     private SharedPreferences sharedPreferences = null;
 
     @Override
@@ -43,14 +38,6 @@ public class NeuesSpielActivity extends AppCompatActivity implements AdapterView
         setContentView(R.layout.activity_neues_spiel);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        Intent intent = getIntent();
-        Bundle bundle = intent.getExtras();
-
-        mGameConnection = (GameConnection) bundle.getSerializable("GameConnection");
-
-        mNsdHelper = new NsdHelper(this);
-        mNsdHelper.initializeNsd();
 
         sharedPreferences = getSharedPreferences("monopoly", MODE_PRIVATE);
 
@@ -109,15 +96,8 @@ public class NeuesSpielActivity extends AppCompatActivity implements AdapterView
 
         sharedPreferences.edit().putString("monopolySpielDatum", spielDatum).commit();
 
-        advertiseGame();
-
-        Bundle bundle = new Bundle();
-
-        bundle.putSerializable("NsdHelper", mNsdHelper);
-
         Intent intent = new Intent(this, SpielBeitretenActivity.class);
-
-        intent.putExtras(bundle);
+        intent.putExtra("NeuesSpiel", "true");
         startActivity(intent);
 
     }
@@ -210,14 +190,5 @@ public class NeuesSpielActivity extends AppCompatActivity implements AdapterView
     public void onNothingSelected(AdapterView<?> parent) {
 
         neuesSpiel.setWaehrung("Monopoly-Dollar");
-    }
-
-    public void advertiseGame() {
-        // Register service
-        if(mGameConnection.getLocalPort() > -1) {
-            mNsdHelper.registerService(mGameConnection.getLocalPort());
-        } else {
-            Log.d(TAG, "ServerSocket isn't bound.");
-        }
     }
 }

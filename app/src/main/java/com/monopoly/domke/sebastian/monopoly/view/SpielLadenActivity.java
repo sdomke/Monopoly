@@ -32,8 +32,6 @@ public class SpielLadenActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Intent intent = getIntent();
-
         datasource = new DatabaseHandler(this);
 
         monopolySpieleListView = (ListView) findViewById(R.id.monopolySpieleListeListView);
@@ -41,7 +39,7 @@ public class SpielLadenActivity extends AppCompatActivity {
         ArrayList<Spiel> values = datasource.getAllSpiele();
 
         spiele_adapter = new MonopolySpieleAdapter(this,
-                R.layout.list_item_monopoly_spiel, values, intent);
+                R.layout.list_item_monopoly_spiel, values);
         monopolySpieleListView.setAdapter(spiele_adapter);
     }
 
