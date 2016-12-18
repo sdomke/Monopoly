@@ -1,14 +1,18 @@
 package com.monopoly.domke.sebastian.monopoly.view;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.nsd.NsdManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.monopoly.domke.sebastian.monopoly.R;
 import com.monopoly.domke.sebastian.monopoly.common.GameConnection;
@@ -22,6 +26,8 @@ public class MainMenuActivity extends AppCompatActivity {
     private Handler mUpdateHandler;
     private GameConnection mGameConnection;
 
+    private SharedPreferences sharedPreferences;
+
     private RelativeLayout spielBeitretenRelativeLayout;
 
     @Override
@@ -30,6 +36,10 @@ public class MainMenuActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main_menu);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        sharedPreferences = getSharedPreferences("monopoly", MODE_PRIVATE);
+
+        sharedPreferences.edit().putBoolean("service_discovered", false);
 
         spielBeitretenRelativeLayout = (RelativeLayout) findViewById(R.id.spielBeitretenButtonLayout);
 
@@ -93,8 +103,14 @@ public class MainMenuActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.refresh) {
+            Toast.makeText(getApplicationContext(), "Überprüfen, ob ein Spiel erstellt wurde", Toast.LENGTH_SHORT).show();
+
+            if(getSharedPreferences("monopoly", MODE_PRIVATE).getBoolean("service_discovered", false)){
+                RelativeLayout spielBeitretenRelativeLayout = (RelativeLayout) findViewById(R.id.spielBeitretenButtonLayout);
+
+                spielBeitretenRelativeLayout.setEnabled(true);
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -129,7 +145,4 @@ public class MainMenuActivity extends AppCompatActivity {
         spielBeitretenRelativeLayout.setEnabled(true);
     }
 
-    public interface onServiceFoundListener{
-        void serviceFound();
-    }
 }
