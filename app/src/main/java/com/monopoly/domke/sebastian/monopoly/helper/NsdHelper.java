@@ -2,6 +2,7 @@ package com.monopoly.domke.sebastian.monopoly.helper;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 import android.os.Build;
@@ -18,6 +19,7 @@ public class NsdHelper {
 
     Context mContext;
 
+    private SharedPreferences sharedPreferences = null;
     NsdManager mNsdManager;
     NsdManager.ResolveListener mResolveListener;
     NsdManager.DiscoveryListener mDiscoveryListener;
@@ -33,6 +35,8 @@ public class NsdHelper {
     public NsdHelper(Context context) {
         mContext = context;
         mNsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
+
+        sharedPreferences = mContext.getSharedPreferences("monopoly", mContext.MODE_PRIVATE);
     }
 
     public void initializeNsd() {
@@ -60,6 +64,7 @@ public class NsdHelper {
                 } else if (service.getServiceName().equals(mServiceName)) {
                     Log.d(TAG, "Same machine: " + mServiceName);
                 } else if (service.getServiceName().contains(mServiceName)){
+                    sharedPreferences.edit().putBoolean("service_discovered", true);
                     mNsdManager.resolveService(service, mResolveListener);
                 }
             }
@@ -67,6 +72,7 @@ public class NsdHelper {
             @Override
             public void onServiceLost(NsdServiceInfo service) {
                 Log.e(TAG, "service lost" + service);
+                sharedPreferences.edit().putBoolean("service_discovered", false);
                 if (mService == service) {
                     mService = null;
                 }
