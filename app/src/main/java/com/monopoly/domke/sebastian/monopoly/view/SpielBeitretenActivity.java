@@ -328,4 +328,11 @@ public class SpielBeitretenActivity extends AppCompatActivity {
             mNsdHelper.discoverServices();
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        mNsdHelper.tearDown();
+        mGameConnection.tearDown();
+        super.onDestroy();
+    }
 }

@@ -168,6 +168,11 @@ public class NsdHelper {
     }
 
     public void tearDown() {
-        mNsdManager.unregisterService(mRegistrationListener);
+        try{
+            mNsdManager.unregisterService(mRegistrationListener);
+        }catch(Exception e){
+            Log.e(TAG, "No service registered ");
+        }
+
     }
 }
