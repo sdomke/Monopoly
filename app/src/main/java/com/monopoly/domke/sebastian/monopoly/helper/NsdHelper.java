@@ -8,6 +8,7 @@ import android.net.nsd.NsdServiceInfo;
 import android.os.Build;
 import android.util.Log;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import java.io.Serializable;
 
@@ -64,7 +65,8 @@ public class NsdHelper {
                 } else if (service.getServiceName().equals(mServiceName)) {
                     Log.d(TAG, "Same machine: " + mServiceName);
                 } else if (service.getServiceName().contains(mServiceName)){
-                    sharedPreferences.edit().putBoolean("service_discovered", true);
+                    Toast.makeText(mContext, "Service found", Toast.LENGTH_SHORT).show();
+                    sharedPreferences.edit().putBoolean("service_discovered", true).commit();
                     mNsdManager.resolveService(service, mResolveListener);
                 }
             }

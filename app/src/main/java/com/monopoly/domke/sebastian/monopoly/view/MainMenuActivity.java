@@ -39,17 +39,19 @@ public class MainMenuActivity extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("monopoly", MODE_PRIVATE);
 
-        sharedPreferences.edit().putBoolean("service_discovered", false);
+        sharedPreferences.edit().putBoolean("service_discovered", false).commit();
 
         spielBeitretenRelativeLayout = (RelativeLayout) findViewById(R.id.spielBeitretenButtonLayout);
 
-        spielBeitretenRelativeLayout.setEnabled(false);
+        if(!sharedPreferences.getBoolean("service_discovered", false)) {
+            spielBeitretenRelativeLayout.setEnabled(false);
+        }
 
         mUpdateHandler = new Handler();
 
         mGameConnection = new GameConnection(mUpdateHandler);
 
-        mNsdHelper = new NsdHelper(this);
+        mNsdHelper = new NsdHelper(getApplicationContext());
         mNsdHelper.initializeNsd();
 
     }
@@ -60,11 +62,9 @@ public class MainMenuActivity extends AppCompatActivity {
 
     }
 
-    //todo ausblenden solange keine Einladung
     public void spielBeitreten(View view) {
         Intent intent = new Intent(this, SpielBeitretenActivity.class);
         startActivity(intent);
-
     }
 
     public void spielLaden(View view) {
@@ -106,7 +106,7 @@ public class MainMenuActivity extends AppCompatActivity {
         if (id == R.id.refresh) {
             Toast.makeText(getApplicationContext(), "Überprüfen, ob ein Spiel erstellt wurde", Toast.LENGTH_SHORT).show();
 
-            if(getSharedPreferences("monopoly", MODE_PRIVATE).getBoolean("service_discovered", false)){
+            if(getSharedPreferences("monopoly", MODE_PRIVATE).getBoolean("service_discovered", false) == true){
                 RelativeLayout spielBeitretenRelativeLayout = (RelativeLayout) findViewById(R.id.spielBeitretenButtonLayout);
 
                 spielBeitretenRelativeLayout.setEnabled(true);
@@ -138,11 +138,6 @@ public class MainMenuActivity extends AppCompatActivity {
         mNsdHelper.tearDown();
         mGameConnection.tearDown();
         super.onDestroy();
-    }
-
-    public void serviceFound(){
-        RelativeLayout spielBeitretenRelativeLayout = (RelativeLayout) findViewById(R.id.spielBeitretenButtonLayout);
-        spielBeitretenRelativeLayout.setEnabled(true);
     }
 
 }

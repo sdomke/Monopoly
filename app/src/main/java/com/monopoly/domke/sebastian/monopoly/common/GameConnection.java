@@ -84,7 +84,7 @@ public class GameConnection {
 
 
     public synchronized void updateMessages(String msg, boolean local) {
-        Log.e(TAG, "Updating message: " + msg);
+        Log.d(TAG, "Updating message: " + msg);
 
         if (local) {
             msg = "me: " + msg;
