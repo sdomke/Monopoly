@@ -42,7 +42,11 @@ public class NeuesSpielActivity extends AppCompatActivity implements AdapterView
         sharedPreferences = getSharedPreferences("monopoly", MODE_PRIVATE);
 
         databaseHandler = new DatabaseHandler(this);
-        neuesSpiel = new Spiel();
+
+        java.util.Date datumErzeugenJetzt = new java.util.Date();
+        spielDatum = (String) DateFormat.format("dd.MM.yyyy HH:mm:ss", datumErzeugenJetzt);
+
+        neuesSpiel = new Spiel(spielDatum);
 
         neuesSpiel.setSpielerAnzahl(spielerAnzahl);
 
@@ -79,10 +83,6 @@ public class NeuesSpielActivity extends AppCompatActivity implements AdapterView
     public void neuesSpielErstellen(View view) {
 
         EditText startKapitalEditText = (EditText) findViewById(R.id.startKapitalEditText);
-
-        java.util.Date datumErzeugenJetzt = new java.util.Date();
-        spielDatum = (String) DateFormat.format("dd.MM.yyyy HH:mm:ss", datumErzeugenJetzt);
-        neuesSpiel.setSpielDatum(spielDatum);
         neuesSpiel.setFreiParken(0);
 
         if(startKapitalEditText.getText().toString().length() != 0) {

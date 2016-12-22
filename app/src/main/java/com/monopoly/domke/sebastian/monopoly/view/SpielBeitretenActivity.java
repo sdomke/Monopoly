@@ -42,7 +42,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
     public Spieler eigenerSpieler;
     private String eigenerSpielerName = "Spieler";
     private int eigenerSpielerFarbe = R.color.weiß_spieler_farbe;
-    private ListView gamelobbyListView;
+    public ListView gamelobbyListView;
     private SharedPreferences sharedPreferences = null;
     public Spiel aktuellesSpiel;
     private String ipAdresseHost;
@@ -225,11 +225,11 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         gamelobbyListView.setAdapter(spieler_adapter);
 
         try {
-            datasource.getSpielerBySpielIdAndSpielerIp(aktuellesSpiel.getSpielID(), ipAdresseHost);
+            datasource.getSpielerBySpielIdAndSpielerMac(aktuellesSpiel.getSpielID(), ipAdresseHost);
         }catch (Exception e){
             datasource.addSpieler(eigenerSpieler);
         }
-        eigenerSpieler = datasource.getSpielerBySpielIdAndSpielerIp(aktuellesSpiel.getSpielID(), ipAdresseHost);
+        eigenerSpieler = datasource.getSpielerBySpielIdAndSpielerMac(aktuellesSpiel.getSpielID(), ipAdresseHost);
     }
 
     public void spielLobbyBeitreten(View view) {

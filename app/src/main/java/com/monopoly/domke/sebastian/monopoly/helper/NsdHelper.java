@@ -66,7 +66,7 @@ public class NsdHelper {
                     Log.d(TAG, "Same machine: " + mServiceName);
                 } else if (service.getServiceName().contains(mServiceName)){
                     Toast.makeText(mContext, "Service found", Toast.LENGTH_SHORT).show();
-                    sharedPreferences.edit().putBoolean("service_discovered", true).commit();
+                    //sharedPreferences.edit().putBoolean("service_discovered", true).commit();
                     mNsdManager.resolveService(service, mResolveListener);
                 }
             }

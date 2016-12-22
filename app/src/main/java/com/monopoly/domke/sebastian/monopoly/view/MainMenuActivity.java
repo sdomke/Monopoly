@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.net.nsd.NsdManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuInflater;
@@ -16,7 +17,10 @@ import android.widget.Toast;
 
 import com.monopoly.domke.sebastian.monopoly.R;
 import com.monopoly.domke.sebastian.monopoly.common.GameConnection;
+import com.monopoly.domke.sebastian.monopoly.common.Spiel;
+import com.monopoly.domke.sebastian.monopoly.database.DatabaseHandler;
 import com.monopoly.domke.sebastian.monopoly.helper.NsdHelper;
+import com.monopoly.domke.sebastian.monopoly.helper.PlayerMessageInterpreter;
 
 import java.io.Serializable;
 
@@ -25,9 +29,11 @@ public class MainMenuActivity extends AppCompatActivity {
     private NsdHelper mNsdHelper;
     private Handler mUpdateHandler;
     private GameConnection mGameConnection;
-
+    public DatabaseHandler datasource;
+    public Spiel neuesSpiel;
     private SharedPreferences sharedPreferences;
 
+    private PlayerMessageInterpreter playerMessageInterpreter;
     private RelativeLayout spielBeitretenRelativeLayout;
 
     @Override
@@ -36,6 +42,10 @@ public class MainMenuActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main_menu);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        datasource = new DatabaseHandler(this);
+
+        playerMessageInterpreter = new PlayerMessageInterpreter(this);
 
         sharedPreferences = getSharedPreferences("monopoly", MODE_PRIVATE);
 
@@ -47,7 +57,13 @@ public class MainMenuActivity extends AppCompatActivity {
             spielBeitretenRelativeLayout.setEnabled(false);
         }
 
-        mUpdateHandler = new Handler();
+        mUpdateHandler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                Toast.makeText(getApplicationContext(), msg.getData().getString("msg"), Toast.LENGTH_SHORT).show();
+                //playerMessageInterpreter.decideWhatToDoWithTheMassage(message);
+            }
+        };
 
         mGameConnection = new GameConnection(mUpdateHandler);
 

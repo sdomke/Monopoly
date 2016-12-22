@@ -14,8 +14,8 @@ public class Spieler {
     private String spielerMacAdresse;
     private int idMonopolySpiel;
 
-    public Spieler (String spielerIPAdresse, int idMonopolySpiel){
-        this.spielerIpAdresse = spielerIPAdresse;
+    public Spieler (String spielerMacAdresse, int idMonopolySpiel){
+        this.spielerMacAdresse = spielerMacAdresse;
         this.idMonopolySpiel = idMonopolySpiel;
     }
 

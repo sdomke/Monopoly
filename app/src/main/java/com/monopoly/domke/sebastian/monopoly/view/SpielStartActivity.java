@@ -26,7 +26,7 @@ public class SpielStartActivity extends AppCompatActivity {
     int hypothek = 0;
     int empfaengerAuswahl = 0;
 
-    DatabaseHandler databaseHandler;
+    public DatabaseHandler databaseHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +44,7 @@ public class SpielStartActivity extends AppCompatActivity {
 
         aktuellesSpiel = databaseHandler.getSpielByID(aktuellesSpielID);
 
-        eigenerSpieler = databaseHandler.getSpielerBySpielIdAndSpielerIp(aktuellesSpielID, eigenerSpielerIP);
+        eigenerSpieler = databaseHandler.getSpielerBySpielIdAndSpielerMac(aktuellesSpielID, eigenerSpielerIP);
 
         init();
 

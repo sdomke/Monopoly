@@ -13,6 +13,13 @@ public class Spiel {
     private String waehrung;
     private int freiParkenWert;
 
+    public Spiel(){
+    }
+
+    public Spiel(String spielDatum){
+        this.spielDatum = spielDatum;
+    }
+
     public void setSpielID(int spielID){
 
         this.spielID = spielID;
