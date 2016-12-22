@@ -17,7 +17,7 @@ import java.util.ArrayList;
  * Created by Basti-Laptop on 19.12.2016.
  */
 
-public class JsonParser {
+public class MessageParser {
 
     public JSONObject invitePlayerToJson(Spieler eigenerSpieler, Spiel aktuellesSpiel){
 
@@ -158,6 +158,4 @@ public class JsonParser {
 
         return newMessage;
     }
-
-
 }

@@ -19,8 +19,8 @@ public class SpielStartActivity extends AppCompatActivity {
 
     String eigenerSpielerIP;
     int aktuellesSpielID;
-    Spiel aktuellesSpiel;
-    Spieler eigenerSpieler;
+    public Spiel aktuellesSpiel;
+    public Spieler eigenerSpieler;
     TextView aktuellesKapitalEigenerSpielerTextView;
     EditText aktuellerBetragEditText;
     int hypothek = 0;

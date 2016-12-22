@@ -37,19 +37,19 @@ import java.util.ArrayList;
 
 public class SpielBeitretenActivity extends AppCompatActivity {
 
-    private DatabaseHandler datasource;
-    private GamelobbySpielerAdapter spieler_adapter;
-    private Spieler eigenerSpieler;
+    public DatabaseHandler datasource;
+    public GamelobbySpielerAdapter spieler_adapter;
+    public Spieler eigenerSpieler;
     private String eigenerSpielerName = "Spieler";
     private int eigenerSpielerFarbe = R.color.weiß_spieler_farbe;
     private ListView gamelobbyListView;
     private SharedPreferences sharedPreferences = null;
-    private Spiel aktuellesSpiel;
+    public Spiel aktuellesSpiel;
     private String ipAdresseHost;
     private WifiManager wifiManager;
 
-    private NsdHelper mNsdHelper;
-    private GameConnection mGameConnection;
+    public NsdHelper mNsdHelper;
+    public GameConnection mGameConnection;
     private Handler mUpdateHandler;
     public static final String TAG = "NsdGame";
 
@@ -60,6 +60,10 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        init();
+    }
+
+    public void init(){
         //Todo Intent von NeuesSpiel-, MainMenu- oder SpielLaden-Activity mit den Spieldaten
 
         sharedPreferences = getSharedPreferences("monopoly", MODE_PRIVATE);
@@ -69,7 +73,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         mUpdateHandler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
-                Toast.makeText(getApplicationContext(), msg.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), msg.getData().getString("msg"), Toast.LENGTH_SHORT).show();
             }
         };
 
@@ -225,7 +229,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         }catch (Exception e){
             datasource.addSpieler(eigenerSpieler);
         }
-            eigenerSpieler = datasource.getSpielerBySpielIdAndSpielerIp(aktuellesSpiel.getSpielID(), ipAdresseHost);
+        eigenerSpieler = datasource.getSpielerBySpielIdAndSpielerIp(aktuellesSpiel.getSpielID(), ipAdresseHost);
     }
 
     public void spielLobbyBeitreten(View view) {
@@ -306,11 +310,6 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         } else {
             Log.d(TAG, "ServerSocket isn't bound.");
         }
-    }
-
-    public void discoverGames() {
-
-        mNsdHelper.discoverServices();
     }
 
     @Override
