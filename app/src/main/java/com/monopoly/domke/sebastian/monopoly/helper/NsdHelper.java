@@ -81,8 +81,7 @@ public class NsdHelper {
                     //sharedPreferences.edit().putBoolean("service_discovered", true).commit();
                     mNsdManager.resolveService(service, mResolveListener);
 
-                    if(activity != null){
-                        activity.connectToGame();
+/*                    if(activity != null){
 
                         JSONObject messageContent = new JSONObject();
 
@@ -92,7 +91,7 @@ public class NsdHelper {
 
                         activity.mGameConnection.sendMessage(jsonString);
                         Toast.makeText(mContext, "invitePlayerGameMessage send", Toast.LENGTH_SHORT).show();
-                    }
+                    }*/
                 }
             }
 
@@ -192,11 +191,13 @@ public class NsdHelper {
     }
 
     public void tearDown() {
-        try{
+        mNsdManager.unregisterService(mRegistrationListener);
+
+        /*try{
             mNsdManager.unregisterService(mRegistrationListener);
         }catch(Exception e){
             Log.e(TAG, "No service registered ");
-        }
+        }*/
 
     }
 }

@@ -105,15 +105,18 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
         if(!neuesSpiel) {
             playerMessageInterpreter = new PlayerMessageInterpreter(this);
+            advertiseGame();
+            connectToGame();
         }
         else{
             hostMessageInterpreter = new HostMessageInterpreter(this);
             advertiseGame();
+            connectToGame();
         }
 
         aktuellesSpiel = datasource.getSpielByDatum(spielDatum);
 
-        connectToGame();
+
 
         //ipAdresseHost = intToInetAddress(wifiManager.getDhcpInfo().serverAddress).getHostAddress();
 

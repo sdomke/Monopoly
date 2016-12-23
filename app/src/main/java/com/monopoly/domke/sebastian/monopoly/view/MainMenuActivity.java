@@ -1,8 +1,6 @@
 package com.monopoly.domke.sebastian.monopoly.view;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,10 +8,9 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.MenuInflater;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -28,8 +25,6 @@ import com.monopoly.domke.sebastian.monopoly.helper.PlayerMessageInterpreter;
 
 import org.json.JSONObject;
 
-import java.io.Serializable;
-
 public class MainMenuActivity extends AppCompatActivity {
 
     private NsdHelper mNsdHelper;
@@ -37,7 +32,6 @@ public class MainMenuActivity extends AppCompatActivity {
     public GameConnection mGameConnection;
     public DatabaseHandler datasource;
     public Spiel neuesSpiel;
-    private SharedPreferences sharedPreferences;
 
     private PlayerMessageInterpreter playerMessageInterpreter;
     public MessageParser messageParser;
@@ -57,8 +51,6 @@ public class MainMenuActivity extends AppCompatActivity {
         playerMessageInterpreter = new PlayerMessageInterpreter(this);
         messageParser = new MessageParser();
 
-        sharedPreferences = getSharedPreferences("monopoly", MODE_PRIVATE);
-
         /*
         sharedPreferences.edit().putBoolean("service_discovered", false).commit();
 
@@ -74,11 +66,12 @@ public class MainMenuActivity extends AppCompatActivity {
         mUpdateHandler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
-                Toast.makeText(getApplicationContext(), msg.getData().getString("msg"), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), " " + msg.getData().getString("msg"), Toast.LENGTH_SHORT).show();
 
-                GameMessage message = messageParser.jsonStringToMessage(msg.getData().getString("msg"));
+                Log.i("Message", " " + msg.getData().getString("msg"));
+                //GameMessage message = messageParser.jsonStringToMessage(msg.getData().getString("msg"));
 
-                playerMessageInterpreter.decideWhatToDoWithTheMassage(message);
+                //playerMessageInterpreter.decideWhatToDoWithTheMassage(message);
             }
         };
 
@@ -138,18 +131,31 @@ public class MainMenuActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.refresh) {
-            Toast.makeText(getApplicationContext(), "Überprüfen, ob ein Spiel erstellt wurde", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Verbinde mich mit dem Service", Toast.LENGTH_SHORT).show();
 
             connectToGame();
 
-            JSONObject messageContent = new JSONObject();
+           /* JSONObject messageContent = new JSONObject();
 
             GameMessage invitePlayerGameMessage = new GameMessage(GameMessage.MessageHeader.requestJoinGame, messageContent);
 
             String jsonString = messageParser.messageToJsonString(invitePlayerGameMessage);
 
             mGameConnection.sendMessage(jsonString);
-            Toast.makeText(getApplicationContext(), "invitePlayerGameMessage send", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "invitePlayerGameMessage send", Toast.LENGTH_SHORT).show();*/
+        }
+
+        else if (id == R.id.add) {
+            Toast.makeText(getApplicationContext(), "Füge Service hinzu", Toast.LENGTH_SHORT).show();
+
+            advertiseGame();
+
+        }
+
+        else if (id == R.id.send) {
+            Toast.makeText(getApplicationContext(), "Überprüfen, ob ein Spiel erstellt wurde", Toast.LENGTH_SHORT).show();
+
+            mGameConnection.sendMessage("Einladung");
         }
 
         return super.onOptionsItemSelected(item);
@@ -187,6 +193,15 @@ public class MainMenuActivity extends AppCompatActivity {
                     service.getPort());
         } else {
             Log.d(TAG, "No service to connect to!");
+        }
+    }
+
+    public void advertiseGame() {
+        // Register service
+        if(mGameConnection.getLocalPort() > -1) {
+            mNsdHelper.registerService(mGameConnection.getLocalPort());
+        } else {
+            Log.d(TAG, "ServerSocket isn't bound.");
         }
     }
 

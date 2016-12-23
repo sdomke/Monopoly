@@ -59,12 +59,14 @@ public class GameConnection {
     }
 
     public void tearDown() {
-        if(mGameClient != null) {
+        mGameServer.tearDown();
+        mGameClient.tearDown();
+        /*if(mGameClient != null) {
             mGameClient.tearDown();
         }
         if(mGameServer != null) {
             mGameServer.tearDown();
-        }
+        }*/
     }
 
     public void connectToServer(InetAddress address, int port) {
