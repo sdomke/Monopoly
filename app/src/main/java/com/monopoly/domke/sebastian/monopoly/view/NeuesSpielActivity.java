@@ -1,13 +1,10 @@
 package com.monopoly.domke.sebastian.monopoly.view;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -16,10 +13,8 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 
 import com.monopoly.domke.sebastian.monopoly.R;
-import com.monopoly.domke.sebastian.monopoly.common.GameConnection;
 import com.monopoly.domke.sebastian.monopoly.common.Spiel;
 import com.monopoly.domke.sebastian.monopoly.database.DatabaseHandler;
-import com.monopoly.domke.sebastian.monopoly.helper.NsdHelper;
 
 public class NeuesSpielActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -30,16 +25,12 @@ public class NeuesSpielActivity extends AppCompatActivity implements AdapterView
     private String spielDatum;
     private Spinner spinner;
 
-    private SharedPreferences sharedPreferences = null;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_neues_spiel);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        sharedPreferences = getSharedPreferences("monopoly", MODE_PRIVATE);
 
         databaseHandler = new DatabaseHandler(this);
 
@@ -94,10 +85,9 @@ public class NeuesSpielActivity extends AppCompatActivity implements AdapterView
 
         databaseHandler.addNewMonopolyGame(neuesSpiel);
 
-        sharedPreferences.edit().putString("monopolySpielDatum", spielDatum).commit();
-
         Intent intent = new Intent(this, SpielBeitretenActivity.class);
-        intent.putExtra("NeuesSpiel", "true");
+        intent.putExtra("neues_spiel", true);
+        intent.putExtra("spiel_datum", neuesSpiel.getSpielDatum());
         startActivity(intent);
 
     }

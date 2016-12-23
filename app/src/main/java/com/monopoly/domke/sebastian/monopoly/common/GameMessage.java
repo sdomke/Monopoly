@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * Created by Basti-Laptop on 19.12.2016.
  */
 
-public class Message {
+public class GameMessage {
 
     MessageHeader messageHeader;
     JSONObject messageContent;
@@ -28,10 +28,10 @@ public class Message {
         requestJoinGame
     }
 
-    public Message(){
+    public GameMessage(){
     }
 
-    public Message(MessageHeader messageHeader, JSONObject messageContent){
+    public GameMessage(MessageHeader messageHeader, JSONObject messageContent){
         this.messageHeader = messageHeader;
         this.messageContent = messageContent;
     }

@@ -26,6 +26,8 @@
     <string name="los_button_name">Bank</string>
     <string name="mitte_button_name">Mitte</string>
     <string name="spieler_einladen">Einladung an Spieler senden</string>
+    <string name="spiel_beenden">Spiel beenden</string>
+    <string name="spiel_speichern">Spiel speichern</string>
     <string name="erhalteFreiParken">FP</string>
     <string name="erhalteLos">Los</string>
     <string name="erhalteHypothek">H</string>
@@ -55,7 +57,7 @@
 
     <string name="pref_title_social_recommendations">Enable social recommendations</string>
     <string name="pref_description_social_recommendations">Recommendations for people to contact
-        based on your message history
+        based on your gameMessage history
     </string>
 
     <string name="pref_title_display_name">Display name</string>
@@ -99,7 +101,7 @@
     <!-- Example settings for Notifications -->
     <string name="pref_header_notifications">Notifications</string>
 
-    <string name="pref_title_new_message_notifications">New message notifications</string>
+    <string name="pref_title_new_message_notifications">New gameMessage notifications</string>
 
     <string name="pref_title_ringtone">Ringtone</string>
     <string name="pref_ringtone_silent">Silent</string>

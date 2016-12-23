@@ -1,9 +1,14 @@
 package com.monopoly.domke.sebastian.monopoly.view;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -38,6 +43,8 @@ public class SpielStartActivity extends AppCompatActivity {
         databaseHandler = new DatabaseHandler(this);
 
         Intent intent = getIntent();
+
+        //Todo SpielerMacAdressen aus Intent auslesen und EigenenSpieler und Gegenspieler initialisieren
 
         eigenerSpielerIP = intent.getStringExtra("eigenerSpielerIpAdresse");
         aktuellesSpielID = intent.getIntExtra("aktuellesSpielID", 0);
@@ -369,10 +376,51 @@ public class SpielStartActivity extends AppCompatActivity {
     public void spielBeenden(){
 
         //Todo Spiel speichern (alles in die Datenbank) und Spiel beendet Nachricht an die Spieler
+
+        new AlertDialog.Builder(this)
+                .setTitle("Spiel beenden")
+                .setMessage("Möchtest du das Spiel wirklich beenden?")
+                .setNegativeButton(android.R.string.no, null)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        Intent intent = new Intent(getApplicationContext(), MainMenuActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                        Toast.makeText(getApplicationContext(), "Spiel beendet!", Toast.LENGTH_SHORT).show();
+
+                        startActivity(intent);
+                    }
+                }).create().show();
     }
 
     public void spielSpeichern(){
-
+        //Todo Spiel speichern (alles in die Datenbank)
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate themenu; this adds items to the action bar if it is present.
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.spiel_start_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.spiel_beenden_action) {
+
+            Toast.makeText(getApplicationContext(), "Spiel beenden Nachricht gesendet", Toast.LENGTH_SHORT).show();
+            spielBeenden();
+        }
+
+        else if (item.getItemId() == R.id.spiel_speichern_action) {
+
+            Toast.makeText(getApplicationContext(), "Spiel beenden Nachricht gesendet", Toast.LENGTH_SHORT).show();
+            spielSpeichern();
+        }
+
+        return true;
+    }
 }

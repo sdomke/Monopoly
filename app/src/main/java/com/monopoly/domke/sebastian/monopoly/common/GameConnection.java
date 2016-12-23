@@ -72,7 +72,7 @@ public class GameConnection {
     }
 
     public void sendMessage(String msg) {
-        Log.d("gameSendMessage", "send Message");
+        Log.d("gameSendMessage", "send GameMessage");
         if (mGameClient != null) {
             mGameClient.sendMessage(msg);
         }
@@ -230,7 +230,7 @@ public class GameConnection {
                         String msg = mMessageQueue.take();
                         sendMessage(msg);
                     } catch (InterruptedException ie) {
-                        Log.d(CLIENT_TAG, "Message sending loop interrupted, exiting");
+                        Log.d(CLIENT_TAG, "GameMessage sending loop interrupted, exiting");
                     }
                 }
             }

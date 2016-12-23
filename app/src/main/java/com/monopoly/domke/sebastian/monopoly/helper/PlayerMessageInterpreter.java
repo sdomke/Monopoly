@@ -1,18 +1,20 @@
 package com.monopoly.domke.sebastian.monopoly.helper;
 
-import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.monopoly.domke.sebastian.monopoly.R;
-import com.monopoly.domke.sebastian.monopoly.common.Message;
-import com.monopoly.domke.sebastian.monopoly.common.Message.MessageHeader;
+import com.monopoly.domke.sebastian.monopoly.common.GameMessage;
+import com.monopoly.domke.sebastian.monopoly.common.GameMessage.MessageHeader;
 import com.monopoly.domke.sebastian.monopoly.common.Spiel;
 import com.monopoly.domke.sebastian.monopoly.common.Spieler;
 import com.monopoly.domke.sebastian.monopoly.view.MainMenuActivity;
 import com.monopoly.domke.sebastian.monopoly.view.SpielBeitretenActivity;
 import com.monopoly.domke.sebastian.monopoly.view.SpielStartActivity;
+
+import java.util.ArrayList;
 
 
 /**
@@ -40,17 +42,17 @@ public class PlayerMessageInterpreter {
         this.spielStartActivity = activity;
     }
 
-    public void decideWhatToDoWithTheMassage(Message message){
+    public void decideWhatToDoWithTheMassage(GameMessage gameMessage){
 
-        MessageHeader messageHeader = message.getMessageHeader();
+        MessageHeader messageHeader = gameMessage.getMessageHeader();
 
         switch(messageHeader){
             case invitation:
-
+                getInvitationMessage(gameMessage);
                 break;
 
             case gameStart:
-
+                getGameStartMessage();
                 break;
 
             case gameEnd:
@@ -58,73 +60,123 @@ public class PlayerMessageInterpreter {
                 break;
 
             case sendMoney:
-                getSendMoneyMessage(message);
+                getSendMoneyMessage(gameMessage);
                 break;
 
             case receiveMoneyFromBank:
-                getReceiveMoneyFromBankMessage(message);
+                getReceiveMoneyFromBankMessage(gameMessage);
                 break;
 
             case receiveFreiParken:
-                getReceiveFreiParkenMessage(message);
+                getReceiveFreiParkenMessage(gameMessage);
                 break;
 
             case sendMoneyToBank:
-                getSendMoneyToBankMessage(message);
+                getSendMoneyToBankMessage(gameMessage);
                 break;
 
             case sendMoneyToFreiParken:
-                getSendMoneyToFreiParkenMessage(message);
+                getSendMoneyToFreiParkenMessage(gameMessage);
                 break;
 
             case joinGame:
-                getJoinGameMessage(message);
+                getJoinGameMessage(gameMessage);
                 break;
 
             case exitGame:
-                getExitGameMessage(message);
+                getExitGameMessage(gameMessage);
                 break;
         }
     }
 
-    public void getInvitationMessage(Message message){
+    public void getInvitationMessage(GameMessage gameMessage){
         if(mainMenuActivity != null){
             try {
 
+                Spiel neuesSpiel;
+
                 try{
-                    mainMenuActivity.neuesSpiel = mainMenuActivity.datasource.getSpielByDatum(message.getMessageContent().getString("game_date"));
+                    neuesSpiel = mainMenuActivity.datasource.getSpielByDatum(gameMessage.getMessageContent().getString("game_date"));
                 }catch(Exception e){
                     Log.e("MessageInterpreter", "Spieler noch nicht angelegt: " + e.toString());
 
-                    mainMenuActivity.neuesSpiel = new Spiel(message.getMessageContent().getString("game_date"));
-                    mainMenuActivity.neuesSpiel.setSpielerStartkapital(message.getMessageContent().getInt("game_seed_capital"));
-                    mainMenuActivity.neuesSpiel.setSpielerAnzahl(message.getMessageContent().getInt("game_player_count"));
-                    mainMenuActivity.neuesSpiel.setFreiParken(0);
-                    mainMenuActivity.neuesSpiel.setWaehrung(message.getMessageContent().getString("game_currency"));
+                    neuesSpiel = new Spiel(gameMessage.getMessageContent().getString("game_date"));
+                    neuesSpiel.setSpielerStartkapital(gameMessage.getMessageContent().getInt("game_seed_capital"));
+                    neuesSpiel.setSpielerAnzahl(gameMessage.getMessageContent().getInt("game_player_count"));
+                    neuesSpiel.setFreiParken(0);
+                    neuesSpiel.setWaehrung(gameMessage.getMessageContent().getString("game_currency"));
                 }
+
+                mainMenuActivity.datasource.addNewMonopolyGame(neuesSpiel);
+                mainMenuActivity.neuesSpiel = neuesSpiel;
                 RelativeLayout spielBeitretenRelativeLayout = (RelativeLayout) mainMenuActivity.findViewById(R.id.spielBeitretenButtonLayout);
 
                 spielBeitretenRelativeLayout.setEnabled(true);
 
                 Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spieler eingeladen!", Toast.LENGTH_SHORT).show();
             }catch(Exception e){
-                Log.e("MessageInterpreter", "getSendMoneyMessage: " + e.toString());
+                Log.e("MessageInterpreter", "getInvitationMessage: " + e.toString());
                 Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spieler nicht eingeladen!!!", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
+    public void getGameStartMessage(){
+        if(spielBeitretenActivity != null){
+            try {
 
-    public void getSendMoneyMessage(Message message){
+                ArrayList<String> aktivePlayerList = new ArrayList<>();
+
+                for(int i=0; i <  spielBeitretenActivity.gamelobbyListView.getAdapter().getCount(); i++){
+                    Spieler spieler = (Spieler) spielBeitretenActivity.gamelobbyListView.getAdapter().getItem(i);
+                    aktivePlayerList.add(spieler.getSpielerMacAdresse());
+                }
+
+                Intent intent = new Intent(spielBeitretenActivity.getApplicationContext(), SpielStartActivity.class);
+                intent.putStringArrayListExtra("aktive_spieler", aktivePlayerList);
+                intent.putExtra("aktuellesSpielID", spielBeitretenActivity.aktuellesSpiel.getSpielID());
+
+                Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spiel gestartet!", Toast.LENGTH_SHORT).show();
+
+                spielBeitretenActivity.startActivity(intent);
+
+            }catch(Exception e){
+                Log.e("MessageInterpreter", "getGameStartMessage: " + e.toString());
+                Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spiel nicht gestartet!!!", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    public void getGameEndMessage(){
+        if(spielStartActivity != null){
+            try {
+
+                Intent intent = new Intent(spielStartActivity.getApplicationContext(), MainMenuActivity.class);
+                intent.putExtra("spiel_beendet", "Spiel beendet");
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spiel beendet!", Toast.LENGTH_SHORT).show();
+
+                spielBeitretenActivity.startActivity(intent);
+
+            }catch(Exception e){
+                Log.e("MessageInterpreter", "getGameEndMessage: " + e.toString());
+                Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spiel nicht beendet!!!", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
+    public void getSendMoneyMessage(GameMessage gameMessage){
         if(spielStartActivity != null){
             try {
                 Spiel aktuellesSpiel = spielStartActivity.aktuellesSpiel;
 
-                int payment = message.getMessageContent().getInt("payment");
+                int payment = gameMessage.getMessageContent().getInt("payment");
 
-                Spieler senderPlayer = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerMac(aktuellesSpiel.getSpielID(), message.getMessageContent().getString("sender_mac_adress"));
+                Spieler senderPlayer = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerMac(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("sender_mac_adress"));
 
-                Spieler receiverPlayer = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerMac(aktuellesSpiel.getSpielID(), message.getMessageContent().getString("receiver_mac_adress"));
+                Spieler receiverPlayer = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerMac(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("receiver_mac_adress"));
 
                 senderPlayer.setSpielerKapital(senderPlayer.getSpielerKapital() - payment);
                 receiverPlayer.setSpielerKapital(senderPlayer.getSpielerKapital() + payment);
@@ -140,14 +192,14 @@ public class PlayerMessageInterpreter {
         }
     }
 
-    public void getReceiveMoneyFromBankMessage(Message message){
+    public void getReceiveMoneyFromBankMessage(GameMessage gameMessage){
         if(spielStartActivity != null){
             try {
                 Spiel aktuellesSpiel = spielStartActivity.aktuellesSpiel;
 
-                int payment = message.getMessageContent().getInt("payment");
+                int payment = gameMessage.getMessageContent().getInt("payment");
 
-                Spieler player = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerMac(aktuellesSpiel.getSpielID(), message.getMessageContent().getString("player_mac_adress"));
+                Spieler player = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerMac(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_mac_adress"));
 
                 player.setSpielerKapital(player.getSpielerKapital() + payment);
 
@@ -155,20 +207,20 @@ public class PlayerMessageInterpreter {
 
                 Toast.makeText(spielStartActivity.getApplicationContext(), "Geld von der Bank erhalten!", Toast.LENGTH_SHORT).show();
             }catch(Exception e){
-                Log.e("MessageInterpreter", "getSendMoneyMessage: " + e.toString());
+                Log.e("MessageInterpreter", "getReceiveMoneyFromBankMessage: " + e.toString());
                 Toast.makeText(spielStartActivity.getApplicationContext(), "Geld von der Bank nicht erhalten!!!", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    public void getSendMoneyToBankMessage(Message message){
+    public void getSendMoneyToBankMessage(GameMessage gameMessage){
         if(spielStartActivity != null){
             try {
                 Spiel aktuellesSpiel = spielStartActivity.aktuellesSpiel;
 
-                int payment = message.getMessageContent().getInt("payment");
+                int payment = gameMessage.getMessageContent().getInt("payment");
 
-                Spieler player = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerMac(aktuellesSpiel.getSpielID(), message.getMessageContent().getString("player_mac_adress"));
+                Spieler player = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerMac(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_mac_adress"));
 
                 player.setSpielerKapital(player.getSpielerKapital() - payment);
 
@@ -176,20 +228,20 @@ public class PlayerMessageInterpreter {
 
                 Toast.makeText(spielStartActivity.getApplicationContext(), "Geld an die Bank gezahlt!", Toast.LENGTH_SHORT).show();
             }catch(Exception e){
-                Log.e("MessageInterpreter", "getSendMoneyMessage: " + e.toString());
+                Log.e("MessageInterpreter", "getSendMoneyToBankMessage: " + e.toString());
                 Toast.makeText(spielStartActivity.getApplicationContext(), "Geld an die Bank nicht gezahlt!!!", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    public void getSendMoneyToFreiParkenMessage(Message message){
+    public void getSendMoneyToFreiParkenMessage(GameMessage gameMessage){
         if(spielStartActivity != null){
             try {
                 Spiel aktuellesSpiel = spielStartActivity.aktuellesSpiel;
 
-                int payment = message.getMessageContent().getInt("payment");
+                int payment = gameMessage.getMessageContent().getInt("payment");
 
-                Spieler player = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerMac(aktuellesSpiel.getSpielID(), message.getMessageContent().getString("player_mac_adress"));
+                Spieler player = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerMac(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_mac_adress"));
 
                 player.setSpielerKapital(player.getSpielerKapital() - payment);
                 aktuellesSpiel.setFreiParken(aktuellesSpiel.getFreiParken() + payment);
@@ -199,18 +251,18 @@ public class PlayerMessageInterpreter {
 
                 Toast.makeText(spielStartActivity.getApplicationContext(), "Geld in die Mitte gezahlt!", Toast.LENGTH_SHORT).show();
             }catch(Exception e){
-                Log.e("MessageInterpreter", "getSendMoneyMessage: " + e.toString());
+                Log.e("MessageInterpreter", "getSendMoneyToFreiParkenMessage: " + e.toString());
                 Toast.makeText(spielStartActivity.getApplicationContext(), "Geld in die Mitte nicht gezahlt!!!", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    public void getReceiveFreiParkenMessage(Message message){
+    public void getReceiveFreiParkenMessage(GameMessage gameMessage){
         if(spielStartActivity != null){
             try {
                 Spiel aktuellesSpiel = spielStartActivity.aktuellesSpiel;
 
-                Spieler player = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerMac(aktuellesSpiel.getSpielID(), message.getMessageContent().getString("player_mac_adress"));
+                Spieler player = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerMac(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_mac_adress"));
 
                 player.setSpielerKapital(player.getSpielerKapital() + aktuellesSpiel.getFreiParken());
                 aktuellesSpiel.setFreiParken(0);
@@ -220,13 +272,13 @@ public class PlayerMessageInterpreter {
 
                 Toast.makeText(spielStartActivity.getApplicationContext(), "Geld aus der Mitte erhalten!", Toast.LENGTH_SHORT).show();
             }catch(Exception e){
-                Log.e("MessageInterpreter", "getSendMoneyMessage: " + e.toString());
+                Log.e("MessageInterpreter", "getReceiveFreiParkenMessage: " + e.toString());
                 Toast.makeText(spielStartActivity.getApplicationContext(), "Geld aus der Mitte nicht erhalten!!!", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    public void getJoinGameMessage(Message message){
+    public void getJoinGameMessage(GameMessage gameMessage){
         if(spielBeitretenActivity != null){
             try {
                 Spiel aktuellesSpiel = spielBeitretenActivity.aktuellesSpiel;
@@ -234,15 +286,15 @@ public class PlayerMessageInterpreter {
                 Spieler neuerSpieler;
 
                 try{
-                    neuerSpieler = spielBeitretenActivity.datasource.getSpielerBySpielIdAndSpielerMac(aktuellesSpiel.getSpielID(), message.getMessageContent().getString("player_mac_adress"));
+                    neuerSpieler = spielBeitretenActivity.datasource.getSpielerBySpielIdAndSpielerMac(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_mac_adress"));
                 }catch(Exception e){
                     Log.e("MessageInterpreter", "Spieler noch nicht angelegt: " + e.toString());
 
-                    neuerSpieler = new Spieler(message.getMessageContent().getString("player_mac_adress"), aktuellesSpiel.getSpielID());
-                    neuerSpieler.setSpielerName(message.getMessageContent().getString("player_name"));
+                    neuerSpieler = new Spieler(gameMessage.getMessageContent().getString("player_mac_adress"), aktuellesSpiel.getSpielID());
+                    neuerSpieler.setSpielerName(gameMessage.getMessageContent().getString("player_name"));
                     neuerSpieler.setSpielerKapital(aktuellesSpiel.getSpielerStartkapital());
-                    neuerSpieler.setSpielerFarbe(message.getMessageContent().getInt("player_color"));
-                    neuerSpieler.setSpielerIpAdresse(message.getMessageContent().getString("player_ip_adress"));
+                    neuerSpieler.setSpielerFarbe(gameMessage.getMessageContent().getInt("player_color"));
+                    neuerSpieler.setSpielerIpAdresse(gameMessage.getMessageContent().getString("player_ip_adress"));
 
                     spielBeitretenActivity.datasource.addSpieler(neuerSpieler);
                 }
@@ -252,30 +304,30 @@ public class PlayerMessageInterpreter {
 
                 Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spieler beigetreten!", Toast.LENGTH_SHORT).show();
             }catch(Exception e){
-                Log.e("MessageInterpreter", "getSendMoneyMessage: " + e.toString());
+                Log.e("MessageInterpreter", "getJoinGameMessage: " + e.toString());
                 Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spieler nicht beigetreten!!!", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    public void getExitGameMessage(Message message){
+    public void getExitGameMessage(GameMessage gameMessage){
         if(spielBeitretenActivity != null){
             try {
                 Spiel aktuellesSpiel = spielBeitretenActivity.aktuellesSpiel;
 
                 Spieler neuerSpieler;
 
-                neuerSpieler = spielBeitretenActivity.datasource.getSpielerBySpielIdAndSpielerMac(aktuellesSpiel.getSpielID(), message.getMessageContent().getString("player_mac_adress"));
+                neuerSpieler = spielBeitretenActivity.datasource.getSpielerBySpielIdAndSpielerMac(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_mac_adress"));
 
                 spielBeitretenActivity.datasource.deleteSpieler(neuerSpieler.getSpielerMacAdresse(), neuerSpieler.getIdMonopolySpiel());
 
                 spielBeitretenActivity.spieler_adapter.remove(neuerSpieler);
                 spielBeitretenActivity.spieler_adapter.notifyDataSetChanged();
 
-                Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spieler beigetreten!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spieler hat die Gamelobby verlassen!", Toast.LENGTH_SHORT).show();
             }catch(Exception e){
-                Log.e("MessageInterpreter", "getSendMoneyMessage: " + e.toString());
-                Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spieler nicht beigetreten!!!", Toast.LENGTH_SHORT).show();
+                Log.e("MessageInterpreter", "getExitGameMessage: " + e.toString());
+                Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spieler hat die Gamelobby nicht verlassen!!!", Toast.LENGTH_SHORT).show();
             }
         }
     }

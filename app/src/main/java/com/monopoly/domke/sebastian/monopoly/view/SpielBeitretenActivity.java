@@ -1,7 +1,6 @@
 package com.monopoly.domke.sebastian.monopoly.view;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.nsd.NsdServiceInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -25,11 +24,15 @@ import android.widget.Toast;
 
 import com.monopoly.domke.sebastian.monopoly.R;
 import com.monopoly.domke.sebastian.monopoly.common.GameConnection;
+import com.monopoly.domke.sebastian.monopoly.common.GameMessage;
 import com.monopoly.domke.sebastian.monopoly.common.Spiel;
 import com.monopoly.domke.sebastian.monopoly.common.Spieler;
 import com.monopoly.domke.sebastian.monopoly.database.DatabaseHandler;
 import com.monopoly.domke.sebastian.monopoly.helper.GamelobbySpielerAdapter;
+import com.monopoly.domke.sebastian.monopoly.helper.HostMessageInterpreter;
+import com.monopoly.domke.sebastian.monopoly.helper.MessageParser;
 import com.monopoly.domke.sebastian.monopoly.helper.NsdHelper;
+import com.monopoly.domke.sebastian.monopoly.helper.PlayerMessageInterpreter;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -43,7 +46,6 @@ public class SpielBeitretenActivity extends AppCompatActivity {
     private String eigenerSpielerName = "Spieler";
     private int eigenerSpielerFarbe = R.color.weiß_spieler_farbe;
     public ListView gamelobbyListView;
-    private SharedPreferences sharedPreferences = null;
     public Spiel aktuellesSpiel;
     private String ipAdresseHost;
     private WifiManager wifiManager;
@@ -52,6 +54,12 @@ public class SpielBeitretenActivity extends AppCompatActivity {
     public GameConnection mGameConnection;
     private Handler mUpdateHandler;
     public static final String TAG = "NsdGame";
+
+    boolean neuesSpiel = false;
+
+    private PlayerMessageInterpreter playerMessageInterpreter;
+    private HostMessageInterpreter hostMessageInterpreter;
+    private MessageParser messageParser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,15 +73,28 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
     public void init(){
         //Todo Intent von NeuesSpiel-, MainMenu- oder SpielLaden-Activity mit den Spieldaten
-
-        sharedPreferences = getSharedPreferences("monopoly", MODE_PRIVATE);
+        datasource = new DatabaseHandler(this);
 
         Intent intent = getIntent();
+
+        String spielDatum = intent.getStringExtra("spiel_datum");
+        neuesSpiel = intent.getBooleanExtra("neues_spiel", false);
+
+        Toast.makeText(getApplicationContext(),"" + neuesSpiel, Toast.LENGTH_SHORT).show();
 
         mUpdateHandler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
                 Toast.makeText(getApplicationContext(), msg.getData().getString("msg"), Toast.LENGTH_SHORT).show();
+
+                GameMessage message = messageParser.jsonStringToMessage(msg.getData().getString("msg"));
+
+                if(!neuesSpiel) {
+                    playerMessageInterpreter.decideWhatToDoWithTheMassage(message);
+                }
+                else{
+                    hostMessageInterpreter.decideWhatToDoWithTheMassage(message);
+                }
             }
         };
 
@@ -82,13 +103,17 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         mNsdHelper = new NsdHelper(this);
         mNsdHelper.initializeNsd();
 
-        advertiseGame();
+        if(!neuesSpiel) {
+            playerMessageInterpreter = new PlayerMessageInterpreter(this);
+        }
+        else{
+            hostMessageInterpreter = new HostMessageInterpreter(this);
+            advertiseGame();
+        }
 
-        datasource = new DatabaseHandler(this);
+        aktuellesSpiel = datasource.getSpielByDatum(spielDatum);
 
-        aktuellesSpiel = datasource.getSpielByDatum(sharedPreferences.getString("monopolySpielDatum", "Kein Spiel erzeugt"));
-
-        Log.i("SpielDatum", sharedPreferences.getString("monopolySpielDatum", "Kein Spiel erzeugt"));
+        connectToGame();
 
         //ipAdresseHost = intToInetAddress(wifiManager.getDhcpInfo().serverAddress).getHostAddress();
 
@@ -111,9 +136,16 @@ public class SpielBeitretenActivity extends AppCompatActivity {
                 if(!gamelobbyListView.getAdapter().isEmpty()) {
 
                     //Todo Spiel gestartet Nachricht an andere Spieler
+                    ArrayList<String> aktivePlayerList = new ArrayList<String>();
+
+                    for(int i=0; i <  gamelobbyListView.getAdapter().getCount(); i++){
+                        Spieler spieler = (Spieler) gamelobbyListView.getAdapter().getItem(i);
+                        aktivePlayerList.add(spieler.getSpielerMacAdresse());
+                    }
 
                     //Todo Intent mit den MacAdressen aller aktiven Spieler und Datum des Spiels
                     Intent intent = new Intent(getApplicationContext(), SpielStartActivity.class);
+                    intent.putStringArrayListExtra("aktive_spieler", aktivePlayerList);
                     intent.putExtra("eigenerSpielerIpAdresse", eigenerSpieler.getSpielerIpAdresse());
                     intent.putExtra("aktuellesSpielID", aktuellesSpiel.getSpielID());
                     startActivity(intent);
@@ -245,8 +277,6 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         adapter.add(eigenerSpieler);
         datasource.updateSpieler(eigenerSpieler);
 
-        connectToGame();
-
         //Todo Spiel beigetreten Nachricht an andere Spieler
 
         //Todo Auswahl der SpielerName und SpielerFarbe ausgrauen solange in Spiellobby
@@ -307,6 +337,8 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         // Register service
         if(mGameConnection.getLocalPort() > -1) {
             mNsdHelper.registerService(mGameConnection.getLocalPort());
+
+            Toast.makeText(getApplicationContext(), "Service erstellt", Toast.LENGTH_SHORT).show();
         } else {
             Log.d(TAG, "ServerSocket isn't bound.");
         }

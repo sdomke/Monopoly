@@ -2,16 +2,13 @@ package com.monopoly.domke.sebastian.monopoly.helper;
 
 import android.util.Log;
 
-import com.monopoly.domke.sebastian.monopoly.common.Message;
+import com.monopoly.domke.sebastian.monopoly.common.GameMessage;
 import com.monopoly.domke.sebastian.monopoly.common.Spiel;
 import com.monopoly.domke.sebastian.monopoly.common.Spieler;
 
-import org.apache.http.entity.StringEntity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 /**
  * Created by Basti-Laptop on 19.12.2016.
@@ -123,14 +120,14 @@ public class MessageParser {
     }
 
 
-    public String messageToJsonString(Message message){
+    public String messageToJsonString(GameMessage gameMessage){
 
         JSONObject json = new JSONObject();
         String jsonString="";
 
         try {
-            json.put("message_header", message.getMessageHeader());
-            json.put("message_content", message.getMessageContent());
+            json.put("message_header", gameMessage.getMessageHeader());
+            json.put("message_content", gameMessage.getMessageContent());
 
             jsonString = json.toString();
         }
@@ -142,20 +139,20 @@ public class MessageParser {
 
     }
 
-    public Message jsonStringToMessage(String jsonString){
+    public GameMessage jsonStringToMessage(String jsonString){
 
-        Message newMessage = new Message();
+        GameMessage newGameMessage = new GameMessage();
 
         try {
             JSONArray jArray = new JSONArray(jsonString);
 
-            newMessage.setMessageHeader((Message.MessageHeader) jArray.getJSONObject(0).get("message_header"));
-            newMessage.setMessageContent((JSONObject) jArray.getJSONObject(1).get("message_content"));
+            newGameMessage.setMessageHeader((GameMessage.MessageHeader) jArray.getJSONObject(0).get("message_header"));
+            newGameMessage.setMessageContent((JSONObject) jArray.getJSONObject(1).get("message_content"));
 
         }catch(JSONException e){
             Log.e("JsonException", e.toString());
         }
 
-        return newMessage;
+        return newGameMessage;
     }
 }

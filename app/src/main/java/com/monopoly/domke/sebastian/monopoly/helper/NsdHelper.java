@@ -10,6 +10,11 @@ import android.util.Log;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.monopoly.domke.sebastian.monopoly.common.GameMessage;
+import com.monopoly.domke.sebastian.monopoly.view.MainMenuActivity;
+
+import org.json.JSONObject;
+
 import java.io.Serializable;
 
 /**
@@ -33,11 +38,18 @@ public class NsdHelper {
 
     NsdServiceInfo mService;
 
+    MainMenuActivity activity;
+
     public NsdHelper(Context context) {
         mContext = context;
         mNsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
 
-        sharedPreferences = mContext.getSharedPreferences("monopoly", mContext.MODE_PRIVATE);
+    }
+
+    public NsdHelper(Context context, MainMenuActivity activity) {
+        mContext = context;
+        mNsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
+        this.activity = activity;
     }
 
     public void initializeNsd() {
@@ -68,13 +80,25 @@ public class NsdHelper {
                     Toast.makeText(mContext, "Service found", Toast.LENGTH_SHORT).show();
                     //sharedPreferences.edit().putBoolean("service_discovered", true).commit();
                     mNsdManager.resolveService(service, mResolveListener);
+
+                    if(activity != null){
+                        activity.connectToGame();
+
+                        JSONObject messageContent = new JSONObject();
+
+                        GameMessage invitePlayerGameMessage = new GameMessage(GameMessage.MessageHeader.requestJoinGame, messageContent);
+
+                        String jsonString = activity.messageParser.messageToJsonString(invitePlayerGameMessage);
+
+                        activity.mGameConnection.sendMessage(jsonString);
+                        Toast.makeText(mContext, "invitePlayerGameMessage send", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
             @Override
             public void onServiceLost(NsdServiceInfo service) {
                 Log.e(TAG, "service lost" + service);
-                sharedPreferences.edit().putBoolean("service_discovered", false);
                 if (mService == service) {
                     mService = null;
                 }
