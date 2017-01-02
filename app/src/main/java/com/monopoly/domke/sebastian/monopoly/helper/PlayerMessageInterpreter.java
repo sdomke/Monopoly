@@ -56,7 +56,7 @@ public class PlayerMessageInterpreter {
                 break;
 
             case gameEnd:
-
+                getGameEndMessage();
                 break;
 
             case sendMoney:
@@ -113,10 +113,10 @@ public class PlayerMessageInterpreter {
 
                 spielBeitretenRelativeLayout.setEnabled(true);
 
-                Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spieler eingeladen!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mainMenuActivity.getApplicationContext(), "Spieler eingeladen!", Toast.LENGTH_SHORT).show();
             }catch(Exception e){
                 Log.e("MessageInterpreter", "getInvitationMessage: " + e.toString());
-                Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spieler nicht eingeladen!!!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mainMenuActivity.getApplicationContext(), "Spieler nicht eingeladen!!!", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -135,6 +135,7 @@ public class PlayerMessageInterpreter {
                 Intent intent = new Intent(spielBeitretenActivity.getApplicationContext(), SpielStartActivity.class);
                 intent.putStringArrayListExtra("aktive_spieler", aktivePlayerList);
                 intent.putExtra("aktuellesSpielID", spielBeitretenActivity.aktuellesSpiel.getSpielID());
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
                 Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spiel gestartet!", Toast.LENGTH_SHORT).show();
 
@@ -321,8 +322,15 @@ public class PlayerMessageInterpreter {
 
                 spielBeitretenActivity.datasource.deleteSpieler(neuerSpieler.getSpielerMacAdresse(), neuerSpieler.getIdMonopolySpiel());
 
-                spielBeitretenActivity.spieler_adapter.remove(neuerSpieler);
-                spielBeitretenActivity.spieler_adapter.notifyDataSetChanged();
+                for (int i=0; i < spielBeitretenActivity.spieler_adapter.getCount(); i++) {
+
+                    Spieler spielerToDelete = spielBeitretenActivity.spieler_adapter.getItem(i);
+
+                    if(spielerToDelete.getSpielerMacAdresse().equals(neuerSpieler.getSpielerMacAdresse())){
+                        spielBeitretenActivity.spieler_adapter.objects.remove(i);
+                        spielBeitretenActivity.spieler_adapter.notifyDataSetChanged();
+                    }
+                }
 
                 Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spieler hat die Gamelobby verlassen!", Toast.LENGTH_SHORT).show();
             }catch(Exception e){

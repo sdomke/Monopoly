@@ -2,6 +2,7 @@ package com.monopoly.domke.sebastian.monopoly.view;
 
 import android.content.Intent;
 import android.net.nsd.NsdServiceInfo;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -31,8 +32,11 @@ import com.monopoly.domke.sebastian.monopoly.database.DatabaseHandler;
 import com.monopoly.domke.sebastian.monopoly.helper.GamelobbySpielerAdapter;
 import com.monopoly.domke.sebastian.monopoly.helper.HostMessageInterpreter;
 import com.monopoly.domke.sebastian.monopoly.helper.MessageParser;
-import com.monopoly.domke.sebastian.monopoly.helper.NsdHelper;
+import com.monopoly.domke.sebastian.monopoly.helper.NsdClient;
+import com.monopoly.domke.sebastian.monopoly.helper.NsdServer;
 import com.monopoly.domke.sebastian.monopoly.helper.PlayerMessageInterpreter;
+
+import org.json.JSONObject;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -47,10 +51,12 @@ public class SpielBeitretenActivity extends AppCompatActivity {
     private int eigenerSpielerFarbe = R.color.weiß_spieler_farbe;
     public ListView gamelobbyListView;
     public Spiel aktuellesSpiel;
-    private String ipAdresseHost;
+    private String ipAdresseEigenerSpieler;
+    private String macAdresseEigenerSpieler;
     private WifiManager wifiManager;
 
-    public NsdHelper mNsdHelper;
+    public NsdServer mNsdServer;
+    public NsdClient mNsdClient;
     public GameConnection mGameConnection;
     private Handler mUpdateHandler;
     public static final String TAG = "NsdGame";
@@ -59,7 +65,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
     private PlayerMessageInterpreter playerMessageInterpreter;
     private HostMessageInterpreter hostMessageInterpreter;
-    private MessageParser messageParser;
+    public MessageParser messageParser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,63 +81,100 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         //Todo Intent von NeuesSpiel-, MainMenu- oder SpielLaden-Activity mit den Spieldaten
         datasource = new DatabaseHandler(this);
 
+        FloatingActionButton spielStartenFB = (FloatingActionButton) findViewById(R.id.spielStartenFloatingButton);
+
+        messageParser = new MessageParser();
         Intent intent = getIntent();
 
         String spielDatum = intent.getStringExtra("spiel_datum");
         neuesSpiel = intent.getBooleanExtra("neues_spiel", false);
 
-        Toast.makeText(getApplicationContext(),"" + neuesSpiel, Toast.LENGTH_SHORT).show();
+        aktuellesSpiel = datasource.getSpielByDatum(spielDatum);
+
+        //Toast.makeText(getApplicationContext(),"" + neuesSpiel, Toast.LENGTH_SHORT).show();
 
         mUpdateHandler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
                 Toast.makeText(getApplicationContext(), msg.getData().getString("msg"), Toast.LENGTH_SHORT).show();
 
-                GameMessage message = messageParser.jsonStringToMessage(msg.getData().getString("msg"));
+                try {
+                    GameMessage message = messageParser.jsonStringToMessage(msg.getData().getString("msg"));
 
-                if(!neuesSpiel) {
-                    playerMessageInterpreter.decideWhatToDoWithTheMassage(message);
-                }
-                else{
-                    hostMessageInterpreter.decideWhatToDoWithTheMassage(message);
+                    if (!neuesSpiel) {
+                        Toast.makeText(getApplicationContext(), "Client Message Handler", Toast.LENGTH_SHORT).show();
+                        playerMessageInterpreter.decideWhatToDoWithTheMassage(message);
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Host Message Handler", Toast.LENGTH_SHORT).show();
+                        hostMessageInterpreter.decideWhatToDoWithTheMassage(message);
+                    }
+                }catch (Exception e){
+                    Log.d(TAG, "Keine passende Nachricht");
+                    Toast.makeText(getApplicationContext(), "Keine passende Nachricht", Toast.LENGTH_SHORT).show();
                 }
             }
         };
 
         mGameConnection = new GameConnection(mUpdateHandler);
 
-        mNsdHelper = new NsdHelper(this);
-        mNsdHelper.initializeNsd();
+        /*mNsdServer = new NsdServer(this);
+        //mNsdServer.initializeNsd();
+        mNsdServer.initializeRegistrationListener();*/
 
         if(!neuesSpiel) {
+            spielStartenFB.hide();
+
+            mNsdClient = new NsdClient(this, mGameConnection);
+            mNsdClient.initializeDiscoveryListener();
+            mNsdClient.initializeResolveListener();
+
+            //Toast.makeText(getApplicationContext(),"Client", Toast.LENGTH_SHORT).show();
             playerMessageInterpreter = new PlayerMessageInterpreter(this);
-            advertiseGame();
-            connectToGame();
+            //advertiseGame();
+            //connectToGame();
         }
         else{
+            mNsdServer = new NsdServer(this);
+            //mNsdServer.initializeNsd();
+            mNsdServer.initializeRegistrationListener();
+           /* mNsdServer.initializeDiscoveryListener();
+            mNsdServer.initializeResolveListener();*/
+            //Toast.makeText(getApplicationContext(),"Host", Toast.LENGTH_SHORT).show();
             hostMessageInterpreter = new HostMessageInterpreter(this);
+
             advertiseGame();
-            connectToGame();
+
+
+            //connectToGame();
         }
-
-        aktuellesSpiel = datasource.getSpielByDatum(spielDatum);
-
-
-
-        //ipAdresseHost = intToInetAddress(wifiManager.getDhcpInfo().serverAddress).getHostAddress();
 
         //Todo Eigene IPAdresse und MacAdresse auslesen
 
-        ipAdresseHost = "192.168.43.1";
+        WifiManager manager = (WifiManager) getSystemService(getApplicationContext().WIFI_SERVICE);
+        ipAdresseEigenerSpieler = intToInetAddress(manager.getDhcpInfo().serverAddress).getHostAddress();
+        WifiInfo info = manager.getConnectionInfo();
+        macAdresseEigenerSpieler = info.getMacAddress();
+
+        Log.d(TAG, "Mac: " + macAdresseEigenerSpieler);
+        Log.d(TAG, "IP: " + ipAdresseEigenerSpieler);
+
+        //ipAdresseHost = "192.168.43.1";
+
 
         //Todo Überprüfen ob es schon einen Spieler mit der MacAdresse passend zum Spiel gibt (dann wiederherstellen)
-        eigenerSpieler = new Spieler(ipAdresseHost, aktuellesSpiel.getSpielID());
-        eigenerSpieler.setSpielerName(eigenerSpielerName);
-        eigenerSpieler.setSpielerFarbe(eigenerSpielerFarbe);
-        eigenerSpieler.setSpielerKapital(aktuellesSpiel.getSpielerStartkapital());
+        try{
+            eigenerSpieler = datasource.getSpielerBySpielIdAndSpielerMac(aktuellesSpiel.getSpielID(), macAdresseEigenerSpieler);
+        }catch(Exception e){
+            Log.d(TAG, "Spieler nicht gefunden");
+
+            eigenerSpieler = new Spieler(macAdresseEigenerSpieler, aktuellesSpiel.getSpielID());
+            eigenerSpieler.setSpielerName(eigenerSpielerName);
+            eigenerSpieler.setSpielerFarbe(eigenerSpielerFarbe);
+            eigenerSpieler.setSpielerKapital(aktuellesSpiel.getSpielerStartkapital());
+            eigenerSpieler.setSpielerIpAdresse(ipAdresseEigenerSpieler);
+        }
 
         //Todo FloatingButton nur für SpielHost sichtbar machen
-        FloatingActionButton spielStartenFB = (FloatingActionButton) findViewById(R.id.spielStartenFloatingButton);
         spielStartenFB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -256,15 +299,8 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         ArrayList<Spieler> values = datasource.getAllSpielerBySpielID(aktuellesSpiel.getSpielID());
 
         spieler_adapter = new GamelobbySpielerAdapter(this,
-                R.layout.list_item_spieler, values);
+                R.layout.list_item_spieler, values, this);
         gamelobbyListView.setAdapter(spieler_adapter);
-
-        try {
-            datasource.getSpielerBySpielIdAndSpielerMac(aktuellesSpiel.getSpielID(), ipAdresseHost);
-        }catch (Exception e){
-            datasource.addSpieler(eigenerSpieler);
-        }
-        eigenerSpieler = datasource.getSpielerBySpielIdAndSpielerMac(aktuellesSpiel.getSpielID(), ipAdresseHost);
     }
 
     public void spielLobbyBeitreten(View view) {
@@ -278,9 +314,17 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         }
 
         adapter.add(eigenerSpieler);
-        datasource.updateSpieler(eigenerSpieler);
+        datasource.addSpieler(eigenerSpieler);
 
         //Todo Spiel beigetreten Nachricht an andere Spieler
+
+        JSONObject messageContent = messageParser.playerStatusToJson(eigenerSpieler, aktuellesSpiel);
+
+        GameMessage requestJoinGameMessage = new GameMessage(GameMessage.MessageHeader.joinGame, messageContent);
+
+        String jsonString = messageParser.messageToJsonString(requestJoinGameMessage);
+
+        mGameConnection.sendMessage(jsonString);
 
         //Todo Auswahl der SpielerName und SpielerFarbe ausgrauen solange in Spiellobby
 
@@ -297,11 +341,18 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        if (item.getItemId() == R.id.spieler_einladen_action) {
+        int id = item.getItemId();
 
-            Toast.makeText(getApplicationContext(), "Einladung an Spieler gesendet", Toast.LENGTH_SHORT).show();
-            mGameConnection.sendMessage("Einladung");
-            //Todo Spieler einladen Nachricht an andere Spieler
+        if (id == R.id.send) {
+
+            JSONObject messageContent = messageParser.invitePlayerToJson(eigenerSpieler, aktuellesSpiel);
+
+            GameMessage invitationGameMessage = new GameMessage(GameMessage.MessageHeader.invitation, messageContent);
+
+            String jsonString = messageParser.messageToJsonString(invitationGameMessage);
+
+            mGameConnection.sendMessage(jsonString);
+            Toast.makeText(getApplicationContext(), "invitationMessage send", Toast.LENGTH_SHORT).show();
         }
 
         return true;
@@ -325,23 +376,12 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
     }
 
-    public void connectToGame() {
-        NsdServiceInfo service = mNsdHelper.getChosenServiceInfo();
-        if (service != null) {
-            Log.d(TAG, "Connecting.");
-            mGameConnection.connectToServer(service.getHost(),
-                    service.getPort());
-        } else {
-            Log.d(TAG, "No service to connect to!");
-        }
-    }
-
     public void advertiseGame() {
         // Register service
         if(mGameConnection.getLocalPort() > -1) {
-            mNsdHelper.registerService(mGameConnection.getLocalPort());
+            mNsdServer.registerService(mGameConnection.getLocalPort());
 
-            Toast.makeText(getApplicationContext(), "Service erstellt", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Service erstellt: " + mGameConnection.getLocalPort(), Toast.LENGTH_SHORT).show();
         } else {
             Log.d(TAG, "ServerSocket isn't bound.");
         }
@@ -349,8 +389,8 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        if (mNsdHelper != null) {
-            mNsdHelper.stopDiscovery();
+        if (mNsdClient != null) {
+            mNsdClient.stopDiscovery();
         }
         super.onPause();
     }
@@ -358,14 +398,16 @@ public class SpielBeitretenActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (mNsdHelper != null) {
-            mNsdHelper.discoverServices();
+        if (mNsdClient != null) {
+            mNsdClient.discoverServices();
         }
     }
 
     @Override
     protected void onDestroy() {
-        mNsdHelper.tearDown();
+        if(mNsdServer != null) {
+            mNsdServer.tearDown();
+        }
         mGameConnection.tearDown();
         super.onDestroy();
     }

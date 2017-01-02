@@ -10,24 +10,32 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.monopoly.domke.sebastian.monopoly.R;
+import com.monopoly.domke.sebastian.monopoly.common.GameMessage;
+import com.monopoly.domke.sebastian.monopoly.common.Spiel;
 import com.monopoly.domke.sebastian.monopoly.common.Spieler;
+import com.monopoly.domke.sebastian.monopoly.database.DatabaseHandler;
+import com.monopoly.domke.sebastian.monopoly.view.SpielBeitretenActivity;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 public class GamelobbySpielerAdapter extends ArrayAdapter<Spieler>{
 
 	// declaring our ArrayList of items
-	private ArrayList<Spieler> objects;
+	public ArrayList<Spieler> objects;
 	ImageView spielerEntfernen;
 	View view;
+	SpielBeitretenActivity spielBeitretenActivity;
 
 	/* here we must override the constructor for ArrayAdapter
 	* the only variable we care about now is ArrayList<Item> objects,
 	* because it is the list of objects we want to display.
 	*/
-	public GamelobbySpielerAdapter(Context context, int textViewResourceId, ArrayList<Spieler> objects) {
+	public GamelobbySpielerAdapter(Context context, int textViewResourceId, ArrayList<Spieler> objects, SpielBeitretenActivity spielBeitretenActivity) {
 		super(context, textViewResourceId, objects);
 		this.objects = objects;
+		this.spielBeitretenActivity = spielBeitretenActivity;
 	}
 
 	/*
@@ -58,10 +66,19 @@ public class GamelobbySpielerAdapter extends ArrayAdapter<Spieler>{
 		spielerEntfernen.setOnClickListener(new View.OnClickListener() {
 			 public void onClick(View v) {
 
-					objects.remove(position);
-				 	GamelobbySpielerAdapter.super.notifyDataSetChanged();
+		 		Spieler i = objects.get(position);
+			 	spielBeitretenActivity.datasource.deleteSpieler(i.getSpielerMacAdresse(), spielBeitretenActivity.aktuellesSpiel.getSpielID());
 
-				 //Todo Nachricht Gamelobby verlassen an Spieler
+				objects.remove(position);
+				GamelobbySpielerAdapter.super.notifyDataSetChanged();
+
+				 JSONObject messageContent = spielBeitretenActivity.messageParser.playerStatusToJson(spielBeitretenActivity.eigenerSpieler, spielBeitretenActivity.aktuellesSpiel);
+
+				 GameMessage requestJoinGameMessage = new GameMessage(GameMessage.MessageHeader.exitGame, messageContent);
+
+				 String jsonString = spielBeitretenActivity.messageParser.messageToJsonString(requestJoinGameMessage);
+
+				 spielBeitretenActivity.mGameConnection.sendMessage(jsonString);
 			 }
 		});
  		

@@ -144,15 +144,56 @@ public class MessageParser {
         GameMessage newGameMessage = new GameMessage();
 
         try {
-            JSONArray jArray = new JSONArray(jsonString);
+            JSONObject jObject = new JSONObject(jsonString);
 
-            newGameMessage.setMessageHeader((GameMessage.MessageHeader) jArray.getJSONObject(0).get("message_header"));
-            newGameMessage.setMessageContent((JSONObject) jArray.getJSONObject(1).get("message_content"));
+            newGameMessage.setMessageHeader(getMessageHeader(jObject.get("message_header").toString()));
+            newGameMessage.setMessageContent((JSONObject) jObject.get("message_content"));
 
         }catch(JSONException e){
             Log.e("JsonException", e.toString());
         }
 
         return newGameMessage;
+    }
+
+    public GameMessage.MessageHeader getMessageHeader(String messageHeader){
+        switch (messageHeader){
+            case "invitation":
+                return GameMessage.MessageHeader.invitation;
+
+            case "gameStart":
+                return GameMessage.MessageHeader.gameStart;
+
+            case "gameEnd":
+                return GameMessage.MessageHeader.gameEnd;
+
+            case "sendMoney":
+                return GameMessage.MessageHeader.sendMoney;
+
+            case "receiveMoneyFromBank":
+                return GameMessage.MessageHeader.receiveMoneyFromBank;
+
+            case "receiveFreiParken":
+                return GameMessage.MessageHeader.receiveFreiParken;
+
+            case "sendMoneyToBank":
+                return GameMessage.MessageHeader.sendMoneyToBank;
+
+            case "sendMoneyToFreiParken":
+                return GameMessage.MessageHeader.sendMoneyToFreiParken;
+
+            case "joinGame":
+                return GameMessage.MessageHeader.joinGame;
+
+            case "exitGame":
+                return GameMessage.MessageHeader.exitGame;
+
+            case "requestJoinGame":
+                return GameMessage.MessageHeader.requestJoinGame;
+
+            default:
+                return null;
+
+        }
     }
 }

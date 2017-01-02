@@ -2,9 +2,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.monopoly.domke.sebastian.monoploy.com.monopoly.domke.sebastian.monopoly.SpielBeitretenActivity">
+
     <item
-        android:id="@+id/spieler_einladen_action"
-        android:icon="@drawable/hinzufuegen"
-        android:title="@string/spieler_einladen"
-        app:showAsAction="ifRoom" />
+        android:id="@+id/send"
+        android:orderInCategory="100"
+        android:icon="@android:drawable/ic_media_play"
+        android:title="Send"
+        app:showAsAction="always" />
 </menu>

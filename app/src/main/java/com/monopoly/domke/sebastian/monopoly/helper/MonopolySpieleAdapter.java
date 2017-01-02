@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.monopoly.domke.sebastian.monopoly.R;
 import com.monopoly.domke.sebastian.monopoly.common.GameConnection;
 import com.monopoly.domke.sebastian.monopoly.common.Spiel;
+import com.monopoly.domke.sebastian.monopoly.database.DatabaseHandler;
 import com.monopoly.domke.sebastian.monopoly.view.SpielBeitretenActivity;
 
 import java.util.ArrayList;
@@ -27,15 +28,17 @@ public class MonopolySpieleAdapter extends ArrayAdapter<Spiel>{
 	ImageView spielEntfernen;
 	ImageView spielLaden;
 	View view;
-	SharedPreferences sharedPreferences = null;
+
+	DatabaseHandler databaseHandler;
 
 	/* here we must override the constructor for ArrayAdapter
 	* the only variable we care about now is ArrayList<Item> objects,
 	* because it is the list of objects we want to display.
 	*/
-	public MonopolySpieleAdapter(Context context, int textViewResourceId, ArrayList<Spiel> objects) {
+	public MonopolySpieleAdapter(Context context, int textViewResourceId, ArrayList<Spiel> objects, DatabaseHandler databaseHandler) {
 		super(context, textViewResourceId, objects);
 		this.objects = objects;
+		this.databaseHandler = databaseHandler;
 	}
 
 	/*
@@ -66,8 +69,12 @@ public class MonopolySpieleAdapter extends ArrayAdapter<Spiel>{
 		spielEntfernen.setOnClickListener(new View.OnClickListener() {
 			 public void onClick(View v) {
 
-					objects.remove(position);
-				 	MonopolySpieleAdapter.super.notifyDataSetChanged();
+				Spiel i = objects.get(position);
+
+				databaseHandler.deleteSpiel(i.getSpielDatum());
+
+				objects.remove(position);
+				MonopolySpieleAdapter.super.notifyDataSetChanged();
 			 }
 		});
 
@@ -76,13 +83,10 @@ public class MonopolySpieleAdapter extends ArrayAdapter<Spiel>{
 		spielLaden.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
-				sharedPreferences = getContext().getSharedPreferences("monopoly", getContext().MODE_PRIVATE);
-
 				Spiel i = objects.get(position);
 
-				sharedPreferences.edit().putString("monopolySpielDatum", i.getSpielDatum()).commit();
-
 				Intent intent = new Intent(getContext(), SpielBeitretenActivity.class);
+				intent.putExtra("spiel_datum", i.getSpielDatum());
 				intent.putExtra("SpielLaden", "true");
 				getContext().startActivity(intent);
 			}

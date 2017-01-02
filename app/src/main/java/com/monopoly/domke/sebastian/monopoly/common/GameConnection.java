@@ -59,14 +59,12 @@ public class GameConnection {
     }
 
     public void tearDown() {
-        mGameServer.tearDown();
-        mGameClient.tearDown();
-        /*if(mGameClient != null) {
-            mGameClient.tearDown();
-        }
         if(mGameServer != null) {
             mGameServer.tearDown();
-        }*/
+        }
+        if(mGameClient != null) {
+            mGameClient.tearDown();
+        }
     }
 
     public void connectToServer(InetAddress address, int port) {
@@ -74,7 +72,6 @@ public class GameConnection {
     }
 
     public void sendMessage(String msg) {
-        Log.d("gameSendMessage", "send GameMessage");
         if (mGameClient != null) {
             mGameClient.sendMessage(msg);
         }
@@ -90,23 +87,22 @@ public class GameConnection {
 
 
     public synchronized void updateMessages(String msg, boolean local) {
-        Log.d(TAG, "Updating message: " + msg);
+        Log.e(TAG, "Updating message: " + msg);
 
-        if (local) {
+        /*if (local) {
             msg = "me: " + msg;
         } else {
             msg = "them: " + msg;
+        }*/
+
+        if (!local) {
+            Bundle messageBundle = new Bundle();
+            messageBundle.putString("msg", msg);
+
+            Message message = new Message();
+            message.setData(messageBundle);
+            mUpdateHandler.sendMessage(message);
         }
-
-        Bundle messageBundle = new Bundle();
-        messageBundle.putString("msg", msg);
-
-        Message message = new Message();
-        message.setData(messageBundle);
-        mUpdateHandler.sendMessage(message);
-
-        Log.d("updateGameMessage", msg);
-
     }
 
     private synchronized void setSocket(Socket socket) {
@@ -190,7 +186,7 @@ public class GameConnection {
 
         public GameClient(InetAddress address, int port) {
 
-            Log.d(CLIENT_TAG, "Creating gameClient");
+            Log.d(CLIENT_TAG, "Creating GameClient");
             this.mAddress = address;
             this.PORT = port;
 
@@ -232,7 +228,7 @@ public class GameConnection {
                         String msg = mMessageQueue.take();
                         sendMessage(msg);
                     } catch (InterruptedException ie) {
-                        Log.d(CLIENT_TAG, "GameMessage sending loop interrupted, exiting");
+                        Log.d(CLIENT_TAG, "Message sending loop interrupted, exiting");
                     }
                 }
             }

@@ -10,6 +10,7 @@ import android.util.Log;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.monopoly.domke.sebastian.monopoly.common.GameConnection;
 import com.monopoly.domke.sebastian.monopoly.common.GameMessage;
 import com.monopoly.domke.sebastian.monopoly.view.MainMenuActivity;
 
@@ -21,7 +22,7 @@ import java.io.Serializable;
  * Created by Basti on 12.12.2016.
  */
 
-public class NsdHelper {
+public class NsdServer {
 
     Context mContext;
 
@@ -33,23 +34,24 @@ public class NsdHelper {
 
     public static final String SERVICE_TYPE = "_http._tcp.";
 
-    public static final String TAG = "NsdHelper";
-    public String mServiceName = "NsdGame";
+    public static final String TAG = "NsdServerGame";
+    public String mServiceName = "MonopolyGameServer";
 
     NsdServiceInfo mService;
 
     MainMenuActivity activity;
+    GameConnection gameConnection;
 
-    public NsdHelper(Context context) {
+    public NsdServer(Context context) {
         mContext = context;
         mNsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
 
     }
 
-    public NsdHelper(Context context, MainMenuActivity activity) {
+    public NsdServer(Context context, GameConnection gameConnection) {
         mContext = context;
         mNsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
-        this.activity = activity;
+        this.gameConnection = gameConnection;
     }
 
     public void initializeNsd() {
@@ -71,33 +73,21 @@ public class NsdHelper {
 
             @Override
             public void onServiceFound(NsdServiceInfo service) {
-                Log.d(TAG, "Service discovery success" + service);
+                Log.d(TAG, "Service discovery success: " + service);
                 if (!service.getServiceType().equals(SERVICE_TYPE)) {
                     Log.d(TAG, "Unknown Service Type: " + service.getServiceType());
                 } else if (service.getServiceName().equals(mServiceName)) {
                     Log.d(TAG, "Same machine: " + mServiceName);
                 } else if (service.getServiceName().contains(mServiceName)){
+                    Log.d(TAG, "Service found");
                     Toast.makeText(mContext, "Service found", Toast.LENGTH_SHORT).show();
-                    //sharedPreferences.edit().putBoolean("service_discovered", true).commit();
                     mNsdManager.resolveService(service, mResolveListener);
-
-/*                    if(activity != null){
-
-                        JSONObject messageContent = new JSONObject();
-
-                        GameMessage invitePlayerGameMessage = new GameMessage(GameMessage.MessageHeader.requestJoinGame, messageContent);
-
-                        String jsonString = activity.messageParser.messageToJsonString(invitePlayerGameMessage);
-
-                        activity.mGameConnection.sendMessage(jsonString);
-                        Toast.makeText(mContext, "invitePlayerGameMessage send", Toast.LENGTH_SHORT).show();
-                    }*/
                 }
             }
 
             @Override
             public void onServiceLost(NsdServiceInfo service) {
-                Log.e(TAG, "service lost" + service);
+                Log.e(TAG, "service lost: " + service);
                 if (mService == service) {
                     mService = null;
                 }
@@ -110,13 +100,13 @@ public class NsdHelper {
 
             @Override
             public void onStartDiscoveryFailed(String serviceType, int errorCode) {
-                Log.e(TAG, "Discovery failed: Error code:" + errorCode);
+                Log.e(TAG, "Discovery failed: Error code: " + errorCode);
                 mNsdManager.stopServiceDiscovery(this);
             }
 
             @Override
             public void onStopDiscoveryFailed(String serviceType, int errorCode) {
-                Log.e(TAG, "Discovery failed: Error code:" + errorCode);
+                Log.e(TAG, "Discovery failed: Error code: " + errorCode);
                 mNsdManager.stopServiceDiscovery(this);
             }
         };
@@ -127,7 +117,7 @@ public class NsdHelper {
 
             @Override
             public void onResolveFailed(NsdServiceInfo serviceInfo, int errorCode) {
-                Log.e(TAG, "Resolve failed" + errorCode);
+                Log.e(TAG, "Resolve failed " + errorCode);
             }
 
             @Override
@@ -138,6 +128,7 @@ public class NsdHelper {
                     Log.d(TAG, "Same IP.");
                     return;
                 }
+
                 mService = serviceInfo;
             }
         };
@@ -149,6 +140,10 @@ public class NsdHelper {
             @Override
             public void onServiceRegistered(NsdServiceInfo NsdServiceInfo) {
                 mServiceName = NsdServiceInfo.getServiceName();
+
+                Toast.makeText(mContext, "Successfully registered",
+                        Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "Registered name: " + mServiceName);
             }
 
             @Override
@@ -174,7 +169,6 @@ public class NsdHelper {
 
         mNsdManager.registerService(
                 serviceInfo, NsdManager.PROTOCOL_DNS_SD, mRegistrationListener);
-
     }
 
     public void discoverServices() {
@@ -191,13 +185,13 @@ public class NsdHelper {
     }
 
     public void tearDown() {
-        mNsdManager.unregisterService(mRegistrationListener);
+        //mNsdManager.unregisterService(mRegistrationListener);
 
-        /*try{
+        try{
             mNsdManager.unregisterService(mRegistrationListener);
         }catch(Exception e){
             Log.e(TAG, "No service registered ");
-        }*/
+        }
 
     }
 }

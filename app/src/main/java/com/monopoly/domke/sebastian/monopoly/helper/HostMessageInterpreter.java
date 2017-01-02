@@ -21,6 +21,7 @@ public class HostMessageInterpreter {
 
     private SpielBeitretenActivity spielBeitretenActivity;
     private SpielStartActivity spielStartActivity;
+    private Spieler playerToDelete;
 
     public HostMessageInterpreter(SpielBeitretenActivity activity){
 
@@ -86,10 +87,10 @@ public class HostMessageInterpreter {
                 String jsonString = messageParser.messageToJsonString(invitePlayerGameMessage);
 
                 spielBeitretenActivity.mGameConnection.sendMessage(jsonString);
-                Toast.makeText(spielStartActivity.getApplicationContext(), "RequestJoinGame erhalten!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(spielBeitretenActivity.getApplicationContext(), "RequestJoinGame erhalten!", Toast.LENGTH_SHORT).show();
             }catch(Exception e){
                 Log.e("MessageInterpreter", "getRequestJoinGameMessage: " + e.toString());
-                Toast.makeText(spielStartActivity.getApplicationContext(), "RequestJoinGame nicht erhalten!!!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(spielBeitretenActivity.getApplicationContext(), "RequestJoinGame nicht erhalten!!!", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -226,6 +227,8 @@ public class HostMessageInterpreter {
                     spielBeitretenActivity.datasource.addSpieler(neuerSpieler);
                 }
 
+                playerToDelete = neuerSpieler;
+
                 spielBeitretenActivity.spieler_adapter.add(neuerSpieler);
                 spielBeitretenActivity.spieler_adapter.notifyDataSetChanged();
 
@@ -244,12 +247,19 @@ public class HostMessageInterpreter {
 
                 Spieler neuerSpieler;
 
-                    neuerSpieler = spielBeitretenActivity.datasource.getSpielerBySpielIdAndSpielerMac(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_mac_adress"));
+                neuerSpieler = spielBeitretenActivity.datasource.getSpielerBySpielIdAndSpielerMac(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_mac_adress"));
 
-                    spielBeitretenActivity.datasource.deleteSpieler(neuerSpieler.getSpielerMacAdresse(), neuerSpieler.getIdMonopolySpiel());
+                spielBeitretenActivity.datasource.deleteSpieler(neuerSpieler.getSpielerMacAdresse(), neuerSpieler.getIdMonopolySpiel());
 
-                spielBeitretenActivity.spieler_adapter.remove(neuerSpieler);
-                spielBeitretenActivity.spieler_adapter.notifyDataSetChanged();
+                for (int i=0; i < spielBeitretenActivity.spieler_adapter.getCount(); i++) {
+
+                    Spieler spielerToDelete = spielBeitretenActivity.spieler_adapter.getItem(i);
+
+                    if(spielerToDelete.getSpielerMacAdresse().equals(neuerSpieler.getSpielerMacAdresse())){
+                        spielBeitretenActivity.spieler_adapter.objects.remove(i);
+                        spielBeitretenActivity.spieler_adapter.notifyDataSetChanged();
+                    }
+                }
 
                 Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spieler hat die Gamelobby verlassen!", Toast.LENGTH_SHORT).show();
             }catch(Exception e){
