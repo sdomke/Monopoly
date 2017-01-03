@@ -3,9 +3,12 @@ package com.monopoly.domke.sebastian.monopoly.view;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,13 +19,25 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.monopoly.domke.sebastian.monopoly.R;
+import com.monopoly.domke.sebastian.monopoly.common.GameConnection;
+import com.monopoly.domke.sebastian.monopoly.common.GameMessage;
 import com.monopoly.domke.sebastian.monopoly.common.Spiel;
 import com.monopoly.domke.sebastian.monopoly.common.Spieler;
 import com.monopoly.domke.sebastian.monopoly.database.DatabaseHandler;
+import com.monopoly.domke.sebastian.monopoly.helper.HostMessageInterpreter;
+import com.monopoly.domke.sebastian.monopoly.helper.MessageParser;
+import com.monopoly.domke.sebastian.monopoly.helper.NsdClient;
+import com.monopoly.domke.sebastian.monopoly.helper.NsdServer;
+import com.monopoly.domke.sebastian.monopoly.helper.PlayerMessageInterpreter;
+
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class SpielStartActivity extends AppCompatActivity {
 
     String eigenerSpielerIP;
+    ArrayList<String> aktuelleSpielerIMEIs;
     int aktuellesSpielID;
     public Spiel aktuellesSpiel;
     public Spieler eigenerSpieler;
@@ -33,6 +48,18 @@ public class SpielStartActivity extends AppCompatActivity {
 
     public DatabaseHandler databaseHandler;
 
+    public NsdServer mNsdServer;
+    public NsdClient mNsdClient;
+    public GameConnection mGameConnection;
+    private Handler mUpdateHandler;
+    public static final String TAG = "NsdGame";
+
+    boolean neuesSpiel = false;
+
+    private PlayerMessageInterpreter playerMessageInterpreter;
+    private HostMessageInterpreter hostMessageInterpreter;
+    public MessageParser messageParser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,16 +69,56 @@ public class SpielStartActivity extends AppCompatActivity {
 
         databaseHandler = new DatabaseHandler(this);
 
+        messageParser = new MessageParser();
+
         Intent intent = getIntent();
 
-        //Todo SpielerMacAdressen aus Intent auslesen und EigenenSpieler und Gegenspieler initialisieren
-
-        eigenerSpielerIP = intent.getStringExtra("eigenerSpielerIpAdresse");
+        aktuelleSpielerIMEIs = intent.getStringArrayListExtra("aktive_spieler");
         aktuellesSpielID = intent.getIntExtra("aktuellesSpielID", 0);
+        neuesSpiel = intent.getBooleanExtra("neues_spiel", false);
 
         aktuellesSpiel = databaseHandler.getSpielByID(aktuellesSpielID);
 
-        eigenerSpieler = databaseHandler.getSpielerBySpielIdAndSpielerMac(aktuellesSpielID, eigenerSpielerIP);
+        mUpdateHandler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                Toast.makeText(getApplicationContext(), msg.getData().getString("msg"), Toast.LENGTH_SHORT).show();
+
+                try {
+                    GameMessage message = messageParser.jsonStringToMessage(msg.getData().getString("msg"));
+
+                    if (!neuesSpiel) {
+                        Toast.makeText(getApplicationContext(), "Client Message Handler", Toast.LENGTH_SHORT).show();
+                        playerMessageInterpreter.decideWhatToDoWithTheMassage(message);
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Host Message Handler", Toast.LENGTH_SHORT).show();
+                        hostMessageInterpreter.decideWhatToDoWithTheMassage(message);
+                    }
+                }catch (Exception e){
+                    Log.d(TAG, "Keine passende Nachricht");
+                    Toast.makeText(getApplicationContext(), "Keine passende Nachricht", Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+
+        mGameConnection = new GameConnection(mUpdateHandler);
+
+        /*mNsdServer = new NsdServer(this);
+        //mNsdServer.initializeNsd();
+        mNsdServer.initializeRegistrationListener();*/
+
+
+
+            mNsdClient = new NsdClient(this, mGameConnection);
+            mNsdClient.initializeDiscoveryListener();
+            mNsdClient.initializeResolveListener();
+
+        if(!neuesSpiel) {
+            playerMessageInterpreter = new PlayerMessageInterpreter(this);
+        }
+        else{
+            hostMessageInterpreter = new HostMessageInterpreter(this);
+        }
 
         init();
 
@@ -370,12 +437,10 @@ public class SpielStartActivity extends AppCompatActivity {
     }
 
     public void gegenspielerInit(){
-        //Todo Initialisieren der Gegenspieler
+        //Todo EigenenSpieler und Gegenspieler initialisieren
     }
 
     public void spielBeenden(){
-
-        //Todo Spiel speichern (alles in die Datenbank) und Spiel beendet Nachricht an die Spieler
 
         new AlertDialog.Builder(this)
                 .setTitle("Spiel beenden")
@@ -387,15 +452,19 @@ public class SpielStartActivity extends AppCompatActivity {
                         Intent intent = new Intent(getApplicationContext(), MainMenuActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-                        Toast.makeText(getApplicationContext(), "Spiel beendet!", Toast.LENGTH_SHORT).show();
+                        JSONObject messageContent = messageParser.gameStatusToJson(eigenerSpieler, aktuellesSpiel);
+
+                        GameMessage startGameMessage = new GameMessage(GameMessage.MessageHeader.gameStart, messageContent);
+
+                        String jsonString = messageParser.messageToJsonString(startGameMessage);
+
+                        mGameConnection.sendMessage(jsonString);
+
+                        Toast.makeText(getApplicationContext(), "Spiel beenden Nachricht gesendet", Toast.LENGTH_SHORT).show();
 
                         startActivity(intent);
                     }
                 }).create().show();
-    }
-
-    public void spielSpeichern(){
-        //Todo Spiel speichern (alles in die Datenbank)
     }
 
     @Override
@@ -411,16 +480,8 @@ public class SpielStartActivity extends AppCompatActivity {
 
         if (item.getItemId() == R.id.spiel_beenden_action) {
 
-            Toast.makeText(getApplicationContext(), "Spiel beenden Nachricht gesendet", Toast.LENGTH_SHORT).show();
             spielBeenden();
         }
-
-        else if (item.getItemId() == R.id.spiel_speichern_action) {
-
-            Toast.makeText(getApplicationContext(), "Spiel beenden Nachricht gesendet", Toast.LENGTH_SHORT).show();
-            spielSpeichern();
-        }
-
         return true;
     }
 }

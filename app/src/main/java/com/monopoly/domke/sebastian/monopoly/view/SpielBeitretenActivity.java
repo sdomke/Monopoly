@@ -1,8 +1,6 @@
 package com.monopoly.domke.sebastian.monopoly.view;
 
 import android.content.Intent;
-import android.net.nsd.NsdServiceInfo;
-import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -52,7 +51,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
     public ListView gamelobbyListView;
     public Spiel aktuellesSpiel;
     private String ipAdresseEigenerSpieler;
-    private String macAdresseEigenerSpieler;
+    private String imeiEigenerSpieler;
     private WifiManager wifiManager;
 
     public NsdServer mNsdServer;
@@ -148,52 +147,56 @@ public class SpielBeitretenActivity extends AppCompatActivity {
             //connectToGame();
         }
 
-        //Todo Eigene IPAdresse und MacAdresse auslesen
+        //Todo Eigene IPAdresse und IMEI auslesen
 
         WifiManager manager = (WifiManager) getSystemService(getApplicationContext().WIFI_SERVICE);
         ipAdresseEigenerSpieler = intToInetAddress(manager.getDhcpInfo().serverAddress).getHostAddress();
-        WifiInfo info = manager.getConnectionInfo();
-        macAdresseEigenerSpieler = info.getMacAddress();
 
-        Log.d(TAG, "Mac: " + macAdresseEigenerSpieler);
+        TelephonyManager telephonyManager = (TelephonyManager)getSystemService(getApplicationContext().TELEPHONY_SERVICE);
+        imeiEigenerSpieler = telephonyManager.getDeviceId();
+
+        Log.d(TAG, "IMEI: " + imeiEigenerSpieler);
         Log.d(TAG, "IP: " + ipAdresseEigenerSpieler);
 
         //ipAdresseHost = "192.168.43.1";
-
-
-        //Todo Überprüfen ob es schon einen Spieler mit der MacAdresse passend zum Spiel gibt (dann wiederherstellen)
+        
         try{
-            eigenerSpieler = datasource.getSpielerBySpielIdAndSpielerMac(aktuellesSpiel.getSpielID(), macAdresseEigenerSpieler);
+            eigenerSpieler = datasource.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), imeiEigenerSpieler);
         }catch(Exception e){
             Log.d(TAG, "Spieler nicht gefunden");
 
-            eigenerSpieler = new Spieler(macAdresseEigenerSpieler, aktuellesSpiel.getSpielID());
+            eigenerSpieler = new Spieler(imeiEigenerSpieler, aktuellesSpiel.getSpielID());
             eigenerSpieler.setSpielerName(eigenerSpielerName);
             eigenerSpieler.setSpielerFarbe(eigenerSpielerFarbe);
             eigenerSpieler.setSpielerKapital(aktuellesSpiel.getSpielerStartkapital());
             eigenerSpieler.setSpielerIpAdresse(ipAdresseEigenerSpieler);
         }
 
-        //Todo FloatingButton nur für SpielHost sichtbar machen
         spielStartenFB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 if(!gamelobbyListView.getAdapter().isEmpty()) {
 
-                    //Todo Spiel gestartet Nachricht an andere Spieler
                     ArrayList<String> aktivePlayerList = new ArrayList<String>();
 
-                    for(int i=0; i <  gamelobbyListView.getAdapter().getCount(); i++){
-                        Spieler spieler = (Spieler) gamelobbyListView.getAdapter().getItem(i);
-                        aktivePlayerList.add(spieler.getSpielerMacAdresse());
+                    for (Spieler spieler : spieler_adapter.objects) {
+                        aktivePlayerList.add(spieler.getSpielerIMEI());
                     }
 
-                    //Todo Intent mit den MacAdressen aller aktiven Spieler und Datum des Spiels
                     Intent intent = new Intent(getApplicationContext(), SpielStartActivity.class);
                     intent.putStringArrayListExtra("aktive_spieler", aktivePlayerList);
-                    intent.putExtra("eigenerSpielerIpAdresse", eigenerSpieler.getSpielerIpAdresse());
                     intent.putExtra("aktuellesSpielID", aktuellesSpiel.getSpielID());
+                    intent.putExtra("neues_spiel", true);
+
+                    JSONObject messageContent = messageParser.gameStatusToJson(eigenerSpieler, aktuellesSpiel);
+
+                    GameMessage startGameMessage = new GameMessage(GameMessage.MessageHeader.gameStart, messageContent);
+
+                    String jsonString = messageParser.messageToJsonString(startGameMessage);
+
+                    mGameConnection.sendMessage(jsonString);
+
                     startActivity(intent);
                 }
                 else{
@@ -314,9 +317,14 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         }
 
         adapter.add(eigenerSpieler);
-        datasource.addSpieler(eigenerSpieler);
 
-        //Todo Spiel beigetreten Nachricht an andere Spieler
+        try{
+            datasource.updateSpieler(eigenerSpieler);
+        }catch(Exception e){
+            Log.d(TAG, "Spieler nicht gefunden");
+
+            datasource.addSpieler(eigenerSpieler);
+        }
 
         JSONObject messageContent = messageParser.playerStatusToJson(eigenerSpieler, aktuellesSpiel);
 

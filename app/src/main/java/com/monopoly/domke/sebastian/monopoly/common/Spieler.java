@@ -11,11 +11,11 @@ public class Spieler {
     private int spielerFarbe;
     private int spielerKapital;
     private String spielerIpAdresse;
-    private String spielerMacAdresse;
+    private String spielerIMEI;
     private int idMonopolySpiel;
 
-    public Spieler (String spielerMacAdresse, int idMonopolySpiel){
-        this.spielerMacAdresse = spielerMacAdresse;
+    public Spieler (String spielerIMEI, int idMonopolySpiel){
+        this.spielerIMEI = spielerIMEI;
         this.idMonopolySpiel = idMonopolySpiel;
     }
 
@@ -69,14 +69,14 @@ public class Spieler {
         return this.spielerIpAdresse;
     }
 
-    public void setSpielerMacAdresse(String spielerMacAdresse){
+    public void setSpielerIMEI(String spielerIMEI){
 
-        this.spielerMacAdresse = spielerMacAdresse;
+        this.spielerIMEI = spielerIMEI;
     }
 
-    public String getSpielerMacAdresse(){
+    public String getSpielerIMEI(){
 
-        return this.spielerMacAdresse;
+        return this.spielerIMEI;
     }
 
     public void setIdMonopolySpiel(int idMonopolySpiel){

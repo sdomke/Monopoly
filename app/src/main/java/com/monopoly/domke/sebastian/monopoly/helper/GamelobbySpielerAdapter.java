@@ -11,9 +11,7 @@ import android.widget.TextView;
 
 import com.monopoly.domke.sebastian.monopoly.R;
 import com.monopoly.domke.sebastian.monopoly.common.GameMessage;
-import com.monopoly.domke.sebastian.monopoly.common.Spiel;
 import com.monopoly.domke.sebastian.monopoly.common.Spieler;
-import com.monopoly.domke.sebastian.monopoly.database.DatabaseHandler;
 import com.monopoly.domke.sebastian.monopoly.view.SpielBeitretenActivity;
 
 import org.json.JSONObject;
@@ -67,7 +65,7 @@ public class GamelobbySpielerAdapter extends ArrayAdapter<Spieler>{
 			 public void onClick(View v) {
 
 		 		Spieler i = objects.get(position);
-			 	spielBeitretenActivity.datasource.deleteSpieler(i.getSpielerMacAdresse(), spielBeitretenActivity.aktuellesSpiel.getSpielID());
+			 	spielBeitretenActivity.datasource.deleteSpieler(i.getSpielerIMEI(), spielBeitretenActivity.aktuellesSpiel.getSpielID());
 
 				objects.remove(position);
 				GamelobbySpielerAdapter.super.notifyDataSetChanged();

@@ -31,7 +31,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	private static final String colSpielerFarbe = "SpielerFarbe";
 	private static final String colSpielerKapital = "SpielerKapital";
 	private static final String colSpielerIpAdresse = "SpielerIpAdresse";
-	private static final String colSpielerMacAdresse = "SpielerMacAdresse";
+	private static final String colSpielerIMEI = "SpielerIMEI";
 	private static final String colIdMonopolySpielListe = "IdMonopolySpielListe";
 
 	// training courses Table name
@@ -69,7 +69,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + colSpielerFarbe + " INTEGER,"
                 + colSpielerKapital + " INTEGER,"
 				+ colSpielerIpAdresse + " TEXT,"
-				+ colSpielerMacAdresse + " TEXT,"
+				+ colSpielerIMEI + " TEXT,"
                 + colIdMonopolySpielListe + " INTEGER NOT NULL,"
 				+ " FOREIGN KEY (" + colIdMonopolySpielListe + ") REFERENCES " + spielListeTable + " (" + colMonopolySpielListeId + ")" + " ON DELETE CASCADE" + ")";
 
@@ -214,7 +214,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		values.put(colSpielerFarbe, spieler.getSpielerFarbe());
 		values.put(colSpielerKapital, spieler.getSpielerKapital());
 		values.put(colSpielerIpAdresse, spieler.getSpielerIpAdresse());
-		values.put(colSpielerMacAdresse, spieler.getSpielerMacAdresse());
+		values.put(colSpielerIMEI, spieler.getSpielerIMEI());
 		values.put(colIdMonopolySpielListe, spieler.getIdMonopolySpiel());
 
 		// Inserting Row
@@ -223,20 +223,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	}
 
 	// Delete game
-	public void deleteSpieler(String spielerMacAdresse, int spielID) {
+	public void deleteSpieler(String spielerIMEI, int spielID) {
 		SQLiteDatabase db = this.getWritableDatabase();
-		db.delete(monopolySpielerTable, colSpielerMacAdresse + "=? and " + colIdMonopolySpielListe + "=?",
-				new String[] { String.valueOf(spielerMacAdresse), String.valueOf(spielID) });
+		db.delete(monopolySpielerTable, colSpielerIMEI + "=? and " + colIdMonopolySpielListe + "=?",
+				new String[] { String.valueOf(spielerIMEI), String.valueOf(spielID) });
 		db.close();
 	}
 
 	// get spieler by spielID and ipAdress
-	public Spieler getSpielerBySpielIdAndSpielerMac(int spielID, String spielerMacAdress) {
+	public Spieler getSpielerBySpielIdAndSpielerIMEI(int spielID, String spielerIMEI) {
 		SQLiteDatabase db = this.getReadableDatabase();
 
 		Cursor cursor = db.query(monopolySpielerTable, new String[] { colSpielerId,
-						colSpielerName, colSpielerFarbe, colSpielerKapital, colSpielerIpAdresse, colSpielerMacAdresse, colIdMonopolySpielListe}, colSpielerMacAdresse + "=? and " + colIdMonopolySpielListe + "=?",
-				new String[] { String.valueOf(spielerMacAdress), String.valueOf(spielID) }, null, null, null, null);
+						colSpielerName, colSpielerFarbe, colSpielerKapital, colSpielerIpAdresse, colSpielerIMEI, colIdMonopolySpielListe}, colSpielerIMEI + "=? and " + colIdMonopolySpielListe + "=?",
+				new String[] { String.valueOf(spielerIMEI), String.valueOf(spielID) }, null, null, null, null);
 		if (cursor != null)
 			cursor.moveToFirst();
 
@@ -261,12 +261,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		values.put(colSpielerFarbe, spieler.getSpielerFarbe());
 		values.put(colSpielerKapital, spieler.getSpielerKapital());
 		values.put(colSpielerIpAdresse, spieler.getSpielerIpAdresse());
-		values.put(colSpielerMacAdresse, spieler.getSpielerMacAdresse());
+		values.put(colSpielerIMEI, spieler.getSpielerIMEI());
 		values.put(colIdMonopolySpielListe, spieler.getIdMonopolySpiel());
 
 		// updating row
-		int row = db.update(monopolySpielerTable, values, colSpielerMacAdresse + " = ?",
-				new String[] { String.valueOf(spieler.getSpielerMacAdresse()) });
+		int row = db.update(monopolySpielerTable, values, colSpielerIMEI + " = ?",
+				new String[] { String.valueOf(spieler.getSpielerIMEI()) });
 		db.close(); // Closing database connection
 	}
 
@@ -287,7 +287,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 				spieler.setSpielerName(cursor.getString(1));
 				spieler.setSpielerFarbe(cursor.getInt(2));
 				spieler.setSpielerKapital(cursor.getInt(3));
-				spieler.setSpielerMacAdresse(cursor.getString(5));
+				spieler.setSpielerIMEI(cursor.getString(5));
 
 				// Adding contact to list
 				spielerListe.add(spieler);
@@ -316,7 +316,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 				spieler.setSpielerName(cursor.getString(1));
 				spieler.setSpielerFarbe(cursor.getInt(2));
 				spieler.setSpielerKapital(cursor.getInt(3));
-				spieler.setSpielerMacAdresse(cursor.getString(5));
+				spieler.setSpielerIMEI(cursor.getString(5));
 
 				// Adding contact to list
 				spielerListe.add(spieler);

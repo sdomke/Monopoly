@@ -6,7 +6,6 @@ import com.monopoly.domke.sebastian.monopoly.common.GameMessage;
 import com.monopoly.domke.sebastian.monopoly.common.Spiel;
 import com.monopoly.domke.sebastian.monopoly.common.Spieler;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,7 +21,7 @@ public class MessageParser {
 
         try {
             json.put("host_ip_adress", eigenerSpieler.getSpielerIpAdresse());
-            json.put("host_mac_adress", eigenerSpieler.getSpielerMacAdresse());
+            json.put("host_imei", eigenerSpieler.getSpielerIMEI());
             json.put("game_date", aktuellesSpiel.getSpielDatum());
             json.put("game_player_count", aktuellesSpiel.getSpielerAnzahl());
             json.put("game_seed_capital", aktuellesSpiel.getSpielerStartkapital());
@@ -41,7 +40,7 @@ public class MessageParser {
 
         try {
             json.put("host_ip_adress", eigenerSpieler.getSpielerIpAdresse());
-            json.put("host_mac_adress", eigenerSpieler.getSpielerMacAdresse());
+            json.put("host_imei", eigenerSpieler.getSpielerIMEI());
             json.put("game_date", aktuellesSpiel.getSpielDatum());
         }
         catch(JSONException e){
@@ -57,9 +56,9 @@ public class MessageParser {
 
         try {
             json.put("sender_name", eigenerSpieler.getSpielerName());
-            json.put("sender_mac_adress", eigenerSpieler.getSpielerMacAdresse());
+            json.put("sender_imei", eigenerSpieler.getSpielerIMEI());
             json.put("receiver_name", gegenSpieler.getSpielerName());
-            json.put("receiver_mac_adress", gegenSpieler.getSpielerMacAdresse());
+            json.put("receiver_imei", gegenSpieler.getSpielerIMEI());
             json.put("payment", payment);
         }
         catch(JSONException e){
@@ -75,7 +74,7 @@ public class MessageParser {
 
         try {
             json.put("player_name", eigenerSpieler.getSpielerName());
-            json.put("player_mac_adress", eigenerSpieler.getSpielerMacAdresse());
+            json.put("player_imei", eigenerSpieler.getSpielerIMEI());
             json.put("payment", value);
         }
         catch(JSONException e){
@@ -92,7 +91,7 @@ public class MessageParser {
         try {
             json.put("player_name", eigenerSpieler.getSpielerName());
             json.put("player_ip_adress", eigenerSpieler.getSpielerIpAdresse());
-            json.put("player_mac_adress", eigenerSpieler.getSpielerMacAdresse());
+            json.put("player_imei", eigenerSpieler.getSpielerIMEI());
             json.put("player_color", eigenerSpieler.getSpielerFarbe());
             json.put("player_capital", eigenerSpieler.getSpielerKapital());
             json.put("game_date", aktuellesSpiel.getSpielDatum());
@@ -110,7 +109,7 @@ public class MessageParser {
 
         try {
             json.put("player_ip", eigenerSpieler.getSpielerIpAdresse());
-            json.put("player_mac_adress", eigenerSpieler.getSpielerMacAdresse());
+            json.put("player_imei", eigenerSpieler.getSpielerIMEI());
         }
         catch(JSONException e){
             Log.e("JsonException", e.toString());

@@ -125,11 +125,10 @@ public class PlayerMessageInterpreter {
         if(spielBeitretenActivity != null){
             try {
 
-                ArrayList<String> aktivePlayerList = new ArrayList<>();
+                ArrayList<String> aktivePlayerList = new ArrayList<String>();
 
-                for(int i=0; i <  spielBeitretenActivity.gamelobbyListView.getAdapter().getCount(); i++){
-                    Spieler spieler = (Spieler) spielBeitretenActivity.gamelobbyListView.getAdapter().getItem(i);
-                    aktivePlayerList.add(spieler.getSpielerMacAdresse());
+                for (Spieler spieler : spielBeitretenActivity.spieler_adapter.objects) {
+                    aktivePlayerList.add(spieler.getSpielerIMEI());
                 }
 
                 Intent intent = new Intent(spielBeitretenActivity.getApplicationContext(), SpielStartActivity.class);
@@ -156,13 +155,13 @@ public class PlayerMessageInterpreter {
                 intent.putExtra("spiel_beendet", "Spiel beendet");
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-                Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spiel beendet!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(spielStartActivity.getApplicationContext(), "Spiel beendet!", Toast.LENGTH_SHORT).show();
 
-                spielBeitretenActivity.startActivity(intent);
+                spielStartActivity.startActivity(intent);
 
             }catch(Exception e){
                 Log.e("MessageInterpreter", "getGameEndMessage: " + e.toString());
-                Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spiel nicht beendet!!!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(spielStartActivity.getApplicationContext(), "Spiel nicht beendet!!!", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -175,9 +174,9 @@ public class PlayerMessageInterpreter {
 
                 int payment = gameMessage.getMessageContent().getInt("payment");
 
-                Spieler senderPlayer = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerMac(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("sender_mac_adress"));
+                Spieler senderPlayer = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("sender_imei"));
 
-                Spieler receiverPlayer = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerMac(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("receiver_mac_adress"));
+                Spieler receiverPlayer = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("receiver_imei"));
 
                 senderPlayer.setSpielerKapital(senderPlayer.getSpielerKapital() - payment);
                 receiverPlayer.setSpielerKapital(senderPlayer.getSpielerKapital() + payment);
@@ -200,7 +199,7 @@ public class PlayerMessageInterpreter {
 
                 int payment = gameMessage.getMessageContent().getInt("payment");
 
-                Spieler player = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerMac(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_mac_adress"));
+                Spieler player = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_imei"));
 
                 player.setSpielerKapital(player.getSpielerKapital() + payment);
 
@@ -221,7 +220,7 @@ public class PlayerMessageInterpreter {
 
                 int payment = gameMessage.getMessageContent().getInt("payment");
 
-                Spieler player = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerMac(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_mac_adress"));
+                Spieler player = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_imei"));
 
                 player.setSpielerKapital(player.getSpielerKapital() - payment);
 
@@ -242,7 +241,7 @@ public class PlayerMessageInterpreter {
 
                 int payment = gameMessage.getMessageContent().getInt("payment");
 
-                Spieler player = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerMac(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_mac_adress"));
+                Spieler player = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_imei"));
 
                 player.setSpielerKapital(player.getSpielerKapital() - payment);
                 aktuellesSpiel.setFreiParken(aktuellesSpiel.getFreiParken() + payment);
@@ -263,7 +262,7 @@ public class PlayerMessageInterpreter {
             try {
                 Spiel aktuellesSpiel = spielStartActivity.aktuellesSpiel;
 
-                Spieler player = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerMac(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_mac_adress"));
+                Spieler player = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_imei"));
 
                 player.setSpielerKapital(player.getSpielerKapital() + aktuellesSpiel.getFreiParken());
                 aktuellesSpiel.setFreiParken(0);
@@ -287,11 +286,17 @@ public class PlayerMessageInterpreter {
                 Spieler neuerSpieler;
 
                 try{
-                    neuerSpieler = spielBeitretenActivity.datasource.getSpielerBySpielIdAndSpielerMac(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_mac_adress"));
+                    neuerSpieler = spielBeitretenActivity.datasource.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_imei"));
+
+                    neuerSpieler.setSpielerName(gameMessage.getMessageContent().getString("player_name"));
+                    neuerSpieler.setSpielerFarbe(gameMessage.getMessageContent().getInt("player_color"));
+                    neuerSpieler.setSpielerIpAdresse(gameMessage.getMessageContent().getString("player_ip_adress"));
+
+                    spielBeitretenActivity.datasource.updateSpieler(neuerSpieler);
                 }catch(Exception e){
                     Log.e("MessageInterpreter", "Spieler noch nicht angelegt: " + e.toString());
 
-                    neuerSpieler = new Spieler(gameMessage.getMessageContent().getString("player_mac_adress"), aktuellesSpiel.getSpielID());
+                    neuerSpieler = new Spieler(gameMessage.getMessageContent().getString("player_imei"), aktuellesSpiel.getSpielID());
                     neuerSpieler.setSpielerName(gameMessage.getMessageContent().getString("player_name"));
                     neuerSpieler.setSpielerKapital(aktuellesSpiel.getSpielerStartkapital());
                     neuerSpieler.setSpielerFarbe(gameMessage.getMessageContent().getInt("player_color"));
@@ -318,15 +323,15 @@ public class PlayerMessageInterpreter {
 
                 Spieler neuerSpieler;
 
-                neuerSpieler = spielBeitretenActivity.datasource.getSpielerBySpielIdAndSpielerMac(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_mac_adress"));
+                neuerSpieler = spielBeitretenActivity.datasource.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_imei"));
 
-                spielBeitretenActivity.datasource.deleteSpieler(neuerSpieler.getSpielerMacAdresse(), neuerSpieler.getIdMonopolySpiel());
+                spielBeitretenActivity.datasource.deleteSpieler(neuerSpieler.getSpielerIMEI(), neuerSpieler.getIdMonopolySpiel());
 
                 for (int i=0; i < spielBeitretenActivity.spieler_adapter.getCount(); i++) {
 
                     Spieler spielerToDelete = spielBeitretenActivity.spieler_adapter.getItem(i);
 
-                    if(spielerToDelete.getSpielerMacAdresse().equals(neuerSpieler.getSpielerMacAdresse())){
+                    if(spielerToDelete.getSpielerIMEI().equals(neuerSpieler.getSpielerIMEI())){
                         spielBeitretenActivity.spieler_adapter.objects.remove(i);
                         spielBeitretenActivity.spieler_adapter.notifyDataSetChanged();
                     }
