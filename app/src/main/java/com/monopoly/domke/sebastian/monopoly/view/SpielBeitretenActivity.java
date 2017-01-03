@@ -376,11 +376,6 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         }
     }
 
-    //Todo Gegenspieler initiieren
-    public void gegenspielerInit(){
-
-    }
-
     public void advertiseGame() {
         // Register service
         if(mGameConnection.getLocalPort() > -1) {
