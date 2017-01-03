@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -37,6 +38,7 @@ import java.util.ArrayList;
 public class SpielStartActivity extends AppCompatActivity {
 
     ArrayList<String> aktuelleSpielerIMEIs;
+    ArrayList<Spieler> aktuelleSpieler;
     int aktuellesSpielID;
     public Spiel aktuellesSpiel;
     public Spieler eigenerSpieler;
@@ -60,6 +62,11 @@ public class SpielStartActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        //ToDo Fragment mit dem aktuellen Kapital der Gegenspieler und Wert von Frei Parken implementieren
+
+        //ToDo Buttons für Erhalten und Bezahlen als Fragment implementieren
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spiel_start);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -76,6 +83,8 @@ public class SpielStartActivity extends AppCompatActivity {
         neuesSpiel = intent.getBooleanExtra("neues_spiel", false);
 
         aktuellesSpiel = databaseHandler.getSpielByID(aktuellesSpielID);
+
+        gegenspielerInit();
 
         mUpdateHandler = new Handler(){
             @Override
@@ -119,12 +128,9 @@ public class SpielStartActivity extends AppCompatActivity {
         }
 
         init();
-
-        //Todo Nachrichten an die Spieler bei Transaktionen und Schnelltasten
-
-        //Todo Spiel speichern und Spiel beenden Funktion hinzufügen
     }
 
+    //Todo EigenenSpieler und Gegenspieler Touchlistener initialisieren
     public void init(){
         aktuellesKapitalEigenerSpielerTextView = (TextView) findViewById(R.id.deinKapitalTextView);
         try {
@@ -203,7 +209,7 @@ public class SpielStartActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 empfaengerAuswahl = 6;
-                Toast.makeText(getApplicationContext(), "Spieler 2 ausgewählt", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Spieler 3 ausgewählt", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -298,17 +304,38 @@ public class SpielStartActivity extends AppCompatActivity {
         erhalteLosButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                eigenerSpieler.setSpielerKapital(eigenerSpieler.getSpielerKapital() + 2000000);
+                int betrag = 2000000;
+
+                eigenerSpieler.setSpielerKapital(betrag + eigenerSpieler.getSpielerKapital());
                 aktuellesKapitalEigenerSpielerTextView.setText(String.valueOf(eigenerSpieler.getSpielerKapital()));
+
+                JSONObject messageContent = messageParser.moneyTransactionToJson(eigenerSpieler, betrag);
+
+                GameMessage receiveLosGameMessage = new GameMessage(GameMessage.MessageHeader.receiveMoneyFromBank, messageContent);
+
+                String jsonString = messageParser.messageToJsonString(receiveLosGameMessage);
+
+                mGameConnection.sendMessage(jsonString);
             }
         });
 
         erhalteFreiParkenButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                eigenerSpieler.setSpielerKapital(eigenerSpieler.getSpielerKapital() + aktuellesSpiel.getFreiParken());
+
+                int betrag = aktuellesSpiel.getFreiParken();
+
+                eigenerSpieler.setSpielerKapital(eigenerSpieler.getSpielerKapital() - betrag);
                 aktuellesKapitalEigenerSpielerTextView.setText(String.valueOf(eigenerSpieler.getSpielerKapital()));
                 aktuellesSpiel.setFreiParken(0);
+
+                JSONObject messageContent = messageParser.moneyTransactionToJson(eigenerSpieler, betrag);
+
+                GameMessage receiveFreiParkenGameMessage = new GameMessage(GameMessage.MessageHeader.receiveFreiParken, messageContent);
+
+                String jsonString = messageParser.messageToJsonString(receiveFreiParkenGameMessage);
+
+                mGameConnection.sendMessage(jsonString);
             }
         });
 
@@ -317,11 +344,13 @@ public class SpielStartActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(aktuellerBetragEditText.getText().toString().length() != 0) {
 
-                    eigenerSpieler.setSpielerKapital(Integer.valueOf(aktuellerBetragEditText.getText().toString()) + eigenerSpieler.getSpielerKapital());
+                    Toast.makeText(getApplicationContext(), "Funktion ist noch nicht fertig :-)", Toast.LENGTH_SHORT).show();
+
+                    /*eigenerSpieler.setSpielerKapital(Integer.valueOf(aktuellerBetragEditText.getText().toString()) + eigenerSpieler.getSpielerKapital());
                     aktuellesKapitalEigenerSpielerTextView.setText(String.valueOf(eigenerSpieler.getSpielerKapital()));
 
                     hypothek += Integer.valueOf(aktuellerBetragEditText.getText().toString());
-                    aktuellerBetragEditText.setText("");
+                    aktuellerBetragEditText.setText("");*/
                 }
                 else{
                     Toast.makeText(getApplicationContext(), "Bitte zuerst gewünschten Betrag für die Hypothek eingeben", Toast.LENGTH_SHORT).show();
@@ -332,9 +361,20 @@ public class SpielStartActivity extends AppCompatActivity {
         bezahleGefaengnisButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                eigenerSpieler.setSpielerKapital(eigenerSpieler.getSpielerKapital() - 500000);
+                int betrag = 500000;
+
+                eigenerSpieler.setSpielerKapital(eigenerSpieler.getSpielerKapital() - betrag);
                 aktuellesKapitalEigenerSpielerTextView.setText(String.valueOf(eigenerSpieler.getSpielerKapital()));
-                aktuellesSpiel.setFreiParken(aktuellesSpiel.getFreiParken() + 500000);
+
+                aktuellesSpiel.setFreiParken(aktuellesSpiel.getFreiParken() + betrag);
+
+                JSONObject messageContent = messageParser.moneyTransactionToJson(eigenerSpieler, betrag);
+
+                GameMessage moneyTransactionToBankGameMessage = new GameMessage(GameMessage.MessageHeader.sendMoneyToFreiParken, messageContent);
+
+                String jsonString = messageParser.messageToJsonString(moneyTransactionToBankGameMessage);
+
+                mGameConnection.sendMessage(jsonString);
             }
         });
 
@@ -345,11 +385,13 @@ public class SpielStartActivity extends AppCompatActivity {
                 //Todo Hypothek darf nicht negativ werden (nur so viel bezahlen so hoch wie die Hypothek)
                 if(aktuellerBetragEditText.getText().toString().length() != 0) {
 
-                    eigenerSpieler.setSpielerKapital(eigenerSpieler.getSpielerKapital() - Integer.valueOf(aktuellerBetragEditText.getText().toString()));
+                    Toast.makeText(getApplicationContext(), "Funktion ist noch nicht fertig :-)", Toast.LENGTH_SHORT).show();
+
+/*                  eigenerSpieler.setSpielerKapital(eigenerSpieler.getSpielerKapital() - Integer.valueOf(aktuellerBetragEditText.getText().toString()));
                     aktuellesKapitalEigenerSpielerTextView.setText(String.valueOf(eigenerSpieler.getSpielerKapital()));
 
                     hypothek -= Integer.valueOf(aktuellerBetragEditText.getText().toString());
-                    aktuellerBetragEditText.setText("");
+                    aktuellerBetragEditText.setText("");*/
                 }
                 else{
                     Toast.makeText(getApplicationContext(), "Bitte zuerst gewünschten Betrag für die Hypothek eingeben", Toast.LENGTH_SHORT).show();
@@ -399,8 +441,18 @@ public class SpielStartActivity extends AppCompatActivity {
 
     public void transaktionAnMich() {
 
-        eigenerSpieler.setSpielerKapital(Integer.valueOf(aktuellerBetragEditText.getText().toString()) + eigenerSpieler.getSpielerKapital());
+        int betrag = Integer.valueOf(aktuellerBetragEditText.getText().toString());
+
+        eigenerSpieler.setSpielerKapital(betrag + eigenerSpieler.getSpielerKapital());
         aktuellesKapitalEigenerSpielerTextView.setText(String.valueOf(eigenerSpieler.getSpielerKapital()));
+
+        JSONObject messageContent = messageParser.moneyTransactionToJson(eigenerSpieler, betrag);
+
+        GameMessage moneyTransactionToPlayerGameMessage = new GameMessage(GameMessage.MessageHeader.receiveMoneyFromBank, messageContent);
+
+        String jsonString = messageParser.messageToJsonString(moneyTransactionToPlayerGameMessage);
+
+        mGameConnection.sendMessage(jsonString);
 
         aktuellerBetragEditText.setText("");
         empfaengerAuswahl = 0;
@@ -410,8 +462,18 @@ public class SpielStartActivity extends AppCompatActivity {
 
     public void transaktionAnDieBank() {
 
-        eigenerSpieler.setSpielerKapital(eigenerSpieler.getSpielerKapital() - Integer.valueOf(aktuellerBetragEditText.getText().toString()));
+        int betrag = Integer.valueOf(aktuellerBetragEditText.getText().toString());
+
+        eigenerSpieler.setSpielerKapital(eigenerSpieler.getSpielerKapital() - betrag);
         aktuellesKapitalEigenerSpielerTextView.setText(String.valueOf(eigenerSpieler.getSpielerKapital()));
+
+        JSONObject messageContent = messageParser.moneyTransactionToJson(eigenerSpieler, betrag);
+
+        GameMessage moneyTransactionToBankGameMessage = new GameMessage(GameMessage.MessageHeader.sendMoneyToBank, messageContent);
+
+        String jsonString = messageParser.messageToJsonString(moneyTransactionToBankGameMessage);
+
+        mGameConnection.sendMessage(jsonString);
 
         aktuellerBetragEditText.setText("");
         empfaengerAuswahl = 0;
@@ -419,10 +481,20 @@ public class SpielStartActivity extends AppCompatActivity {
 
     public void transaktionInDieMitte() {
 
-        eigenerSpieler.setSpielerKapital(eigenerSpieler.getSpielerKapital() - Integer.valueOf(aktuellerBetragEditText.getText().toString()));
+        int betrag = Integer.valueOf(aktuellerBetragEditText.getText().toString());
+
+        eigenerSpieler.setSpielerKapital(eigenerSpieler.getSpielerKapital() - betrag);
         aktuellesKapitalEigenerSpielerTextView.setText(String.valueOf(eigenerSpieler.getSpielerKapital()));
 
-        aktuellesSpiel.setFreiParken(aktuellesSpiel.getFreiParken() + Integer.valueOf(aktuellerBetragEditText.getText().toString()));
+        aktuellesSpiel.setFreiParken(aktuellesSpiel.getFreiParken() + betrag);
+
+        JSONObject messageContent = messageParser.moneyTransactionToJson(eigenerSpieler, betrag);
+
+        GameMessage moneyTransactionToBankGameMessage = new GameMessage(GameMessage.MessageHeader.sendMoneyToFreiParken, messageContent);
+
+        String jsonString = messageParser.messageToJsonString(moneyTransactionToBankGameMessage);
+
+        mGameConnection.sendMessage(jsonString);
 
         aktuellerBetragEditText.setText("");
         empfaengerAuswahl = 0;
@@ -430,17 +502,41 @@ public class SpielStartActivity extends AppCompatActivity {
 
     public void transaktionAnEinenSpieler() {
 
-        eigenerSpieler.setSpielerKapital(eigenerSpieler.getSpielerKapital() - Integer.valueOf(aktuellerBetragEditText.getText().toString()));
+        int betrag = Integer.valueOf(aktuellerBetragEditText.getText().toString());
+
+        eigenerSpieler.setSpielerKapital(eigenerSpieler.getSpielerKapital() - betrag);
         aktuellesKapitalEigenerSpielerTextView.setText(String.valueOf(eigenerSpieler.getSpielerKapital()));
 
         //Todo Überweisung an den ausgewählten Spieler
+
+        JSONObject messageContent = messageParser.moneyTransactionToPlayerToJson(eigenerSpieler, eigenerSpieler, betrag);
+
+        GameMessage moneyTransactionToBankGameMessage = new GameMessage(GameMessage.MessageHeader.sendMoney, messageContent);
+
+        String jsonString = messageParser.messageToJsonString(moneyTransactionToBankGameMessage);
+
+        mGameConnection.sendMessage(jsonString);
 
         aktuellerBetragEditText.setText("");
         empfaengerAuswahl = 0;
     }
 
     public void gegenspielerInit(){
-        //Todo EigenenSpieler und Gegenspieler initialisieren
+
+        String imeiEigenerSpieler = Settings.Secure.getString(getApplicationContext().getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+
+        aktuelleSpieler = new ArrayList<>();
+
+        for (String aktuelleSpielerIMEI: aktuelleSpielerIMEIs) {
+            Spieler spieler = databaseHandler.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), aktuelleSpielerIMEI);
+
+            aktuelleSpieler.add(spieler);
+
+            if(spieler.getSpielerIMEI().equals(imeiEigenerSpieler)){
+                eigenerSpieler = spieler;
+            }
+        }
     }
 
     public void spielBeenden(){
