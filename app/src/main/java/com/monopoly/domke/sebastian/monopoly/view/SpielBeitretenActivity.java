@@ -1,10 +1,12 @@
 package com.monopoly.domke.sebastian.monopoly.view;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -77,7 +79,6 @@ public class SpielBeitretenActivity extends AppCompatActivity {
     }
 
     public void init(){
-        //Todo Intent von NeuesSpiel-, MainMenu- oder SpielLaden-Activity mit den Spieldaten
         datasource = new DatabaseHandler(this);
 
         FloatingActionButton spielStartenFB = (FloatingActionButton) findViewById(R.id.spielStartenFloatingButton);
@@ -147,19 +148,15 @@ public class SpielBeitretenActivity extends AppCompatActivity {
             //connectToGame();
         }
 
-        //Todo Eigene IPAdresse und IMEI auslesen
-
         WifiManager manager = (WifiManager) getSystemService(getApplicationContext().WIFI_SERVICE);
         ipAdresseEigenerSpieler = intToInetAddress(manager.getDhcpInfo().serverAddress).getHostAddress();
 
-        TelephonyManager telephonyManager = (TelephonyManager)getSystemService(getApplicationContext().TELEPHONY_SERVICE);
-        imeiEigenerSpieler = telephonyManager.getDeviceId();
+        imeiEigenerSpieler = Settings.Secure.getString(getApplicationContext().getContentResolver(),
+                Settings.Secure.ANDROID_ID);
 
         Log.d(TAG, "IMEI: " + imeiEigenerSpieler);
         Log.d(TAG, "IP: " + ipAdresseEigenerSpieler);
 
-        //ipAdresseHost = "192.168.43.1";
-        
         try{
             eigenerSpieler = datasource.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), imeiEigenerSpieler);
         }catch(Exception e){
@@ -234,7 +231,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         ImageView farbeGruenImageView = (ImageView) findViewById(R.id.spielerFarbeGruenButtonView);
         ImageView farbeBlauImageView = (ImageView) findViewById(R.id.spielerFarbeBlauButtonView);
         ImageView farbeRotImageView = (ImageView) findViewById(R.id.spielerFarbeRotButtonView);
-        ImageView farbeGrauImageView = (ImageView) findViewById(R.id.spielerFarbeGruenButtonView);
+        ImageView farbeGrauImageView = (ImageView) findViewById(R.id.spielerFarbeGrauButtonView);
         ImageView farbeSchwarzImageView = (ImageView) findViewById(R.id.spielerFarbeWeißButtonView);
 
         farbeGelbImageView.setOnClickListener(new View.OnClickListener() {

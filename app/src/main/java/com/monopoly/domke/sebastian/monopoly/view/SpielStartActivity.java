@@ -36,7 +36,6 @@ import java.util.ArrayList;
 
 public class SpielStartActivity extends AppCompatActivity {
 
-    String eigenerSpielerIP;
     ArrayList<String> aktuelleSpielerIMEIs;
     int aktuellesSpielID;
     public Spiel aktuellesSpiel;
@@ -48,7 +47,6 @@ public class SpielStartActivity extends AppCompatActivity {
 
     public DatabaseHandler databaseHandler;
 
-    public NsdServer mNsdServer;
     public NsdClient mNsdClient;
     public GameConnection mGameConnection;
     private Handler mUpdateHandler;
@@ -129,7 +127,12 @@ public class SpielStartActivity extends AppCompatActivity {
 
     public void init(){
         aktuellesKapitalEigenerSpielerTextView = (TextView) findViewById(R.id.deinKapitalTextView);
-        aktuellesKapitalEigenerSpielerTextView.setText(String.valueOf(eigenerSpieler.getSpielerKapital()));
+        try {
+            aktuellesKapitalEigenerSpielerTextView.setText(String.valueOf(eigenerSpieler.getSpielerKapital()));
+        }
+        catch(Exception e){
+            aktuellesKapitalEigenerSpielerTextView.setText("0");
+        }
 
         final ImageView eigenerSpielerIconImageView = (ImageView) findViewById(R.id.eigenerSpielerFarbeButtonView);
         ImageView gegenspieler1IconImageView = (ImageView) findViewById(R.id.spielerFarbeRotButtonView);

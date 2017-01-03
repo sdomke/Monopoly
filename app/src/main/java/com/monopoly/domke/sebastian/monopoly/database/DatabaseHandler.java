@@ -17,7 +17,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 	// All Static variables
 	// Database Version
-	private static final int dbVersion = 5;
+	private static final int dbVersion = 6;
 
 	// Database Name
 	private static final String dbName = "MonopolyAppDB";
