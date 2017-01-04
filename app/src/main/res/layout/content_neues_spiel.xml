@@ -193,6 +193,18 @@
         android:hint="Monopoly-Dollar"
         android:background="#a4f5ee0a"
         android:layout_below="@+id/startkapitalTextView"
+        android:layout_toLeftOf="@+id/waehrungStartKapitalImageView"
+        android:layout_toStartOf="@+id/waehrungStartKapitalImageView" />
+
+    <TextView
+        android:id="@+id/waehrungStartKapitalImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/waehrungMonopolyDollar"
+        android:textSize="20sp"
+        android:layout_marginLeft="5dp"
+        android:textStyle="bold"
+        android:layout_alignTop="@+id/startKapitalEditText"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 

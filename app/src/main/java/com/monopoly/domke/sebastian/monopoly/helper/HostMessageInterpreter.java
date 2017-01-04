@@ -100,14 +100,14 @@ public class HostMessageInterpreter {
             try {
                 Spiel aktuellesSpiel = spielStartActivity.aktuellesSpiel;
 
-                int payment = gameMessage.getMessageContent().getInt("payment");
+                double payment = gameMessage.getMessageContent().getDouble("payment");
 
                 Spieler senderPlayer = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("sender_imei"));
 
                 Spieler receiverPlayer = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("receiver_imei"));
 
-                senderPlayer.setSpielerKapital(senderPlayer.getSpielerKapital() - payment);
-                receiverPlayer.setSpielerKapital(senderPlayer.getSpielerKapital() + payment);
+                senderPlayer.setSpielerKapital(roundDouble(senderPlayer.getSpielerKapital() - payment));
+                receiverPlayer.setSpielerKapital(roundDouble(senderPlayer.getSpielerKapital() + payment));
 
                 spielStartActivity.databaseHandler.updateSpieler(senderPlayer);
                 spielStartActivity.databaseHandler.updateSpieler(receiverPlayer);
@@ -125,11 +125,11 @@ public class HostMessageInterpreter {
             try {
                 Spiel aktuellesSpiel = spielStartActivity.aktuellesSpiel;
 
-                int payment = gameMessage.getMessageContent().getInt("payment");
+                double payment = gameMessage.getMessageContent().getDouble("payment");
 
                 Spieler player = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_imei"));
 
-                player.setSpielerKapital(player.getSpielerKapital() + payment);
+                player.setSpielerKapital(roundDouble(player.getSpielerKapital() + payment));
 
                 spielStartActivity.databaseHandler.updateSpieler(player);
 
@@ -146,11 +146,11 @@ public class HostMessageInterpreter {
             try {
                 Spiel aktuellesSpiel = spielStartActivity.aktuellesSpiel;
 
-                int payment = gameMessage.getMessageContent().getInt("payment");
+                double payment = gameMessage.getMessageContent().getDouble("payment");
 
                 Spieler player = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_imei"));
 
-                player.setSpielerKapital(player.getSpielerKapital() - payment);
+                player.setSpielerKapital(roundDouble(player.getSpielerKapital() - payment));
 
                 spielStartActivity.databaseHandler.updateSpieler(player);
 
@@ -167,12 +167,12 @@ public class HostMessageInterpreter {
             try {
                 Spiel aktuellesSpiel = spielStartActivity.aktuellesSpiel;
 
-                int payment = gameMessage.getMessageContent().getInt("payment");
+                double payment = gameMessage.getMessageContent().getDouble("payment");
 
                 Spieler player = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_imei"));
 
-                player.setSpielerKapital(player.getSpielerKapital() - payment);
-                aktuellesSpiel.setFreiParken(aktuellesSpiel.getFreiParken() + payment);
+                player.setSpielerKapital(roundDouble(player.getSpielerKapital() - payment));
+                aktuellesSpiel.setFreiParken(roundDouble(aktuellesSpiel.getFreiParken() + payment));
 
                 spielStartActivity.databaseHandler.updateSpieler(player);
                 spielStartActivity.databaseHandler.updateSpiel(aktuellesSpiel);
@@ -192,7 +192,7 @@ public class HostMessageInterpreter {
 
                 Spieler player = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_imei"));
 
-                player.setSpielerKapital(player.getSpielerKapital() + aktuellesSpiel.getFreiParken());
+                player.setSpielerKapital(roundDouble(player.getSpielerKapital() + aktuellesSpiel.getFreiParken()));
                 aktuellesSpiel.setFreiParken(0);
 
                 spielStartActivity.databaseHandler.updateSpieler(player);
@@ -274,4 +274,9 @@ public class HostMessageInterpreter {
             }
         }
     }
+
+    public double roundDouble(Double betrag){
+        return Math.round(betrag*1000)/1000.0;
+    }
+
 }

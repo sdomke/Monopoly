@@ -1,6 +1,5 @@
 package com.monopoly.domke.sebastian.monopoly.view;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -11,7 +10,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -228,9 +226,9 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         final ImageView meineEinstellungenImageView = (ImageView) findViewById(R.id.meineEinstellungenView);
 
         ImageView farbeGelbImageView = (ImageView) findViewById(R.id.spielerFarbeGelbButtonView);
-        ImageView farbeGruenImageView = (ImageView) findViewById(R.id.spielerFarbeGruenButtonView);
-        ImageView farbeBlauImageView = (ImageView) findViewById(R.id.spielerFarbeBlauButtonView);
-        ImageView farbeRotImageView = (ImageView) findViewById(R.id.spielerFarbeRotButtonView);
+        ImageView farbeGruenImageView = (ImageView) findViewById(R.id.gegenspieler3ButtonView);
+        ImageView farbeBlauImageView = (ImageView) findViewById(R.id.gegenspieler2ButtonView);
+        ImageView farbeRotImageView = (ImageView) findViewById(R.id.gegenspieler1ButtonView);
         ImageView farbeGrauImageView = (ImageView) findViewById(R.id.spielerFarbeGrauButtonView);
         ImageView farbeSchwarzImageView = (ImageView) findViewById(R.id.spielerFarbeWeißButtonView);
 
@@ -316,7 +314,9 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         adapter.add(eigenerSpieler);
 
         try{
+            datasource.getSpielerBySpielIdAndSpielerIMEI(eigenerSpieler.getIdMonopolySpiel(), eigenerSpieler.getSpielerIMEI());
             datasource.updateSpieler(eigenerSpieler);
+            Log.d(TAG, "Spieler gefunden");
         }catch(Exception e){
             Log.d(TAG, "Spieler nicht gefunden");
 
@@ -331,7 +331,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
         mGameConnection.sendMessage(jsonString);
 
-        //Todo Auswahl der SpielerName und SpielerFarbe ausgrauen solange in Spiellobby
+        //Todo Auswahl der SpielerName und SpielerFarbe ausgrauen solange in Spiellobby und nicht doppelt beitreten
 
     }
 

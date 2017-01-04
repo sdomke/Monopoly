@@ -59,9 +59,9 @@ public class GameConnection {
     }
 
     public void tearDown() {
-        if(mGameServer != null) {
-            mGameServer.tearDown();
-        }
+
+        mGameServer.tearDown();
+
         if(mGameClient != null) {
             mGameClient.tearDown();
         }
@@ -116,6 +116,7 @@ public class GameConnection {
                     mSocket.close();
                 } catch (IOException e) {
                     // TODO(alexlucas): Auto-generated catch block
+                    Log.d(TAG, "Can't close socket");
                     e.printStackTrace();
                 }
             }

@@ -67,7 +67,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 				+ "(" + colSpielerId + " INTEGER PRIMARY KEY,"
 				+ colSpielerName + " TEXT,"
                 + colSpielerFarbe + " INTEGER,"
-                + colSpielerKapital + " INTEGER,"
+                + colSpielerKapital + " DOUBLE,"
 				+ colSpielerIpAdresse + " TEXT,"
 				+ colSpielerIMEI + " TEXT,"
                 + colIdMonopolySpielListe + " INTEGER NOT NULL,"
@@ -77,9 +77,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 				+ spielListeTable + "(" + colMonopolySpielListeId + " INTEGER PRIMARY KEY,"
                 + colMonopolySpielListeDatum + " TEXT,"
 				+ colMonopolySpielListeSpielerAnzahl + " INTEGER,"
-                + colMonopolySpielListeStartkapital + " INTEGER,"
+                + colMonopolySpielListeStartkapital + " DOUBLE,"
 				+ colMonopolySpielListeWaehrung + " TEXT,"
-				+ colMonopolySpielFreiParken + " INTEGER"+ ")";
+				+ colMonopolySpielFreiParken + " DOUBLE"+ ")";
 
 		db.execSQL(createMonoploySpielerTABLE);
 		db.execSQL(createSpielListeTABLE);
@@ -155,9 +155,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		spiel.setSpielID(Integer.parseInt(cursor.getString(0)));
 		spiel.setSpielDatum(cursor.getString(1));
 		spiel.setSpielerAnzahl(cursor.getInt(2));
-		spiel.setSpielerStartkapital(cursor.getInt(3));
+		spiel.setSpielerStartkapital(cursor.getDouble(3));
 		spiel.setWaehrung(cursor.getString(4));
-		spiel.setFreiParken(cursor.getInt(5));
+		spiel.setFreiParken(cursor.getDouble(5));
 
 		// return spiel
 		cursor.close();
@@ -179,9 +179,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		spiel.setSpielID(Integer.parseInt(cursor.getString(0)));
 		spiel.setSpielDatum(cursor.getString(1));
 		spiel.setSpielerAnzahl(cursor.getInt(2));
-		spiel.setSpielerStartkapital(cursor.getInt(3));
+		spiel.setSpielerStartkapital(cursor.getDouble(3));
 		spiel.setWaehrung(cursor.getString(4));
-		spiel.setFreiParken(cursor.getInt(5));
+		spiel.setFreiParken(cursor.getDouble(5));
 
 		// return spiel
 		cursor.close();
@@ -244,7 +244,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		spieler.setSpielerID(Integer.parseInt(cursor.getString(0)));
 		spieler.setSpielerName(cursor.getString(1));
 		spieler.setSpielerFarbe(cursor.getInt(2));
-		spieler.setSpielerKapital(cursor.getInt(3));
+		spieler.setSpielerKapital(cursor.getDouble(3));
 		spieler.setSpielerIpAdresse(cursor.getString(4));
 
 		// return spieler
@@ -265,8 +265,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		values.put(colIdMonopolySpielListe, spieler.getIdMonopolySpiel());
 
 		// updating row
-		int row = db.update(monopolySpielerTable, values, colSpielerIMEI + " = ?",
-				new String[] { String.valueOf(spieler.getSpielerIMEI()) });
+		int row = db.update(monopolySpielerTable, values, colSpielerIMEI + "=? and " + colIdMonopolySpielListe + "=?",
+				new String[] { String.valueOf(spieler.getSpielerIMEI()), String.valueOf(spieler.getIdMonopolySpiel()) } );
 		db.close(); // Closing database connection
 	}
 
@@ -286,7 +286,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 				spieler.setSpielerID(Integer.parseInt(cursor.getString(0)));
 				spieler.setSpielerName(cursor.getString(1));
 				spieler.setSpielerFarbe(cursor.getInt(2));
-				spieler.setSpielerKapital(cursor.getInt(3));
+				spieler.setSpielerKapital(cursor.getDouble(3));
 				spieler.setSpielerIMEI(cursor.getString(5));
 
 				// Adding contact to list
@@ -315,7 +315,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 				spieler.setSpielerID(Integer.parseInt(cursor.getString(0)));
 				spieler.setSpielerName(cursor.getString(1));
 				spieler.setSpielerFarbe(cursor.getInt(2));
-				spieler.setSpielerKapital(cursor.getInt(3));
+				spieler.setSpielerKapital(cursor.getDouble(3));
 				spieler.setSpielerIMEI(cursor.getString(5));
 
 				// Adding contact to list
@@ -344,9 +344,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 				spiel.setSpielID(Integer.parseInt(cursor.getString(0)));
 				spiel.setSpielDatum(cursor.getString(1));
 				spiel.setSpielerAnzahl(cursor.getInt(2));
-				spiel.setSpielerStartkapital(cursor.getInt(3));
+				spiel.setSpielerStartkapital(cursor.getDouble(3));
 				spiel.setWaehrung(cursor.getString(4));
-				spiel.setFreiParken(cursor.getInt(5));
+				spiel.setFreiParken(cursor.getDouble(5));
 
 				// Adding contact to list
 				spieleListe.add(spiel);
@@ -357,199 +357,4 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		// return spieler list
 		return spieleListe;
 	}
-
-	/*
-	public // Adding new siteInduction
-	void addSiteInduction(SiteInduction siteInduction) {
-		SQLiteDatabase db = this.getWritableDatabase();
-
-		ContentValues values = new ContentValues();
-		values.put(colSiteName, siteInduction.getSiteName());
-		values.put(colSiteInductionComplete,
-				siteInduction.getSiteInductionComplete());
-		values.put(colSiteInductionRequired,
-				siteInduction.getSiteInductionRequired());
-		values.put(colInductionHeldUntil, siteInduction.getInductionHeldUntil());
-		values.put(colSitePosition, siteInduction.getSitePosition());
-
-		// Inserting Row
-		db.insert(siteInductionTable, null, values);
-		db.close(); // Closing database connection
-	}
-
-	// Getting single siteInduction
-	public SiteInduction getSiteInduction(String siteName) {
-		SQLiteDatabase db = this.getReadableDatabase();
-
-		Cursor cursor = db.query(siteInductionTable, new String[] {
-				colSiteInductionID, colSiteName, colSiteInductionComplete,
-				colSiteInductionRequired, colInductionHeldUntil,
-				colSitePosition }, colSiteName + "=?",
-				new String[] { String.valueOf(siteName) }, null, null, null,
-				null);
-		if (cursor != null)
-			cursor.moveToFirst();
-
-		SiteInduction siteInduction = new SiteInduction(cursor.getInt(0),
-				cursor.getString(1), cursor.getString(2), cursor.getString(3),
-				cursor.getString(4), cursor.getString(5));
-
-		// return siteInduction
-		return siteInduction;
-	}
-
-	// Getting All siteInductions
-	public ArrayList<SiteInduction> getAllSiteInductions() {
-		ArrayList<SiteInduction> siteInductionArrayList = new ArrayList<SiteInduction>();
-		// Select All Query
-		String selectQuery = "SELECT  * FROM " + siteInductionTable;
-
-		SQLiteDatabase db = this.getWritableDatabase();
-		Cursor cursor = db.rawQuery(selectQuery, null);
-
-		// looping through all rows and adding to list
-		if (cursor.moveToFirst()) {
-			do {
-				SiteInduction siteInduction = new SiteInduction();
-				siteInduction.setSiteInductionId(cursor.getInt(0));
-				siteInduction.setSiteName(cursor.getString(1));
-				siteInduction.setSiteInductionComplete(cursor.getString(2));
-				siteInduction.setSiteInductionRequired(cursor.getString(3));
-				siteInduction.setInductionHeldUntil(cursor.getString(4));
-				siteInduction.setSitePosition(cursor.getString(5));
-				// Adding siteInduction to list
-				siteInductionArrayList.add(siteInduction);
-			} while (cursor.moveToNext());
-		}
-
-		// return siteInduction list
-		return siteInductionArrayList;
-	}
-
-	// Getting All sites
-	public ArrayList<String> getAllSites() {
-		ArrayList<String> siteArrayList = new ArrayList<String>();
-		// Select All Query
-		String selectQuery = "SELECT " + colSiteName + " FROM "
-				+ siteInductionTable + ";";
-
-		SQLiteDatabase db = this.getWritableDatabase();
-		Cursor cursor = db.rawQuery(selectQuery, null);
-
-		// looping through all rows and adding to list
-		if (cursor.moveToFirst()) {
-			do {
-				String siteName = new String();
-				siteName = cursor.getString(0);
-				// Adding siteInduction to list
-				siteArrayList.add(siteName);
-			} while (cursor.moveToNext());
-		}
-
-		// return siteInduction list
-		return siteArrayList;
-	}
-
-	// Adding new trainingCourse
-	public void addTrainingCourse(TrainingCourses trainingCourses) {
-		SQLiteDatabase db = this.getWritableDatabase();
-
-		ContentValues values = new ContentValues();
-		values.put(colCourseName, trainingCourses.getCourseName());
-		values.put(colRequired, trainingCourses.getRequired());
-		values.put(colCompletedDate, trainingCourses.getCompletedDate());
-		values.put(colExpireDate, trainingCourses.getExpireDate());
-		values.put(colRenewableDate, trainingCourses.getRenewableDate());
-		values.put(colCertificateLocation,
-				trainingCourses.getCertificateLocation());
-		values.put(colCourseDescription, trainingCourses.getCourseDescription());
-		values.put(colRefreshPeriodMonth,
-				trainingCourses.getRefreshPeriodMonth());
-		values.put(colTrainingCourseCountry,
-				trainingCourses.getTrainingCourseCountry());
-
-		// Inserting Row
-		db.insert(trainingCoursesTable, null, values);
-		db.close(); // Closing database connection
-	}
-
-	// Getting single trainingCourse
-	public TrainingCourses getTrainingCourse(int id) {
-		SQLiteDatabase db = this.getReadableDatabase();
-
-		Cursor cursor = db.query(trainingCoursesTable, new String[] {
-				colTrainingCoursesId, colCourseName, colRequired,
-				colCompletedDate, colExpireDate, colRenewableDate,
-				colCertificateLocation, colCourseDescription,
-				colRefreshPeriodMonth, colTrainingCourseCountry },
-				colTrainingCoursesId + "=?",
-				new String[] { String.valueOf(id) }, null, null, null, null);
-		if (cursor != null)
-			cursor.moveToFirst();
-
-		TrainingCourses trainingCourses = new TrainingCourses(cursor.getInt(0),
-				cursor.getString(1), cursor.getString(2), cursor.getString(3),
-				cursor.getString(4), cursor.getString(5), cursor.getString(6),
-				cursor.getString(7), cursor.getString(8), cursor.getString(9));
-
-		// return category
-		return trainingCourses;
-	}
-
-	// Getting All training courses
-	public ArrayList<TrainingCourses> getAllTrainingCourses() {
-		ArrayList<TrainingCourses> trainingCoursesArrayList = new ArrayList<TrainingCourses>();
-		// Select All Query
-		String selectQuery = "SELECT  * FROM " + trainingCoursesTable;
-
-		SQLiteDatabase db = this.getWritableDatabase();
-		Cursor cursor = db.rawQuery(selectQuery, null);
-
-		// looping through all rows and adding to list
-		if (cursor.moveToFirst()) {
-			do {
-				TrainingCourses trainingCourses = new TrainingCourses();
-				trainingCourses.setTrainingCoursesId(cursor.getInt(0));
-				trainingCourses.setCourseName(cursor.getString(1));
-				trainingCourses.setRequired(cursor.getString(2));
-				trainingCourses.setCompletedDate(cursor.getString(3));
-				trainingCourses.setExpireDate(cursor.getString(4));
-				trainingCourses.setRenewableDate(cursor.getString(5));
-				trainingCourses.setCertificateLocation(cursor.getString(6));
-				trainingCourses.setCourseDescription(cursor.getString(7));
-				trainingCourses.setRefreshPeriodMonth(cursor.getString(8));
-				trainingCourses.setTrainingCourseCountry(cursor.getString(9));
-				// Adding siteInduction to list
-				trainingCoursesArrayList.add(trainingCourses);
-			} while (cursor.moveToNext());
-		}
-
-		// return siteInduction list
-		return trainingCoursesArrayList;
-	}
-
-	// Getting site inductions Count
-	public int getSiteInductionsCount() {
-		String countQuery = "SELECT * FROM " + siteInductionTable;
-		SQLiteDatabase db = this.getReadableDatabase();
-		Cursor cursor = db.rawQuery(countQuery, null);
-		int ergebnis = cursor.getCount();
-		cursor.close();
-
-		// return count
-		return ergebnis;
-	}
-
-	// Getting training courses Count
-	public int getTrainingCoursesCount() {
-		String countQuery = "SELECT * FROM " + trainingCoursesTable;
-		SQLiteDatabase db = this.getReadableDatabase();
-		Cursor cursor = db.rawQuery(countQuery, null);
-		int ergebnis = cursor.getCount();
-		cursor.close();
-
-		// return count
-		return ergebnis;
-	}
-	*/
 }

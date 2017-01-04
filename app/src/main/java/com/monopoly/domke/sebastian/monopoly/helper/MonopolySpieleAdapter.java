@@ -87,7 +87,7 @@ public class MonopolySpieleAdapter extends ArrayAdapter<Spiel>{
 
 				Intent intent = new Intent(getContext(), SpielBeitretenActivity.class);
 				intent.putExtra("spiel_datum", i.getSpielDatum());
-				intent.putExtra("neues_spiel", "true");
+				intent.putExtra("neues_spiel", true);
 				getContext().startActivity(intent);
 			}
 		});
@@ -114,7 +114,7 @@ public class MonopolySpieleAdapter extends ArrayAdapter<Spiel>{
 				spielerAnzahl.setText("Spieleranzahl: " + i.getSpielerAnzahl());
 			}
 			if (startkapital != null){
-				startkapital.setText("Startkapital:" + i.getSpielerStartkapital());
+				startkapital.setText("Startkapital:" + String.valueOf(i.getSpielerStartkapital()));
 			}
 		}
 

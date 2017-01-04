@@ -9,9 +9,9 @@ public class Spiel {
     private int spielID;
     private int spielerAnzahl;
     private String spielDatum;
-    private int spielerStartkapital;
+    private double spielerStartkapital;
     private String waehrung;
-    private int freiParkenWert;
+    private double freiParkenWert;
 
     public Spiel(){
     }
@@ -60,22 +60,22 @@ public class Spiel {
         return this.waehrung;
     }
 
-    public void setSpielerStartkapital(int spielerStartkapital){
+    public void setSpielerStartkapital(double spielerStartkapital){
 
         this.spielerStartkapital = spielerStartkapital;
     }
 
-    public int getSpielerStartkapital(){
+    public double getSpielerStartkapital(){
 
         return this.spielerStartkapital;
     }
 
-    public void setFreiParken(int freiParkenWert){
+    public void setFreiParken(double freiParkenWert){
 
         this.freiParkenWert = freiParkenWert;
     }
 
-    public int getFreiParken(){
+    public double getFreiParken(){
 
         return this.freiParkenWert;
     }

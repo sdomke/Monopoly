@@ -21,7 +21,7 @@ public class NeuesSpielActivity extends AppCompatActivity implements AdapterView
     private DatabaseHandler databaseHandler;
     private Spiel neuesSpiel;
     private int spielerAnzahl = 2;
-    private int startkapital = 12000000;
+    private double startkapital = 12;
     private String spielDatum;
     private Spinner spinner;
 
@@ -80,7 +80,7 @@ public class NeuesSpielActivity extends AppCompatActivity implements AdapterView
             String tmpStartKapital = startKapitalEditText.getText().toString();
 
             //ToDO Catch exception
-            neuesSpiel.setSpielerStartkapital(Integer.parseInt(tmpStartKapital));
+            neuesSpiel.setSpielerStartkapital(Double.parseDouble(tmpStartKapital));
         }
 
         databaseHandler.addNewMonopolyGame(neuesSpiel);

@@ -92,8 +92,8 @@
         android:src="@drawable/spieler"
         android:clickable="false"
         android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/spielerFarbeRotButtonView"
-        android:layout_toStartOf="@+id/spielerFarbeRotButtonView" />
+        android:layout_toLeftOf="@+id/gegenspieler1ButtonView"
+        android:layout_toStartOf="@+id/gegenspieler1ButtonView" />
 
     <TextView
         android:id="@+id/meinNameTextView"
@@ -152,35 +152,35 @@
         android:background="@color/grau_spieler_farbe"
         android:clickable="true"
         android:layout_above="@+id/spielLobbyBeitretenButtonLayout"
-        android:layout_toRightOf="@+id/spielerFarbeBlauButtonView"
-        android:layout_toEndOf="@+id/spielerFarbeBlauButtonView"
+        android:layout_toRightOf="@+id/gegenspieler2ButtonView"
+        android:layout_toEndOf="@+id/gegenspieler2ButtonView"
         android:layout_marginRight="5dp"/>
 
     <ImageView
-        android:id="@+id/spielerFarbeBlauButtonView"
+        android:id="@+id/gegenspieler2ButtonView"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:background="@color/blau_spieler_farbe"
         android:clickable="true"
         android:layout_above="@+id/spielLobbyBeitretenButtonLayout"
-        android:layout_toRightOf="@+id/spielerFarbeGruenButtonView"
-        android:layout_toEndOf="@+id/spielerFarbeGruenButtonView"
+        android:layout_toRightOf="@+id/gegenspieler3ButtonView"
+        android:layout_toEndOf="@+id/gegenspieler3ButtonView"
         android:layout_marginRight="5dp" />
 
     <ImageView
-        android:id="@+id/spielerFarbeGruenButtonView"
+        android:id="@+id/gegenspieler3ButtonView"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:background="@color/gruen_spieler_farbe"
         android:clickable="true"
         android:layout_above="@+id/spielLobbyBeitretenButtonLayout"
-        android:layout_toRightOf="@+id/spielerFarbeRotButtonView"
-        android:layout_toEndOf="@+id/spielerFarbeRotButtonView"
+        android:layout_toRightOf="@+id/gegenspieler1ButtonView"
+        android:layout_toEndOf="@+id/gegenspieler1ButtonView"
         android:layout_marginRight="5dp"
          />
 
     <ImageView
-        android:id="@+id/spielerFarbeRotButtonView"
+        android:id="@+id/gegenspieler1ButtonView"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:background="@color/rot_spieler_farbe"

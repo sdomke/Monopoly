@@ -179,9 +179,6 @@ public class MainMenuActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if (mNsdClient != null) {
-            mNsdClient.stopDiscovery();
-        }
         if(mGameConnection != null){
             mGameConnection.tearDown();
         }

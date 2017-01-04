@@ -9,7 +9,7 @@ public class Spieler {
     private int spielerID;
     private String spielerName;
     private int spielerFarbe;
-    private int spielerKapital;
+    private double spielerKapital;
     private String spielerIpAdresse;
     private String spielerIMEI;
     private int idMonopolySpiel;
@@ -49,12 +49,12 @@ public class Spieler {
         return this.spielerFarbe;
     }
 
-    public void setSpielerKapital(int spielerKapital){
+    public void setSpielerKapital(double spielerKapital){
 
         this.spielerKapital = spielerKapital;
     }
 
-    public int getSpielerKapital(){
+    public double getSpielerKapital(){
 
         return this.spielerKapital;
     }

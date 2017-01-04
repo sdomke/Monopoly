@@ -2,10 +2,12 @@ package com.monopoly.domke.sebastian.monopoly.view;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -28,7 +30,6 @@ import com.monopoly.domke.sebastian.monopoly.database.DatabaseHandler;
 import com.monopoly.domke.sebastian.monopoly.helper.HostMessageInterpreter;
 import com.monopoly.domke.sebastian.monopoly.helper.MessageParser;
 import com.monopoly.domke.sebastian.monopoly.helper.NsdClient;
-import com.monopoly.domke.sebastian.monopoly.helper.NsdServer;
 import com.monopoly.domke.sebastian.monopoly.helper.PlayerMessageInterpreter;
 
 import org.json.JSONObject;
@@ -38,13 +39,13 @@ import java.util.ArrayList;
 public class SpielStartActivity extends AppCompatActivity {
 
     ArrayList<String> aktuelleSpielerIMEIs;
-    ArrayList<Spieler> aktuelleSpieler;
+    ArrayList<Spieler> gegenspielerListe;
     int aktuellesSpielID;
     public Spiel aktuellesSpiel;
     public Spieler eigenerSpieler;
     TextView aktuellesKapitalEigenerSpielerTextView;
     EditText aktuellerBetragEditText;
-    int hypothek = 0;
+    double hypothek = 0;
     int empfaengerAuswahl = 0;
 
     public DatabaseHandler databaseHandler;
@@ -84,7 +85,10 @@ public class SpielStartActivity extends AppCompatActivity {
 
         aktuellesSpiel = databaseHandler.getSpielByID(aktuellesSpielID);
 
-        gegenspielerInit();
+        spielerInit();
+
+        eigenerSpielerButtonViewInit();
+        gegenspielerButtonViewsInit();
 
         mUpdateHandler = new Handler(){
             @Override
@@ -130,7 +134,7 @@ public class SpielStartActivity extends AppCompatActivity {
         init();
     }
 
-    //Todo EigenenSpieler und Gegenspieler Touchlistener initialisieren
+    //ToDo Erase Button für Betrag
     public void init(){
         aktuellesKapitalEigenerSpielerTextView = (TextView) findViewById(R.id.deinKapitalTextView);
         try {
@@ -140,10 +144,6 @@ public class SpielStartActivity extends AppCompatActivity {
             aktuellesKapitalEigenerSpielerTextView.setText("0");
         }
 
-        final ImageView eigenerSpielerIconImageView = (ImageView) findViewById(R.id.eigenerSpielerFarbeButtonView);
-        ImageView gegenspieler1IconImageView = (ImageView) findViewById(R.id.spielerFarbeRotButtonView);
-        ImageView gegenspieler2IconImageView = (ImageView) findViewById(R.id.spielerFarbeBlauButtonView);
-        ImageView gegenspieler3IconImageView = (ImageView) findViewById(R.id.spielerFarbeGruenButtonView);
         TextView bankIconImageView = (TextView) findViewById(R.id.bankButtonView);
         TextView mitteIconImageView = (TextView) findViewById(R.id.mitteButtonView);
 
@@ -177,42 +177,6 @@ public class SpielStartActivity extends AppCompatActivity {
             }
         });
 
-        eigenerSpielerIconImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                empfaengerAuswahl = 1;
-                Toast.makeText(getApplicationContext(), "Eigener Spieler ausgewählt", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        gegenspieler1IconImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                empfaengerAuswahl = 4;
-                Toast.makeText(getApplicationContext(), "Spieler 1 ausgewählt", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        gegenspieler2IconImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                empfaengerAuswahl = 5;
-                Toast.makeText(getApplicationContext(), "Spieler 2 ausgewählt", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        gegenspieler3IconImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                empfaengerAuswahl = 6;
-                Toast.makeText(getApplicationContext(), "Spieler 3 ausgewählt", Toast.LENGTH_SHORT).show();
-            }
-        });
-
         bankIconImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -234,80 +198,82 @@ public class SpielStartActivity extends AppCompatActivity {
         plus4MButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                betragHinzu(4000000);
+                betragHinzu(4);
             }
         });
 
         plus2MButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                betragHinzu(2000000);
+                betragHinzu(2);
             }
         });
 
         plus1MButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                betragHinzu(1000000);
+                betragHinzu(1);
             }
         });
 
         plus500KButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                betragHinzu(500000);
+                betragHinzu(0.5);
             }
         });
 
         plus400KButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                betragHinzu(400000);
+                betragHinzu(0.4);
             }
         });
 
         plus200KButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                betragHinzu(200000);
+                betragHinzu(0.2);
             }
         });
 
         plus100KButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                betragHinzu(100000);
+                betragHinzu(0.1);
             }
         });
 
         plus50KButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                betragHinzu(50000);
+                betragHinzu(0.05);
             }
         });
 
         plus10KButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                betragHinzu(10000);
+                betragHinzu(0.01);
             }
         });
 
         plus5KButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                betragHinzu(5000);
+                betragHinzu(0.005);
             }
         });
 
         erhalteLosButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int betrag = 2000000;
+                double betrag = 2;
 
-                eigenerSpieler.setSpielerKapital(betrag + eigenerSpieler.getSpielerKapital());
+                eigenerSpieler.setSpielerKapital(roundDouble(betrag + eigenerSpieler.getSpielerKapital()));
                 aktuellesKapitalEigenerSpielerTextView.setText(String.valueOf(eigenerSpieler.getSpielerKapital()));
+
+                databaseHandler.updateSpieler(eigenerSpieler);
 
                 JSONObject messageContent = messageParser.moneyTransactionToJson(eigenerSpieler, betrag);
 
@@ -323,11 +289,14 @@ public class SpielStartActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                int betrag = aktuellesSpiel.getFreiParken();
+                double betrag = aktuellesSpiel.getFreiParken();
 
-                eigenerSpieler.setSpielerKapital(eigenerSpieler.getSpielerKapital() - betrag);
+                eigenerSpieler.setSpielerKapital(roundDouble(eigenerSpieler.getSpielerKapital() + betrag));
                 aktuellesKapitalEigenerSpielerTextView.setText(String.valueOf(eigenerSpieler.getSpielerKapital()));
                 aktuellesSpiel.setFreiParken(0);
+
+                databaseHandler.updateSpieler(eigenerSpieler);
+                databaseHandler.updateSpiel(aktuellesSpiel);
 
                 JSONObject messageContent = messageParser.moneyTransactionToJson(eigenerSpieler, betrag);
 
@@ -346,10 +315,10 @@ public class SpielStartActivity extends AppCompatActivity {
 
                     Toast.makeText(getApplicationContext(), "Funktion ist noch nicht fertig :-)", Toast.LENGTH_SHORT).show();
 
-                    /*eigenerSpieler.setSpielerKapital(Integer.valueOf(aktuellerBetragEditText.getText().toString()) + eigenerSpieler.getSpielerKapital());
+                    /*eigenerSpieler.setSpielerKapital(Double.valueOf(aktuellerBetragEditText.getText().toString()) + eigenerSpieler.getSpielerKapital());
                     aktuellesKapitalEigenerSpielerTextView.setText(String.valueOf(eigenerSpieler.getSpielerKapital()));
 
-                    hypothek += Integer.valueOf(aktuellerBetragEditText.getText().toString());
+                    hypothek += Double.valueOf(aktuellerBetragEditText.getText().toString());
                     aktuellerBetragEditText.setText("");*/
                 }
                 else{
@@ -361,12 +330,15 @@ public class SpielStartActivity extends AppCompatActivity {
         bezahleGefaengnisButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int betrag = 500000;
+                double betrag = 0.5;
 
-                eigenerSpieler.setSpielerKapital(eigenerSpieler.getSpielerKapital() - betrag);
+                eigenerSpieler.setSpielerKapital(roundDouble(eigenerSpieler.getSpielerKapital() - betrag));
                 aktuellesKapitalEigenerSpielerTextView.setText(String.valueOf(eigenerSpieler.getSpielerKapital()));
 
-                aktuellesSpiel.setFreiParken(aktuellesSpiel.getFreiParken() + betrag);
+                aktuellesSpiel.setFreiParken(roundDouble(aktuellesSpiel.getFreiParken() + betrag));
+
+                databaseHandler.updateSpieler(eigenerSpieler);
+                databaseHandler.updateSpiel(aktuellesSpiel);
 
                 JSONObject messageContent = messageParser.moneyTransactionToJson(eigenerSpieler, betrag);
 
@@ -387,10 +359,10 @@ public class SpielStartActivity extends AppCompatActivity {
 
                     Toast.makeText(getApplicationContext(), "Funktion ist noch nicht fertig :-)", Toast.LENGTH_SHORT).show();
 
-/*                  eigenerSpieler.setSpielerKapital(eigenerSpieler.getSpielerKapital() - Integer.valueOf(aktuellerBetragEditText.getText().toString()));
+/*                  eigenerSpieler.setSpielerKapital(eigenerSpieler.getSpielerKapital() - Double.valueOf(aktuellerBetragEditText.getText().toString()));
                     aktuellesKapitalEigenerSpielerTextView.setText(String.valueOf(eigenerSpieler.getSpielerKapital()));
 
-                    hypothek -= Integer.valueOf(aktuellerBetragEditText.getText().toString());
+                    hypothek -= Double.valueOf(aktuellerBetragEditText.getText().toString());
                     aktuellerBetragEditText.setText("");*/
                 }
                 else{
@@ -412,13 +384,13 @@ public class SpielStartActivity extends AppCompatActivity {
         }
     }
 
-    public void betragHinzu(int betrag){
+    public void betragHinzu(double betrag){
 
         if(aktuellerBetragEditText.getText().toString().isEmpty()){
             aktuellerBetragEditText.setText(String.valueOf(betrag));
         }
         else{
-            aktuellerBetragEditText.setText(String.valueOf(Integer.valueOf(aktuellerBetragEditText.getText().toString()) + betrag));
+            aktuellerBetragEditText.setText(String.valueOf(roundDouble(Double.valueOf(aktuellerBetragEditText.getText().toString()) + betrag)));
         }
     }
 
@@ -441,10 +413,17 @@ public class SpielStartActivity extends AppCompatActivity {
 
     public void transaktionAnMich() {
 
-        int betrag = Integer.valueOf(aktuellerBetragEditText.getText().toString());
+        double betrag = Double.valueOf(aktuellerBetragEditText.getText().toString());
 
-        eigenerSpieler.setSpielerKapital(betrag + eigenerSpieler.getSpielerKapital());
+        Log.d(TAG, "Betrag: " + betrag);
+
+        eigenerSpieler.setSpielerKapital(roundDouble(betrag + eigenerSpieler.getSpielerKapital()));
+
+        Log.d(TAG, "KapitalEigenerSpieler: " + eigenerSpieler.getSpielerKapital());
+
         aktuellesKapitalEigenerSpielerTextView.setText(String.valueOf(eigenerSpieler.getSpielerKapital()));
+
+        databaseHandler.updateSpieler(eigenerSpieler);
 
         JSONObject messageContent = messageParser.moneyTransactionToJson(eigenerSpieler, betrag);
 
@@ -462,10 +441,17 @@ public class SpielStartActivity extends AppCompatActivity {
 
     public void transaktionAnDieBank() {
 
-        int betrag = Integer.valueOf(aktuellerBetragEditText.getText().toString());
+        double betrag = Double.valueOf(aktuellerBetragEditText.getText().toString());
 
-        eigenerSpieler.setSpielerKapital(eigenerSpieler.getSpielerKapital() - betrag);
+        Log.d(TAG, "Betrag: " + betrag);
+
+        eigenerSpieler.setSpielerKapital(roundDouble(eigenerSpieler.getSpielerKapital() - betrag));
+
+        Log.d(TAG, "KapitalEigenerSpieler: " + eigenerSpieler.getSpielerKapital());
+
         aktuellesKapitalEigenerSpielerTextView.setText(String.valueOf(eigenerSpieler.getSpielerKapital()));
+
+        databaseHandler.updateSpieler(eigenerSpieler);
 
         JSONObject messageContent = messageParser.moneyTransactionToJson(eigenerSpieler, betrag);
 
@@ -481,12 +467,15 @@ public class SpielStartActivity extends AppCompatActivity {
 
     public void transaktionInDieMitte() {
 
-        int betrag = Integer.valueOf(aktuellerBetragEditText.getText().toString());
+        double betrag = Double.valueOf(aktuellerBetragEditText.getText().toString());
 
-        eigenerSpieler.setSpielerKapital(eigenerSpieler.getSpielerKapital() - betrag);
+        eigenerSpieler.setSpielerKapital(roundDouble(eigenerSpieler.getSpielerKapital() - betrag));
         aktuellesKapitalEigenerSpielerTextView.setText(String.valueOf(eigenerSpieler.getSpielerKapital()));
 
-        aktuellesSpiel.setFreiParken(aktuellesSpiel.getFreiParken() + betrag);
+        aktuellesSpiel.setFreiParken(roundDouble(aktuellesSpiel.getFreiParken() + betrag));
+
+        databaseHandler.updateSpieler(eigenerSpieler);
+        databaseHandler.updateSpiel(aktuellesSpiel);
 
         JSONObject messageContent = messageParser.moneyTransactionToJson(eigenerSpieler, betrag);
 
@@ -502,14 +491,31 @@ public class SpielStartActivity extends AppCompatActivity {
 
     public void transaktionAnEinenSpieler() {
 
-        int betrag = Integer.valueOf(aktuellerBetragEditText.getText().toString());
+        double betrag = Double.valueOf(aktuellerBetragEditText.getText().toString());
 
-        eigenerSpieler.setSpielerKapital(eigenerSpieler.getSpielerKapital() - betrag);
+        eigenerSpieler.setSpielerKapital(roundDouble(eigenerSpieler.getSpielerKapital() - betrag));
         aktuellesKapitalEigenerSpielerTextView.setText(String.valueOf(eigenerSpieler.getSpielerKapital()));
 
-        //Todo Überweisung an den ausgewählten Spieler
+        Spieler gegenSpieler = null;
 
-        JSONObject messageContent = messageParser.moneyTransactionToPlayerToJson(eigenerSpieler, eigenerSpieler, betrag);
+        switch (empfaengerAuswahl){
+            case 4: gegenSpieler = gegenspielerListe.get(0);
+                    break;
+            case 5: gegenSpieler = gegenspielerListe.get(1);
+                break;
+            case 6: gegenSpieler = gegenspielerListe.get(2);
+                break;
+            case 7: gegenSpieler = gegenspielerListe.get(3);
+                break;
+            case 8: gegenSpieler = gegenspielerListe.get(4);
+                break;
+        }
+
+        gegenSpieler.setSpielerKapital(roundDouble(eigenerSpieler.getSpielerKapital() + betrag));
+        databaseHandler.updateSpieler(eigenerSpieler);
+        databaseHandler.updateSpieler(gegenSpieler);
+
+        JSONObject messageContent = messageParser.moneyTransactionToPlayerToJson(eigenerSpieler, gegenSpieler, betrag);
 
         GameMessage moneyTransactionToBankGameMessage = new GameMessage(GameMessage.MessageHeader.sendMoney, messageContent);
 
@@ -521,22 +527,161 @@ public class SpielStartActivity extends AppCompatActivity {
         empfaengerAuswahl = 0;
     }
 
-    public void gegenspielerInit(){
+    public void spielerInit(){
 
         String imeiEigenerSpieler = Settings.Secure.getString(getApplicationContext().getContentResolver(),
                 Settings.Secure.ANDROID_ID);
 
-        aktuelleSpieler = new ArrayList<>();
+        gegenspielerListe = new ArrayList<>();
 
         for (String aktuelleSpielerIMEI: aktuelleSpielerIMEIs) {
             Spieler spieler = databaseHandler.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), aktuelleSpielerIMEI);
 
-            aktuelleSpieler.add(spieler);
-
             if(spieler.getSpielerIMEI().equals(imeiEigenerSpieler)){
                 eigenerSpieler = spieler;
             }
+            else{
+                gegenspielerListe.add(spieler);
+            }
         }
+    }
+
+    public void gegenspielerButtonViewsInit(){
+
+        switch (gegenspielerListe.size()){
+            case 1:
+                gegenspieler1ButtonViewInit();
+                break;
+            case 2:
+                gegenspieler1ButtonViewInit();
+                gegenspieler2ButtonViewInit();
+                break;
+            case 3:
+                gegenspieler1ButtonViewInit();
+                gegenspieler2ButtonViewInit();
+                gegenspieler3ButtonViewInit();
+                break;
+            case 4:
+                gegenspieler1ButtonViewInit();
+                gegenspieler2ButtonViewInit();
+                gegenspieler3ButtonViewInit();
+                gegenspieler4ButtonViewInit();
+                break;
+            case 5:
+                gegenspieler1ButtonViewInit();
+                gegenspieler2ButtonViewInit();
+                gegenspieler3ButtonViewInit();
+                gegenspieler4ButtonViewInit();
+                gegenspieler5ButtonViewInit();
+                break;
+        }
+
+    }
+
+    public void gegenspieler1ButtonViewInit(){
+        TextView gegenspieler1IconImageView = (TextView) findViewById(R.id.gegenspieler1ButtonView);
+        Spieler spieler = gegenspielerListe.get(0);
+
+        gegenspieler1IconImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), spieler.getSpielerFarbe()));
+        gegenspieler1IconImageView.setText(String.valueOf(spieler.getSpielerName().charAt(0)));
+        gegenspieler1IconImageView.setVisibility(View.VISIBLE);
+
+        gegenspieler1IconImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                empfaengerAuswahl = 4;
+                Toast.makeText(getApplicationContext(), "Spieler 1 ausgewählt", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void gegenspieler2ButtonViewInit(){
+        TextView gegenspieler2IconImageView = (TextView) findViewById(R.id.gegenspieler2ButtonView);
+        Spieler spieler = gegenspielerListe.get(1);
+
+        gegenspieler2IconImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), spieler.getSpielerFarbe()));
+        gegenspieler2IconImageView.setText(String.valueOf(spieler.getSpielerName().charAt(0)));
+        gegenspieler2IconImageView.setVisibility(View.VISIBLE);
+
+        gegenspieler2IconImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                empfaengerAuswahl = 5;
+                Toast.makeText(getApplicationContext(), "Spieler 2 ausgewählt", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void gegenspieler3ButtonViewInit(){
+        TextView gegenspieler3IconImageView = (TextView) findViewById(R.id.gegenspieler3ButtonView);
+        Spieler spieler = gegenspielerListe.get(2);
+
+        gegenspieler3IconImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), spieler.getSpielerFarbe()));
+        gegenspieler3IconImageView.setText(String.valueOf(spieler.getSpielerName().charAt(0)));
+        gegenspieler3IconImageView.setVisibility(View.VISIBLE);
+
+        gegenspieler3IconImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                empfaengerAuswahl = 5;
+                Toast.makeText(getApplicationContext(), "Spieler 3 ausgewählt", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void gegenspieler4ButtonViewInit(){
+        TextView gegenspieler4IconImageView = (TextView) findViewById(R.id.gegenspieler4ButtonView);
+        Spieler spieler = gegenspielerListe.get(3);
+
+        gegenspieler4IconImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), spieler.getSpielerFarbe()));
+        gegenspieler4IconImageView.setText(String.valueOf(spieler.getSpielerName().charAt(0)));
+        gegenspieler4IconImageView.setVisibility(View.VISIBLE);
+
+        gegenspieler4IconImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                empfaengerAuswahl = 6;
+                Toast.makeText(getApplicationContext(), "Spieler 4 ausgewählt", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void gegenspieler5ButtonViewInit(){
+        TextView gegenspieler5IconImageView = (TextView) findViewById(R.id.gegenspieler5ButtonView);
+        Spieler spieler = gegenspielerListe.get(4);
+
+        gegenspieler5IconImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), spieler.getSpielerFarbe()));
+        gegenspieler5IconImageView.setText(String.valueOf(spieler.getSpielerName().charAt(0)));
+        gegenspieler5IconImageView.setVisibility(View.VISIBLE);
+
+        gegenspieler5IconImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                empfaengerAuswahl = 7;
+                Toast.makeText(getApplicationContext(), "Spieler 5 ausgewählt", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void eigenerSpielerButtonViewInit(){
+        TextView eigenerSpielerIconImageView = (TextView) findViewById(R.id.eigenerSpielerFarbeButtonView);
+
+        eigenerSpielerIconImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), eigenerSpieler.getSpielerFarbe()));
+        eigenerSpielerIconImageView.setText(String.valueOf(eigenerSpieler.getSpielerName().charAt(0)));
+
+        eigenerSpielerIconImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                empfaengerAuswahl = 1;
+                Toast.makeText(getApplicationContext(), "Eigener Spieler ausgewählt", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void spielBeenden(){
@@ -583,4 +728,9 @@ public class SpielStartActivity extends AppCompatActivity {
         }
         return true;
     }
+
+    public double roundDouble(Double betrag){
+        return Math.round(betrag*1000)/1000.0;
+    }
+
 }

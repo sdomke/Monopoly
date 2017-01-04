@@ -57,15 +57,19 @@
         android:layout_alignTop="@+id/eigenerSpielerFarbeButtonView"
         android:layout_centerHorizontal="true" />
 
-    <ImageView
-        android:id="@+id/spielerFarbeBlauButtonView"
+    <TextView
+        android:id="@+id/gegenspieler2ButtonView"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:hint="B"
+        android:gravity="center"
+        android:textSize="40sp"
+        android:visibility="invisible"
         android:background="@color/blau_spieler_farbe"
         android:layout_above="@+id/betragTextView"
-        android:layout_toRightOf="@+id/spielerFarbeRotButtonView"
-        android:layout_toEndOf="@+id/spielerFarbeRotButtonView"
-        android:layout_marginRight="25dp"/>
+        android:layout_toRightOf="@+id/gegenspieler1ButtonView"
+        android:layout_toEndOf="@+id/gegenspieler1ButtonView"
+        android:layout_marginRight="20dp"/>
 
     <TextView
         android:id="@+id/mitteButtonView"
@@ -302,30 +306,37 @@
         android:text="@string/betrag"
         android:textSize="20dp"
         android:layout_marginTop="14dp"
-        android:layout_below="@+id/spielerFarbeRotButtonView"
+        android:layout_below="@+id/gegenspieler1ButtonView"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
-    <ImageView
+    <TextView
         android:id="@+id/eigenerSpielerFarbeButtonView"
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:background="@color/gelb_spieler_farbe"
         android:layout_marginTop="14dp"
         android:layout_below="@+id/kapitalTextView"
+        android:hint="B"
+        android:gravity="center"
+        android:textSize="40sp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
-    <ImageView
-        android:id="@+id/spielerFarbeRotButtonView"
+    <TextView
+        android:id="@+id/gegenspieler1ButtonView"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:background="@color/rot_spieler_farbe"
         android:layout_marginTop="18dp"
         android:layout_below="@+id/eigenerSpielerFarbeButtonView"
+        android:hint="B"
+        android:gravity="center"
+        android:textSize="40sp"
+        android:visibility="invisible"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginRight="25dp"/>
+        android:layout_marginRight="20dp"/>
 
     <TextView
         android:id="@+id/erhalteFreiParken"
@@ -340,14 +351,46 @@
         android:layout_toEndOf="@+id/erhalteLos"
         android:layout_marginTop="10dp"/>
 
-    <ImageView
-        android:id="@+id/spielerFarbeGruenButtonView"
+    <TextView
+        android:id="@+id/gegenspieler3ButtonView"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:hint="B"
+        android:gravity="center"
+        android:textSize="40sp"
+        android:visibility="invisible"
         android:background="@color/gruen_spieler_farbe"
         android:layout_above="@+id/betragTextView"
-        android:layout_toRightOf="@+id/spielerFarbeBlauButtonView"
-        android:layout_toEndOf="@+id/spielerFarbeBlauButtonView" />
+        android:layout_toRightOf="@+id/gegenspieler2ButtonView"
+        android:layout_toEndOf="@+id/gegenspieler2ButtonView"
+        android:layout_marginRight="20dp"/>
+
+    <TextView
+        android:id="@+id/gegenspieler4ButtonView"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:hint="B"
+        android:gravity="center"
+        android:textSize="40sp"
+        android:visibility="invisible"
+        android:background="@color/grau_spieler_farbe"
+        android:layout_above="@+id/betragTextView"
+        android:layout_toRightOf="@+id/gegenspieler3ButtonView"
+        android:layout_toEndOf="@+id/gegenspieler3ButtonView"
+        android:layout_marginRight="20dp"/>
+
+    <TextView
+        android:id="@+id/gegenspieler5ButtonView"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:hint="B"
+        android:gravity="center"
+        android:textSize="40sp"
+        android:visibility="invisible"
+        android:background="@color/weiß_spieler_farbe"
+        android:layout_above="@+id/betragTextView"
+        android:layout_toRightOf="@+id/gegenspieler4ButtonView"
+        android:layout_toEndOf="@+id/gegenspieler4ButtonView" />
 
     <TextView
         android:id="@+id/erhalteHypothek"

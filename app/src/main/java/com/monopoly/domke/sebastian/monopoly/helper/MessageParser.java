@@ -50,7 +50,7 @@ public class MessageParser {
         return json;
     }
 
-    public JSONObject moneyTransactionToPlayerToJson(Spieler eigenerSpieler, Spieler gegenSpieler, int payment){
+    public JSONObject moneyTransactionToPlayerToJson(Spieler eigenerSpieler, Spieler gegenSpieler, double payment){
 
         JSONObject json = new JSONObject();
 
@@ -68,7 +68,7 @@ public class MessageParser {
         return json;
     }
 
-    public JSONObject moneyTransactionToJson(Spieler eigenerSpieler, int value){
+    public JSONObject moneyTransactionToJson(Spieler eigenerSpieler, double value){
 
         JSONObject json = new JSONObject();
 
