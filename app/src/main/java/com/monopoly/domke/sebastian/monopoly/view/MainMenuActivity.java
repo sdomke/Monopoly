@@ -20,14 +20,14 @@ import com.monopoly.domke.sebastian.monopoly.common.GameMessage;
 import com.monopoly.domke.sebastian.monopoly.common.Spiel;
 import com.monopoly.domke.sebastian.monopoly.database.DatabaseHandler;
 import com.monopoly.domke.sebastian.monopoly.helper.MessageParser;
-import com.monopoly.domke.sebastian.monopoly.helper.NsdClient;
+import com.monopoly.domke.sebastian.monopoly.helper.NsdHelper;
 import com.monopoly.domke.sebastian.monopoly.helper.PlayerMessageInterpreter;
 
 import org.json.JSONObject;
 
 public class MainMenuActivity extends AppCompatActivity {
 
-    private NsdClient mNsdClient;
+    private NsdHelper mNsdClient;
     private Handler mUpdateHandler;
     public GameConnection mGameConnection;
     public DatabaseHandler datasource;
@@ -50,6 +50,10 @@ public class MainMenuActivity extends AppCompatActivity {
 
         playerMessageInterpreter = new PlayerMessageInterpreter(this);
         messageParser = new MessageParser();
+
+        //mGameConnection = (GameConnection) getApplicationContext();
+
+        //mNsdClient = (NsdHelper) getApplicationContext();
 
         /*
         sharedPreferences.edit().putBoolean("service_discovered", false).commit();
@@ -77,7 +81,7 @@ public class MainMenuActivity extends AppCompatActivity {
 
         mGameConnection = new GameConnection(mUpdateHandler);
 
-        mNsdClient = new NsdClient(getApplicationContext(), mGameConnection);
+        mNsdClient = new NsdHelper(getApplicationContext(), mGameConnection);
         //mNsdClient.initializeNsd();
         mNsdClient.initializeDiscoveryListener();
         mNsdClient.initializeResolveListener();
@@ -93,6 +97,11 @@ public class MainMenuActivity extends AppCompatActivity {
     public void spielBeitreten(View view) {
         Intent intent = new Intent(this, SpielBeitretenActivity.class);
         intent.putExtra("spiel_datum", neuesSpiel.getSpielDatum());
+
+        if(mGameConnection != null){
+            mGameConnection.tearDown();
+        }
+
         startActivity(intent);
     }
 
@@ -165,20 +174,21 @@ public class MainMenuActivity extends AppCompatActivity {
             mNsdClient.discoverServices();
         }
     }
-/*
 
-    @Override
+
+/*    @Override
     protected void onStop() {
         Log.d(TAG, "onStop ausgeführt");
         if(mGameConnection != null){
             mGameConnection.tearDown();
         }
         super.onStop();
-    }
-*/
+    }*/
+
 
     @Override
     protected void onDestroy() {
+        Log.d(TAG, "onDestroy MainMenu");
         if(mGameConnection != null){
             mGameConnection.tearDown();
         }

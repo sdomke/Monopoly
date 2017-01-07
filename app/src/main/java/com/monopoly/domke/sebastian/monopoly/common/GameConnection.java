@@ -20,12 +20,14 @@ package com.monopoly.domke.sebastian.monopoly.common;
  * limitations under the License.
  */
 
+import android.app.Application;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.monopoly.domke.sebastian.monopoly.helper.NsdHelper;
 import com.monopoly.domke.sebastian.monopoly.view.SpielBeitretenActivity;
 
 import java.io.BufferedReader;
@@ -42,7 +44,7 @@ import java.net.UnknownHostException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-public class GameConnection {
+public class GameConnection extends NsdHelper {
 
     private Handler mUpdateHandler;
     private GameServer mGameServer;
@@ -56,6 +58,10 @@ public class GameConnection {
     public GameConnection(Handler handler) {
         mUpdateHandler = handler;
         mGameServer = new GameServer(handler);
+    }
+
+    public GameConnection() {
+
     }
 
     public void tearDown() {

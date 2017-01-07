@@ -31,8 +31,7 @@ import com.monopoly.domke.sebastian.monopoly.database.DatabaseHandler;
 import com.monopoly.domke.sebastian.monopoly.helper.GamelobbySpielerAdapter;
 import com.monopoly.domke.sebastian.monopoly.helper.HostMessageInterpreter;
 import com.monopoly.domke.sebastian.monopoly.helper.MessageParser;
-import com.monopoly.domke.sebastian.monopoly.helper.NsdClient;
-import com.monopoly.domke.sebastian.monopoly.helper.NsdServer;
+import com.monopoly.domke.sebastian.monopoly.helper.NsdHelper;
 import com.monopoly.domke.sebastian.monopoly.helper.PlayerMessageInterpreter;
 
 import org.json.JSONObject;
@@ -54,8 +53,8 @@ public class SpielBeitretenActivity extends AppCompatActivity {
     private String imeiEigenerSpieler;
     private WifiManager wifiManager;
 
-    public NsdServer mNsdServer;
-    public NsdClient mNsdClient;
+    public NsdHelper mNsdClient;
+    public NsdHelper mNsdServer;
     public GameConnection mGameConnection;
     private Handler mUpdateHandler;
     public static final String TAG = "NsdGame";
@@ -113,7 +112,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
             }
         };
 
-        mGameConnection = new GameConnection(mUpdateHandler);
+
 
         /*mNsdServer = new NsdServer(this);
         //mNsdServer.initializeNsd();
@@ -122,9 +121,14 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         if(!neuesSpiel) {
             spielStartenFB.hide();
 
-            mNsdClient = new NsdClient(this, mGameConnection);
-            mNsdClient.initializeDiscoveryListener();
-            mNsdClient.initializeResolveListener();
+            mGameConnection = (GameConnection) getApplicationContext();
+            mNsdClient = (NsdHelper) getApplicationContext();
+
+            //mGameConnection = new GameConnection(mUpdateHandler);
+
+            //mNsdClient = new NsdHelper(this, mGameConnection);
+            //mNsdClient.initializeDiscoveryListener();
+            //mNsdClient.initializeResolveListener();
 
             //Toast.makeText(getApplicationContext(),"Client", Toast.LENGTH_SHORT).show();
             playerMessageInterpreter = new PlayerMessageInterpreter(this);
@@ -132,7 +136,9 @@ public class SpielBeitretenActivity extends AppCompatActivity {
             //connectToGame();
         }
         else{
-            mNsdServer = new NsdServer(this);
+            mGameConnection = new GameConnection(mUpdateHandler);
+
+            mNsdServer = new NsdHelper(this);
             //mNsdServer.initializeNsd();
             mNsdServer.initializeRegistrationListener();
            /* mNsdServer.initializeDiscoveryListener();
@@ -193,6 +199,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
                     mGameConnection.sendMessage(jsonString);
 
                     startActivity(intent);
+
                 }
                 else{
                     Toast.makeText(getApplicationContext(), "Das Spiel kann nicht gestartet werden, da bisher keine Spieler beigetreten sind", Toast.LENGTH_SHORT).show();
@@ -357,6 +364,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
             String jsonString = messageParser.messageToJsonString(invitationGameMessage);
 
             mGameConnection.sendMessage(jsonString);
+
             Toast.makeText(getApplicationContext(), "invitationMessage send", Toast.LENGTH_SHORT).show();
         }
 
@@ -387,6 +395,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         }
     }
 
+
     @Override
     protected void onPause() {
         if (mNsdClient != null) {
@@ -394,6 +403,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         }
         super.onPause();
     }
+
 
     @Override
     protected void onResume() {
@@ -403,8 +413,26 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         }
     }
 
+/*
+    @Override
+    protected void onStop() {
+        Log.d(TAG, "onStop ausgeführt");
+        if(mGameConnection != null){
+            mGameConnection.tearDown();
+        }
+
+        if(mGameConnection != null){
+            mGameConnection.tearDown();
+        }
+        if(mNsdServer != null) {
+            mNsdServer.tearDown();
+        }
+        super.onStop();
+    }*/
+
     @Override
     protected void onDestroy() {
+        Log.d(TAG, "onDestroy SpielBeitreten");
         if(mNsdServer != null) {
             mNsdServer.tearDown();
         }

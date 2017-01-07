@@ -1,28 +1,20 @@
 package com.monopoly.domke.sebastian.monopoly.helper;
 
-import android.annotation.TargetApi;
+import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
-import android.os.Build;
 import android.util.Log;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.monopoly.domke.sebastian.monopoly.common.GameConnection;
-import com.monopoly.domke.sebastian.monopoly.common.GameMessage;
-import com.monopoly.domke.sebastian.monopoly.view.MainMenuActivity;
-
-import org.json.JSONObject;
-
-import java.io.Serializable;
 
 /**
  * Created by Basti on 12.12.2016.
  */
 
-public class NsdServer {
+public class NsdHelper extends Application {
 
     Context mContext;
 
@@ -34,21 +26,25 @@ public class NsdServer {
 
     public static final String SERVICE_TYPE = "_http._tcp.";
 
-    public static final String TAG = "NsdServerGame";
-    public String mServiceName = "MonopolyGameServer";
+    public static final String TAG = "NsdClientGame";
+    public String mServiceName = "MonopolyGameClient";
+    public String mMonopolyGameServiceName = "MonopolyGameServer";
 
     NsdServiceInfo mService;
 
-    MainMenuActivity activity;
     GameConnection gameConnection;
 
-    public NsdServer(Context context) {
+    public NsdHelper(){
+
+    }
+
+    public NsdHelper(Context context) {
         mContext = context;
         mNsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
 
     }
 
-    public NsdServer(Context context, GameConnection gameConnection) {
+    public NsdHelper(Context context, GameConnection gameConnection) {
         mContext = context;
         mNsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
         this.gameConnection = gameConnection;
@@ -76,9 +72,7 @@ public class NsdServer {
                 Log.d(TAG, "Service discovery success: " + service);
                 if (!service.getServiceType().equals(SERVICE_TYPE)) {
                     Log.d(TAG, "Unknown Service Type: " + service.getServiceType());
-                } else if (service.getServiceName().equals(mServiceName)) {
-                    Log.d(TAG, "Same machine: " + mServiceName);
-                } else if (service.getServiceName().contains(mServiceName)){
+                } else if (service.getServiceName().equals(mMonopolyGameServiceName)){
                     Log.d(TAG, "Service found");
                     Toast.makeText(mContext, "Service found", Toast.LENGTH_SHORT).show();
                     mNsdManager.resolveService(service, mResolveListener);
@@ -130,6 +124,15 @@ public class NsdServer {
                 }
 
                 mService = serviceInfo;
+
+                if (mService != null) {
+                    Log.d(TAG, "Connecting.");
+
+                    gameConnection.connectToServer(mService.getHost(),
+                            mService.getPort());
+                } else {
+                    Log.d(TAG, "No service to connect to!");
+                }
             }
         };
     }
@@ -140,10 +143,6 @@ public class NsdServer {
             @Override
             public void onServiceRegistered(NsdServiceInfo NsdServiceInfo) {
                 mServiceName = NsdServiceInfo.getServiceName();
-
-                Toast.makeText(mContext, "Successfully registered",
-                        Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "Registered name: " + mServiceName);
             }
 
             @Override
@@ -164,7 +163,7 @@ public class NsdServer {
     public void registerService(int port) {
         NsdServiceInfo serviceInfo  = new NsdServiceInfo();
         serviceInfo.setPort(port);
-        serviceInfo.setServiceName(mServiceName);
+        serviceInfo.setServiceName(mMonopolyGameServiceName);
         serviceInfo.setServiceType(SERVICE_TYPE);
 
         mNsdManager.registerService(
@@ -188,7 +187,9 @@ public class NsdServer {
         //mNsdManager.unregisterService(mRegistrationListener);
 
         try{
-            mNsdManager.unregisterService(mRegistrationListener);
+            if(mRegistrationListener != null) {
+                mNsdManager.unregisterService(mRegistrationListener);
+            }
         }catch(Exception e){
             Log.e(TAG, "No service registered ");
         }

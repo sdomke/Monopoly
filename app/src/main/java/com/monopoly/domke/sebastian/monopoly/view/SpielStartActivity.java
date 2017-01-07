@@ -2,7 +2,6 @@ package com.monopoly.domke.sebastian.monopoly.view;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -29,7 +28,7 @@ import com.monopoly.domke.sebastian.monopoly.common.Spieler;
 import com.monopoly.domke.sebastian.monopoly.database.DatabaseHandler;
 import com.monopoly.domke.sebastian.monopoly.helper.HostMessageInterpreter;
 import com.monopoly.domke.sebastian.monopoly.helper.MessageParser;
-import com.monopoly.domke.sebastian.monopoly.helper.NsdClient;
+import com.monopoly.domke.sebastian.monopoly.helper.NsdHelper;
 import com.monopoly.domke.sebastian.monopoly.helper.PlayerMessageInterpreter;
 
 import org.json.JSONObject;
@@ -50,7 +49,8 @@ public class SpielStartActivity extends AppCompatActivity {
 
     public DatabaseHandler databaseHandler;
 
-    public NsdClient mNsdClient;
+    public NsdHelper mNsdServer;
+    public NsdHelper mNsdClient;
     public GameConnection mGameConnection;
     private Handler mUpdateHandler;
     public static final String TAG = "NsdGame";
@@ -72,6 +72,10 @@ public class SpielStartActivity extends AppCompatActivity {
         setContentView(R.layout.activity_spiel_start);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+       // mGameConnection = (GameConnection) getApplicationContext();
+        //mNsdClient = (NsdHelper) getApplicationContext();
+        //mNsdServer = (NsdHelper) getApplicationContext();
 
         databaseHandler = new DatabaseHandler(this);
 
@@ -112,17 +116,45 @@ public class SpielStartActivity extends AppCompatActivity {
             }
         };
 
-        mGameConnection = new GameConnection(mUpdateHandler);
-
         /*mNsdServer = new NsdServer(this);
         //mNsdServer.initializeNsd();
         mNsdServer.initializeRegistrationListener();*/
 
 
 
-            mNsdClient = new NsdClient(this, mGameConnection);
+           /* mNsdClient = new NsdClient(this, mGameConnection);
             mNsdClient.initializeDiscoveryListener();
-            mNsdClient.initializeResolveListener();
+            mNsdClient.initializeResolveListener();*/
+
+        /*if(!neuesSpiel) {
+
+            //mGameConnection = new GameConnection(mUpdateHandler);
+
+            //mNsdClient = new NsdHelper(this, mGameConnection);
+            //mNsdClient.initializeDiscoveryListener();
+            //mNsdClient.initializeResolveListener();
+
+            //Toast.makeText(getApplicationContext(),"Client", Toast.LENGTH_SHORT).show();
+            playerMessageInterpreter = new PlayerMessageInterpreter(this);
+            //advertiseGame();
+            //connectToGame();
+        }
+        else{
+
+           // mGameConnection = new GameConnection(mUpdateHandler);
+            //mNsdServer = new NsdHelper(this);
+            //mNsdServer.initializeNsd();
+            //mNsdServer.initializeRegistrationListener();
+           *//* mNsdServer.initializeDiscoveryListener();
+            mNsdServer.initializeResolveListener();*//*
+            //Toast.makeText(getApplicationContext(),"Host", Toast.LENGTH_SHORT).show();
+            hostMessageInterpreter = new HostMessageInterpreter(this);
+
+            //advertiseGame();
+
+
+            //connectToGame();
+        }*/
 
         if(!neuesSpiel) {
             playerMessageInterpreter = new PlayerMessageInterpreter(this);
@@ -282,6 +314,7 @@ public class SpielStartActivity extends AppCompatActivity {
                 String jsonString = messageParser.messageToJsonString(receiveLosGameMessage);
 
                 mGameConnection.sendMessage(jsonString);
+
             }
         });
 
@@ -305,6 +338,7 @@ public class SpielStartActivity extends AppCompatActivity {
                 String jsonString = messageParser.messageToJsonString(receiveFreiParkenGameMessage);
 
                 mGameConnection.sendMessage(jsonString);
+
             }
         });
 
@@ -347,6 +381,7 @@ public class SpielStartActivity extends AppCompatActivity {
                 String jsonString = messageParser.messageToJsonString(moneyTransactionToBankGameMessage);
 
                 mGameConnection.sendMessage(jsonString);
+
             }
         });
 
@@ -696,19 +731,38 @@ public class SpielStartActivity extends AppCompatActivity {
                         Intent intent = new Intent(getApplicationContext(), MainMenuActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-                        JSONObject messageContent = messageParser.gameStatusToJson(eigenerSpieler, aktuellesSpiel);
+                        if(neuesSpiel) {
+                            JSONObject messageContent = messageParser.gameStatusToJson(eigenerSpieler, aktuellesSpiel);
 
-                        GameMessage startGameMessage = new GameMessage(GameMessage.MessageHeader.gameStart, messageContent);
+                            GameMessage startGameMessage = new GameMessage(GameMessage.MessageHeader.gameStart, messageContent);
 
-                        String jsonString = messageParser.messageToJsonString(startGameMessage);
+                            String jsonString = messageParser.messageToJsonString(startGameMessage);
 
-                        mGameConnection.sendMessage(jsonString);
+                            mGameConnection.sendMessage(jsonString);
+                            Toast.makeText(getApplicationContext(), "Spiel beenden Nachricht gesendet", Toast.LENGTH_SHORT).show();
+                        }
 
-                        Toast.makeText(getApplicationContext(), "Spiel beenden Nachricht gesendet", Toast.LENGTH_SHORT).show();
+                        if(mGameConnection != null){
+                            mGameConnection.tearDown();
+                        }
+                        if(mNsdServer != null){
+                            mNsdServer.tearDown();
+                        }
 
                         startActivity(intent);
                     }
                 }).create().show();
+    }
+
+    public void advertiseGame() {
+        // Register service
+        if(mGameConnection.getLocalPort() > -1) {
+            mNsdServer.registerService(mGameConnection.getLocalPort());
+
+            Toast.makeText(getApplicationContext(), "Service erstellt: " + mGameConnection.getLocalPort(), Toast.LENGTH_SHORT).show();
+        } else {
+            Log.d(TAG, "ServerSocket isn't bound.");
+        }
     }
 
     @Override
@@ -731,6 +785,51 @@ public class SpielStartActivity extends AppCompatActivity {
 
     public double roundDouble(Double betrag){
         return Math.round(betrag*1000)/1000.0;
+    }
+
+/*    @Override
+    protected void onPause() {
+        if (mNsdClient != null) {
+            mNsdClient.stopDiscovery();
+        }
+        super.onPause();
+    }
+*/
+/*    @Override
+    protected void onResume() {
+        super.onResume();
+        mGameConnection = (GameConnection) getApplicationContext();
+        mNsdClient = (NsdHelper) getApplicationContext();
+        mNsdServer = (NsdHelper) getApplicationContext();
+    }*/
+
+
+/*    @Override
+    protected void onStop() {
+        Log.d(TAG, "onStop ausgeführt");
+        if(mGameConnection != null){
+            mGameConnection.tearDown();
+        }
+        if(mGameConnectionClient != null){
+            mGameConnectionClient.tearDown();
+        }
+        super.onStop();
+    }*/
+
+
+    @Override
+    protected void onDestroy() {
+        Log.d(TAG, "onDestroy SpielStart");
+        if(mGameConnection != null){
+            mGameConnection.tearDown();
+        }
+        if(mGameConnection != null){
+            mGameConnection.tearDown();
+        }
+        if(mNsdServer != null) {
+            mNsdServer.tearDown();
+        }
+        super.onDestroy();
     }
 
 }
