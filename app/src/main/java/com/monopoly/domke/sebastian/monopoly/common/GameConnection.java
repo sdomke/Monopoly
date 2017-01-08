@@ -21,6 +21,7 @@ package com.monopoly.domke.sebastian.monopoly.common;
  */
 
 import android.app.Application;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -44,15 +45,18 @@ import java.net.UnknownHostException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-public class GameConnection extends NsdHelper {
+public class GameConnection{
 
-    private Handler mUpdateHandler;
-    private GameServer mGameServer;
-    private GameClient mGameClient;
+    private GameConnection instanceGameConnection;
+
+    public Handler mUpdateHandler;
+    public GameServer mGameServer;
+    public GameServerReconnect mGameServerReconnect;
+    public GameClient mGameClient;
 
     private static final String TAG = "GameConnection";
 
-    private Socket mSocket;
+    public Socket mSocket;
     private int mPort = -1;
 
     public GameConnection(Handler handler) {
@@ -60,11 +64,14 @@ public class GameConnection extends NsdHelper {
         mGameServer = new GameServer(handler);
     }
 
-    public GameConnection() {
-
+    public GameConnection(Handler handler, int port) {
+        mUpdateHandler = handler;
+        mGameServerReconnect = new GameServerReconnect(handler, port);
     }
 
     public void tearDown() {
+
+        Log.d(TAG, "tearDown");
 
         mGameServer.tearDown();
 
@@ -128,9 +135,11 @@ public class GameConnection extends NsdHelper {
             }
         }
         mSocket = socket;
+
+        Log.d(TAG, "Client socket Port: " + mSocket.getPort() + " Adress:" + mSocket.getInetAddress());
     }
 
-    private Socket getSocket() {
+    public Socket getSocket() {
         return mSocket;
     }
 
@@ -162,6 +171,8 @@ public class GameConnection extends NsdHelper {
                     // used.  Just grab an available one  and advertise it via Nsd.
                     mServerSocket = new ServerSocket(0);
                     setLocalPort(mServerSocket.getLocalPort());
+
+                    Log.d(TAG, "Server socket Port: " + mServerSocket.getLocalPort() + " Adress:" + mServerSocket.getInetAddress());
 
                     while (!Thread.currentThread().isInterrupted()) {
                         Log.d(TAG, "ServerSocket Created, awaiting connection");
@@ -249,7 +260,7 @@ public class GameConnection extends NsdHelper {
                 BufferedReader input;
                 try {
                     input = new BufferedReader(new InputStreamReader(
-                            mSocket.getInputStream()));
+                            getSocket().getInputStream()));
                     while (!Thread.currentThread().isInterrupted()) {
 
                         String messageStr = null;
@@ -301,6 +312,59 @@ public class GameConnection extends NsdHelper {
                 Log.d(CLIENT_TAG, "Error3", e);
             }
             Log.d(CLIENT_TAG, "Client sent message: " + msg);
+        }
+    }
+
+    private class GameServerReconnect {
+        ServerSocket mServerSocket = null;
+        Thread mThread = null;
+        private int PORT;
+
+        public GameServerReconnect(Handler handler, int port) {
+            Log.d(TAG, "Game server reconnect");
+
+            mThread = new Thread(new ServerThread());
+            mThread.start();
+            this.PORT = port;
+        }
+
+        public void tearDown() {
+            mThread.interrupt();
+            try {
+                mServerSocket.close();
+            } catch (IOException ioe) {
+                Log.e(TAG, "Error when closing server socket.");
+            }
+        }
+
+        class ServerThread implements Runnable {
+
+            @Override
+            public void run() {
+
+                try {
+                    // Since discovery will happen via Nsd, we don't need to care which port is
+                    // used.  Just grab an available one  and advertise it via Nsd.
+                    mServerSocket = new ServerSocket(PORT);
+                    setLocalPort(mServerSocket.getLocalPort());
+
+                    Log.d(TAG, "Server socket Port: " + mServerSocket.getLocalPort() + " Adress:" + mServerSocket.getInetAddress());
+
+                    while (!Thread.currentThread().isInterrupted()) {
+                        Log.d(TAG, "ServerSocket Created, awaiting connection");
+                        setSocket(mServerSocket.accept());
+                        Log.d(TAG, "Connected.");
+                        if (mGameClient == null) {
+                            int port = mSocket.getPort();
+                            InetAddress address = mSocket.getInetAddress();
+                            connectToServer(address, port);
+                        }
+                    }
+                } catch (IOException e) {
+                    Log.e(TAG, "Error creating ServerSocket: ", e);
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }

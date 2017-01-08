@@ -1,5 +1,6 @@
 package com.monopoly.domke.sebastian.monopoly.helper;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -9,12 +10,14 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.monopoly.domke.sebastian.monopoly.common.GameConnection;
+import com.monopoly.domke.sebastian.monopoly.view.MainMenuActivity;
+import com.monopoly.domke.sebastian.monopoly.view.SpielBeitretenActivity;
 
 /**
  * Created by Basti on 12.12.2016.
  */
 
-public class NsdHelper extends Application {
+public class NsdHelper {
 
     Context mContext;
 
@@ -33,10 +36,8 @@ public class NsdHelper extends Application {
     NsdServiceInfo mService;
 
     GameConnection gameConnection;
-
-    public NsdHelper(){
-
-    }
+    MainMenuActivity mainMenuActivity;
+    SpielBeitretenActivity spielBeitretenActivity;
 
     public NsdHelper(Context context) {
         mContext = context;
@@ -44,10 +45,16 @@ public class NsdHelper extends Application {
 
     }
 
-    public NsdHelper(Context context, GameConnection gameConnection) {
+    public NsdHelper(Context context, MainMenuActivity mainMenuActivity) {
         mContext = context;
         mNsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
-        this.gameConnection = gameConnection;
+        this.mainMenuActivity = mainMenuActivity;
+    }
+
+    public NsdHelper(Context context, SpielBeitretenActivity spielBeitretenActivity) {
+        mContext = context;
+        mNsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
+        this.spielBeitretenActivity = spielBeitretenActivity;
     }
 
     public void initializeNsd() {
@@ -128,8 +135,15 @@ public class NsdHelper extends Application {
                 if (mService != null) {
                     Log.d(TAG, "Connecting.");
 
-                    gameConnection.connectToServer(mService.getHost(),
-                            mService.getPort());
+                    if(mainMenuActivity != null) {
+                        mainMenuActivity.mGameConnection.connectToServer(mService.getHost(),
+                                mService.getPort());
+                    }
+                    if(spielBeitretenActivity != null) {
+
+                        spielBeitretenActivity.mGameConnection.connectToServer(mService.getHost(),
+                                mService.getPort());
+                    }
                 } else {
                     Log.d(TAG, "No service to connect to!");
                 }

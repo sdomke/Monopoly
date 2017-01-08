@@ -28,7 +28,7 @@ import org.json.JSONObject;
 public class MainMenuActivity extends AppCompatActivity {
 
     private NsdHelper mNsdClient;
-    private Handler mUpdateHandler;
+    public Handler mUpdateHandler;
     public GameConnection mGameConnection;
     public DatabaseHandler datasource;
     public Spiel neuesSpiel;
@@ -70,18 +70,25 @@ public class MainMenuActivity extends AppCompatActivity {
         mUpdateHandler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
-                //Toast.makeText(getApplicationContext(), " " + msg.getData().getString("msg"), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), msg.getData().getString("msg"), Toast.LENGTH_SHORT).show();
 
-                Log.d("GameMessage", " " + msg.getData().getString("msg"));
-                GameMessage message = messageParser.jsonStringToMessage(msg.getData().getString("msg"));
+                try {
+                    GameMessage message = messageParser.jsonStringToMessage(msg.getData().getString("msg"));
 
-                playerMessageInterpreter.decideWhatToDoWithTheMassage(message);
+                        Toast.makeText(getApplicationContext(), "Client Message Handler", Toast.LENGTH_SHORT).show();
+                        playerMessageInterpreter.decideWhatToDoWithTheMassage(message);
+
+                }catch (Exception e){
+                    Log.d(TAG, "Keine passende Nachricht");
+                    Toast.makeText(getApplicationContext(), "Keine passende Nachricht", Toast.LENGTH_SHORT).show();
+                }
             }
         };
 
         mGameConnection = new GameConnection(mUpdateHandler);
 
-        mNsdClient = new NsdHelper(getApplicationContext(), mGameConnection);
+        mNsdClient = new NsdHelper(getApplicationContext(), this);
+
         //mNsdClient.initializeNsd();
         mNsdClient.initializeDiscoveryListener();
         mNsdClient.initializeResolveListener();
@@ -97,10 +104,9 @@ public class MainMenuActivity extends AppCompatActivity {
     public void spielBeitreten(View view) {
         Intent intent = new Intent(this, SpielBeitretenActivity.class);
         intent.putExtra("spiel_datum", neuesSpiel.getSpielDatum());
+        intent.putExtra("server_port", mGameConnection.getLocalPort());
 
-        if(mGameConnection != null){
-            mGameConnection.tearDown();
-        }
+        mGameConnection.tearDown();
 
         startActivity(intent);
     }

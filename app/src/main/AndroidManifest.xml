@@ -10,9 +10,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:name=".common.GameConnection"
-        >
+        android:theme="@style/AppTheme">
         <activity
             android:name="com.monopoly.domke.sebastian.monopoly.view.MainMenuActivity"
             android:label="@string/app_name"

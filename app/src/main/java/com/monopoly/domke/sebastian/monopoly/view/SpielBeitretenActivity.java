@@ -53,10 +53,12 @@ public class SpielBeitretenActivity extends AppCompatActivity {
     private String imeiEigenerSpieler;
     private WifiManager wifiManager;
 
+    int port;
+
     public NsdHelper mNsdClient;
     public NsdHelper mNsdServer;
     public GameConnection mGameConnection;
-    private Handler mUpdateHandler;
+    public Handler mUpdateHandler;
     public static final String TAG = "NsdGame";
 
     boolean neuesSpiel = false;
@@ -85,6 +87,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
         String spielDatum = intent.getStringExtra("spiel_datum");
         neuesSpiel = intent.getBooleanExtra("neues_spiel", false);
+        port = intent.getIntExtra("server_port", 0);
 
         aktuellesSpiel = datasource.getSpielByDatum(spielDatum);
 
@@ -112,8 +115,6 @@ public class SpielBeitretenActivity extends AppCompatActivity {
             }
         };
 
-
-
         /*mNsdServer = new NsdServer(this);
         //mNsdServer.initializeNsd();
         mNsdServer.initializeRegistrationListener();*/
@@ -121,14 +122,11 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         if(!neuesSpiel) {
             spielStartenFB.hide();
 
-            mGameConnection = (GameConnection) getApplicationContext();
-            mNsdClient = (NsdHelper) getApplicationContext();
+            mGameConnection = new GameConnection(mUpdateHandler, port);
 
-            //mGameConnection = new GameConnection(mUpdateHandler);
-
-            //mNsdClient = new NsdHelper(this, mGameConnection);
-            //mNsdClient.initializeDiscoveryListener();
-            //mNsdClient.initializeResolveListener();
+            mNsdClient = new NsdHelper(getApplicationContext(), this);
+            mNsdClient.initializeDiscoveryListener();
+            mNsdClient.initializeResolveListener();
 
             //Toast.makeText(getApplicationContext(),"Client", Toast.LENGTH_SHORT).show();
             playerMessageInterpreter = new PlayerMessageInterpreter(this);
@@ -136,6 +134,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
             //connectToGame();
         }
         else{
+
             mGameConnection = new GameConnection(mUpdateHandler);
 
             mNsdServer = new NsdHelper(this);
@@ -396,7 +395,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
     }
 
 
-    @Override
+   @Override
     protected void onPause() {
         if (mNsdClient != null) {
             mNsdClient.stopDiscovery();
@@ -405,13 +404,13 @@ public class SpielBeitretenActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (mNsdClient != null) {
-            mNsdClient.discoverServices();
-        }
+@Override
+protected void onResume() {
+    super.onResume();
+    if (mNsdClient != null) {
+        mNsdClient.discoverServices();
     }
+}
 
 /*
     @Override
@@ -436,7 +435,6 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         if(mNsdServer != null) {
             mNsdServer.tearDown();
         }
-        mGameConnection.tearDown();
         super.onDestroy();
     }
 }
