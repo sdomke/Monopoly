@@ -20,7 +20,7 @@ import java.util.ArrayList;
 /**
  * Created by Basti on 22.12.2016.
  */
-
+//Todo Überweisungen bzw. neue Kontostände in der SpielStartActivity anzeigen lassen
 public class PlayerMessageInterpreter {
 
     private SpielBeitretenActivity spielBeitretenActivity;

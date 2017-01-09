@@ -720,6 +720,7 @@ public class SpielStartActivity extends AppCompatActivity {
                             mNsdServer.tearDown();
                         }
 
+                        //Todo Crashed wenn vom server ausgeführt (resolvelistener in der mainActivity bereits aktiv)
                         startActivity(intent);
                     }
                 }).create().show();

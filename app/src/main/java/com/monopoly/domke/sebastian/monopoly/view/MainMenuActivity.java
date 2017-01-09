@@ -51,6 +51,8 @@ public class MainMenuActivity extends AppCompatActivity {
         playerMessageInterpreter = new PlayerMessageInterpreter(this);
         messageParser = new MessageParser();
         spielBeitretenRelativeLayout = (RelativeLayout) findViewById(R.id.spielBeitretenButtonLayout);
+
+        //Todo Wieder verbergen wenn man aus der SpielBeitretenActivity zurückkehrt
         spielBeitretenRelativeLayout.setEnabled(false);
 
         mUpdateHandler = new Handler(){
