@@ -52,7 +52,7 @@ public class SpielStartActivity extends AppCompatActivity {
     public NsdHelper mNsdServer;
     public NsdHelper mNsdClient;
     public GameConnection mGameConnection;
-    private Handler mUpdateHandler;
+    public Handler mUpdateHandler;
     public static final String TAG = "NsdGame";
 
     boolean neuesSpiel = false;
@@ -72,10 +72,6 @@ public class SpielStartActivity extends AppCompatActivity {
         setContentView(R.layout.activity_spiel_start);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-       // mGameConnection = (GameConnection) getApplicationContext();
-        //mNsdClient = (NsdHelper) getApplicationContext();
-        //mNsdServer = (NsdHelper) getApplicationContext();
 
         databaseHandler = new DatabaseHandler(this);
 
@@ -116,45 +112,20 @@ public class SpielStartActivity extends AppCompatActivity {
             }
         };
 
-        /*mNsdServer = new NsdServer(this);
-        //mNsdServer.initializeNsd();
-        mNsdServer.initializeRegistrationListener();*/
-
-
-
-           /* mNsdClient = new NsdClient(this, mGameConnection);
-            mNsdClient.initializeDiscoveryListener();
-            mNsdClient.initializeResolveListener();*/
-
-        /*if(!neuesSpiel) {
-
+        if(!neuesSpiel) {
             //mGameConnection = new GameConnection(mUpdateHandler);
-
-            //mNsdClient = new NsdHelper(this, mGameConnection);
-            //mNsdClient.initializeDiscoveryListener();
-            //mNsdClient.initializeResolveListener();
-
-            //Toast.makeText(getApplicationContext(),"Client", Toast.LENGTH_SHORT).show();
+            mNsdClient = new NsdHelper(getApplicationContext(), this);
+            mNsdClient.initializeDiscoveryListener();
+            mNsdClient.initializeResolveListener();
             playerMessageInterpreter = new PlayerMessageInterpreter(this);
-            //advertiseGame();
-            //connectToGame();
         }
         else{
-
-           // mGameConnection = new GameConnection(mUpdateHandler);
-            //mNsdServer = new NsdHelper(this);
-            //mNsdServer.initializeNsd();
-            //mNsdServer.initializeRegistrationListener();
-           *//* mNsdServer.initializeDiscoveryListener();
-            mNsdServer.initializeResolveListener();*//*
-            //Toast.makeText(getApplicationContext(),"Host", Toast.LENGTH_SHORT).show();
+            mGameConnection = new GameConnection(mUpdateHandler);
+            mNsdServer = new NsdHelper(this);
+            mNsdServer.initializeRegistrationListener();
             hostMessageInterpreter = new HostMessageInterpreter(this);
-
-            //advertiseGame();
-
-
-            //connectToGame();
-        }*/
+            advertiseGame();
+        }
 
         if(!neuesSpiel) {
             playerMessageInterpreter = new PlayerMessageInterpreter(this);
@@ -734,7 +705,7 @@ public class SpielStartActivity extends AppCompatActivity {
                         if(neuesSpiel) {
                             JSONObject messageContent = messageParser.gameStatusToJson(eigenerSpieler, aktuellesSpiel);
 
-                            GameMessage startGameMessage = new GameMessage(GameMessage.MessageHeader.gameStart, messageContent);
+                            GameMessage startGameMessage = new GameMessage(GameMessage.MessageHeader.gameEnd, messageContent);
 
                             String jsonString = messageParser.messageToJsonString(startGameMessage);
 
@@ -787,42 +758,26 @@ public class SpielStartActivity extends AppCompatActivity {
         return Math.round(betrag*1000)/1000.0;
     }
 
-/*    @Override
+    @Override
     protected void onPause() {
         if (mNsdClient != null) {
             mNsdClient.stopDiscovery();
         }
         super.onPause();
     }
-*/
-/*    @Override
+
+
+    @Override
     protected void onResume() {
         super.onResume();
-        mGameConnection = (GameConnection) getApplicationContext();
-        mNsdClient = (NsdHelper) getApplicationContext();
-        mNsdServer = (NsdHelper) getApplicationContext();
-    }*/
-
-
-/*    @Override
-    protected void onStop() {
-        Log.d(TAG, "onStop ausgeführt");
-        if(mGameConnection != null){
-            mGameConnection.tearDown();
+        if (mNsdClient != null) {
+            mNsdClient.discoverServices();
         }
-        if(mGameConnectionClient != null){
-            mGameConnectionClient.tearDown();
-        }
-        super.onStop();
-    }*/
+    }
 
 
     @Override
     protected void onDestroy() {
-        Log.d(TAG, "onDestroy SpielStart");
-        if(mGameConnection != null){
-            mGameConnection.tearDown();
-        }
         if(mGameConnection != null){
             mGameConnection.tearDown();
         }

@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.monopoly.domke.sebastian.monopoly.R;
@@ -51,9 +52,6 @@ public class SpielBeitretenActivity extends AppCompatActivity {
     public Spiel aktuellesSpiel;
     private String ipAdresseEigenerSpieler;
     private String imeiEigenerSpieler;
-    private WifiManager wifiManager;
-
-    int port;
 
     public NsdHelper mNsdClient;
     public NsdHelper mNsdServer;
@@ -87,11 +85,8 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
         String spielDatum = intent.getStringExtra("spiel_datum");
         neuesSpiel = intent.getBooleanExtra("neues_spiel", false);
-        port = intent.getIntExtra("server_port", 0);
 
         aktuellesSpiel = datasource.getSpielByDatum(spielDatum);
-
-        //Toast.makeText(getApplicationContext(),"" + neuesSpiel, Toast.LENGTH_SHORT).show();
 
         mUpdateHandler = new Handler(){
             @Override
@@ -115,40 +110,20 @@ public class SpielBeitretenActivity extends AppCompatActivity {
             }
         };
 
-        /*mNsdServer = new NsdServer(this);
-        //mNsdServer.initializeNsd();
-        mNsdServer.initializeRegistrationListener();*/
-
         if(!neuesSpiel) {
             spielStartenFB.hide();
-
-            mGameConnection = new GameConnection(mUpdateHandler, port);
-
+            //mGameConnection = new GameConnection(mUpdateHandler);
             mNsdClient = new NsdHelper(getApplicationContext(), this);
             mNsdClient.initializeDiscoveryListener();
             mNsdClient.initializeResolveListener();
-
-            //Toast.makeText(getApplicationContext(),"Client", Toast.LENGTH_SHORT).show();
             playerMessageInterpreter = new PlayerMessageInterpreter(this);
-            //advertiseGame();
-            //connectToGame();
         }
         else{
-
             mGameConnection = new GameConnection(mUpdateHandler);
-
             mNsdServer = new NsdHelper(this);
-            //mNsdServer.initializeNsd();
             mNsdServer.initializeRegistrationListener();
-           /* mNsdServer.initializeDiscoveryListener();
-            mNsdServer.initializeResolveListener();*/
-            //Toast.makeText(getApplicationContext(),"Host", Toast.LENGTH_SHORT).show();
             hostMessageInterpreter = new HostMessageInterpreter(this);
-
             advertiseGame();
-
-
-            //connectToGame();
         }
 
         WifiManager manager = (WifiManager) getSystemService(getApplicationContext().WIFI_SERVICE);
@@ -197,6 +172,9 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
                     mGameConnection.sendMessage(jsonString);
 
+                    mNsdServer.tearDown();
+                    mGameConnection.tearDown();
+
                     startActivity(intent);
 
                 }
@@ -220,13 +198,18 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                eigenerSpieler.setSpielerName(meinNameEditText.getText().toString());
+                if(meinNameEditText.getText().toString().length() != 0) {
+                    eigenerSpieler.setSpielerName(meinNameEditText.getText().toString());
+                }
+                else{
+                    eigenerSpieler.setSpielerName("Spieler");
+                }
+
                 datasource.updateSpieler(eigenerSpieler);
-                spieler_adapter.notifyDataSetChanged();
+                //spieler_adapter.notifyDataSetChanged();
 
             }
         });
-
         meinNameEditText.clearFocus();
 
         final ImageView meineEinstellungenImageView = (ImageView) findViewById(R.id.meineEinstellungenView);
@@ -244,7 +227,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
                 eigenerSpieler.setSpielerFarbe(R.color.gelb_spieler_farbe);
                 datasource.updateSpieler(eigenerSpieler);
                 meineEinstellungenImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.gelb_spieler_farbe));
-                spieler_adapter.notifyDataSetChanged();
+                //spieler_adapter.notifyDataSetChanged();
             }
         });
 
@@ -254,7 +237,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
                 eigenerSpieler.setSpielerFarbe(R.color.gruen_spieler_farbe);
                 datasource.updateSpieler(eigenerSpieler);
                 meineEinstellungenImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.gruen_spieler_farbe));
-                spieler_adapter.notifyDataSetChanged();
+                //spieler_adapter.notifyDataSetChanged();
             }
         });
 
@@ -264,7 +247,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
                 eigenerSpieler.setSpielerFarbe(R.color.blau_spieler_farbe);
                 datasource.updateSpieler(eigenerSpieler);
                 meineEinstellungenImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.blau_spieler_farbe));
-                spieler_adapter.notifyDataSetChanged();
+                //spieler_adapter.notifyDataSetChanged();
             }
         });
 
@@ -274,7 +257,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
                 eigenerSpieler.setSpielerFarbe(R.color.rot_spieler_farbe);
                 datasource.updateSpieler(eigenerSpieler);
                 meineEinstellungenImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.rot_spieler_farbe));
-                spieler_adapter.notifyDataSetChanged();
+                //spieler_adapter.notifyDataSetChanged();
             }
         });
 
@@ -284,7 +267,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
                 eigenerSpieler.setSpielerFarbe(R.color.grau_spieler_farbe);
                 datasource.updateSpieler(eigenerSpieler);
                 meineEinstellungenImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.grau_spieler_farbe));
-                spieler_adapter.notifyDataSetChanged();
+                //spieler_adapter.notifyDataSetChanged();
             }
         });
 
@@ -294,7 +277,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
                 eigenerSpieler.setSpielerFarbe(R.color.weiß_spieler_farbe);
                 datasource.updateSpieler(eigenerSpieler);
                 meineEinstellungenImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.weiß_spieler_farbe));
-                spieler_adapter.notifyDataSetChanged();
+                //spieler_adapter.notifyDataSetChanged();
             }
         });
 
@@ -308,6 +291,8 @@ public class SpielBeitretenActivity extends AppCompatActivity {
     }
 
     public void spielLobbyBeitreten(View view) {
+
+        RelativeLayout spielLobbyBeitretenButtonLayout = (RelativeLayout) findViewById(R.id.spielLobbyBeitretenButtonLayout);
 
         GamelobbySpielerAdapter adapter = (GamelobbySpielerAdapter) gamelobbyListView.getAdapter();
 
@@ -337,7 +322,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
         mGameConnection.sendMessage(jsonString);
 
-        //Todo Auswahl der SpielerName und SpielerFarbe ausgrauen solange in Spiellobby und nicht doppelt beitreten
+        spielLobbyBeitretenButtonLayout.setEnabled(false);
 
     }
 
@@ -404,36 +389,21 @@ public class SpielBeitretenActivity extends AppCompatActivity {
     }
 
 
-@Override
-protected void onResume() {
-    super.onResume();
-    if (mNsdClient != null) {
-        mNsdClient.discoverServices();
-    }
-}
-
-/*
     @Override
-    protected void onStop() {
-        Log.d(TAG, "onStop ausgeführt");
-        if(mGameConnection != null){
-            mGameConnection.tearDown();
+    protected void onResume() {
+        super.onResume();
+        if (mNsdClient != null) {
+            mNsdClient.discoverServices();
         }
-
-        if(mGameConnection != null){
-            mGameConnection.tearDown();
-        }
-        if(mNsdServer != null) {
-            mNsdServer.tearDown();
-        }
-        super.onStop();
-    }*/
+    }
 
     @Override
     protected void onDestroy() {
-        Log.d(TAG, "onDestroy SpielBeitreten");
         if(mNsdServer != null) {
             mNsdServer.tearDown();
+        }
+        if(mGameConnection != null){
+            mGameConnection.tearDown();
         }
         super.onDestroy();
     }

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.monopoly.domke.sebastian.monopoly.R;
@@ -77,6 +78,9 @@ public class GamelobbySpielerAdapter extends ArrayAdapter<Spieler>{
 				 String jsonString = spielBeitretenActivity.messageParser.messageToJsonString(requestJoinGameMessage);
 
 				 spielBeitretenActivity.mGameConnection.sendMessage(jsonString);
+
+				 RelativeLayout spielLobbyBeitretenButtonLayout = (RelativeLayout) spielBeitretenActivity.findViewById(R.id.spielLobbyBeitretenButtonLayout);
+				 spielLobbyBeitretenButtonLayout.setEnabled(true);
 			 }
 		});
  		
@@ -99,6 +103,12 @@ public class GamelobbySpielerAdapter extends ArrayAdapter<Spieler>{
 			}
 			if (spielerFarbe != null){
 				spielerFarbe.setBackgroundColor(ContextCompat.getColor(getContext(), i.getSpielerFarbe()));
+			}
+			if(!i.getSpielerIMEI().equals(spielBeitretenActivity.eigenerSpieler.getSpielerIMEI())){
+				ImageView spielerEntfernenItem = (ImageView) view.findViewById(R.id.spielerEntfernenItem);
+				if (spielerEntfernenItem != null){
+					spielerEntfernenItem.setVisibility(View.INVISIBLE);
+				}
 			}
 		}
 

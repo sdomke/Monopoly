@@ -50,20 +50,6 @@ public class MainMenuActivity extends AppCompatActivity {
 
         playerMessageInterpreter = new PlayerMessageInterpreter(this);
         messageParser = new MessageParser();
-
-        //mGameConnection = (GameConnection) getApplicationContext();
-
-        //mNsdClient = (NsdHelper) getApplicationContext();
-
-        /*
-        sharedPreferences.edit().putBoolean("service_discovered", false).commit();
-
-        spielBeitretenRelativeLayout = (RelativeLayout) findViewById(R.id.spielBeitretenButtonLayout);
-
-        if(!sharedPreferences.getBoolean("service_discovered", false)) {
-            spielBeitretenRelativeLayout.setEnabled(false);
-        }*/
-
         spielBeitretenRelativeLayout = (RelativeLayout) findViewById(R.id.spielBeitretenButtonLayout);
         spielBeitretenRelativeLayout.setEnabled(false);
 
@@ -85,11 +71,9 @@ public class MainMenuActivity extends AppCompatActivity {
             }
         };
 
-        mGameConnection = new GameConnection(mUpdateHandler);
+        //mGameConnection = new GameConnection(mUpdateHandler);
 
         mNsdClient = new NsdHelper(getApplicationContext(), this);
-
-        //mNsdClient.initializeNsd();
         mNsdClient.initializeDiscoveryListener();
         mNsdClient.initializeResolveListener();
 
@@ -104,8 +88,6 @@ public class MainMenuActivity extends AppCompatActivity {
     public void spielBeitreten(View view) {
         Intent intent = new Intent(this, SpielBeitretenActivity.class);
         intent.putExtra("spiel_datum", neuesSpiel.getSpielDatum());
-        intent.putExtra("server_port", mGameConnection.getLocalPort());
-
         mGameConnection.tearDown();
 
         startActivity(intent);
@@ -141,16 +123,9 @@ public class MainMenuActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         if (id == R.id.send) {
-            //Toast.makeText(getApplicationContext(), "Überprüfen, ob ein Spiel erstellt wurde", Toast.LENGTH_SHORT).show();
-
-            //mGameConnection.sendMessage("Einladung");
-
             JSONObject messageContent = new JSONObject();
 
             GameMessage requestJoinGameMessage = new GameMessage(GameMessage.MessageHeader.requestJoinGame, messageContent);
@@ -181,44 +156,11 @@ public class MainMenuActivity extends AppCompatActivity {
         }
     }
 
-
-/*    @Override
-    protected void onStop() {
-        Log.d(TAG, "onStop ausgeführt");
-        if(mGameConnection != null){
-            mGameConnection.tearDown();
-        }
-        super.onStop();
-    }*/
-
-
     @Override
     protected void onDestroy() {
-        Log.d(TAG, "onDestroy MainMenu");
         if(mGameConnection != null){
             mGameConnection.tearDown();
         }
         super.onDestroy();
     }
-
-    public void connectToGame() {
-        NsdServiceInfo service = mNsdClient.getChosenServiceInfo();
-        if (service != null) {
-            Log.d(TAG, "Connecting.");
-            mGameConnection.connectToServer(service.getHost(),
-                    service.getPort());
-        } else {
-            Log.d(TAG, "No service to connect to!");
-        }
-    }
-
-    public void advertiseGame() {
-        // Register service
-        if(mGameConnection.getLocalPort() > -1) {
-            mNsdClient.registerService(mGameConnection.getLocalPort());
-        } else {
-            Log.d(TAG, "ServerSocket isn't bound.");
-        }
-    }
-
 }

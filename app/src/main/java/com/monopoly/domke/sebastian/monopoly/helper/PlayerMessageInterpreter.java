@@ -138,6 +138,8 @@ public class PlayerMessageInterpreter {
 
                 Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spiel gestartet!", Toast.LENGTH_SHORT).show();
 
+                spielBeitretenActivity.mGameConnection.tearDown();
+
                 spielBeitretenActivity.startActivity(intent);
 
             }catch(Exception e){
@@ -157,9 +159,7 @@ public class PlayerMessageInterpreter {
 
                 Toast.makeText(spielStartActivity.getApplicationContext(), "Spiel beendet!", Toast.LENGTH_SHORT).show();
 
-                if(spielBeitretenActivity.mGameConnection != null){
-                    spielBeitretenActivity.mGameConnection.tearDown();
-                }
+                spielStartActivity.mGameConnection.tearDown();
 
                 spielStartActivity.startActivity(intent);
 
@@ -329,7 +329,7 @@ public class PlayerMessageInterpreter {
 
                 neuerSpieler = spielBeitretenActivity.datasource.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_imei"));
 
-                spielBeitretenActivity.datasource.deleteSpieler(neuerSpieler.getSpielerIMEI(), neuerSpieler.getIdMonopolySpiel());
+                spielBeitretenActivity.datasource.deleteSpieler(neuerSpieler.getSpielerIMEI(), aktuellesSpiel.getSpielID());
 
                 for (int i=0; i < spielBeitretenActivity.spieler_adapter.getCount(); i++) {
 

@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.monopoly.domke.sebastian.monopoly.common.GameConnection;
 import com.monopoly.domke.sebastian.monopoly.view.MainMenuActivity;
 import com.monopoly.domke.sebastian.monopoly.view.SpielBeitretenActivity;
+import com.monopoly.domke.sebastian.monopoly.view.SpielStartActivity;
 
 /**
  * Created by Basti on 12.12.2016.
@@ -38,6 +39,7 @@ public class NsdHelper {
     GameConnection gameConnection;
     MainMenuActivity mainMenuActivity;
     SpielBeitretenActivity spielBeitretenActivity;
+    SpielStartActivity spielStartActivity;
 
     public NsdHelper(Context context) {
         mContext = context;
@@ -57,13 +59,10 @@ public class NsdHelper {
         this.spielBeitretenActivity = spielBeitretenActivity;
     }
 
-    public void initializeNsd() {
-        initializeResolveListener();
-        initializeDiscoveryListener();
-        initializeRegistrationListener();
-
-        //mNsdManager.init(mContext.getMainLooper(), this);
-
+    public NsdHelper(Context context, SpielStartActivity spielStartActivity) {
+        mContext = context;
+        mNsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
+        this.spielStartActivity = spielStartActivity;
     }
 
     public void initializeDiscoveryListener() {
@@ -134,14 +133,19 @@ public class NsdHelper {
 
                 if (mService != null) {
                     Log.d(TAG, "Connecting.");
-
-                    if(mainMenuActivity != null) {
+                    if(mainMenuActivity != null && mainMenuActivity.mGameConnection == null) {
+                        mainMenuActivity.mGameConnection = new GameConnection( mainMenuActivity.mUpdateHandler);
                         mainMenuActivity.mGameConnection.connectToServer(mService.getHost(),
                                 mService.getPort());
                     }
-                    if(spielBeitretenActivity != null) {
-
+                    else if(spielBeitretenActivity != null && spielBeitretenActivity.mGameConnection == null) {
+                        spielBeitretenActivity.mGameConnection = new GameConnection( spielBeitretenActivity.mUpdateHandler);
                         spielBeitretenActivity.mGameConnection.connectToServer(mService.getHost(),
+                                mService.getPort());
+                    }
+                    else if(spielStartActivity != null) {
+                        spielStartActivity.mGameConnection = new GameConnection( spielStartActivity.mUpdateHandler);
+                        spielStartActivity.mGameConnection.connectToServer(mService.getHost(),
                                 mService.getPort());
                     }
                 } else {
@@ -198,15 +202,6 @@ public class NsdHelper {
     }
 
     public void tearDown() {
-        //mNsdManager.unregisterService(mRegistrationListener);
-
-        try{
-            if(mRegistrationListener != null) {
-                mNsdManager.unregisterService(mRegistrationListener);
-            }
-        }catch(Exception e){
-            Log.e(TAG, "No service registered ");
-        }
-
+        mNsdManager.unregisterService(mRegistrationListener);
     }
 }

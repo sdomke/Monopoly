@@ -255,7 +255,7 @@ public class HostMessageInterpreter {
 
                 neuerSpieler = spielBeitretenActivity.datasource.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_imei"));
 
-                spielBeitretenActivity.datasource.deleteSpieler(neuerSpieler.getSpielerIMEI(), neuerSpieler.getIdMonopolySpiel());
+                spielBeitretenActivity.datasource.deleteSpieler(neuerSpieler.getSpielerIMEI(), aktuellesSpiel.getSpielID());
 
                 for (int i=0; i < spielBeitretenActivity.spieler_adapter.getCount(); i++) {
 
