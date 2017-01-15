@@ -65,22 +65,24 @@ public class GamelobbySpielerAdapter extends ArrayAdapter<Spieler>{
 		spielerEntfernen.setOnClickListener(new View.OnClickListener() {
 			 public void onClick(View v) {
 
-		 		Spieler i = objects.get(position);
-			 	spielBeitretenActivity.datasource.deleteSpieler(i.getSpielerIMEI(), spielBeitretenActivity.aktuellesSpiel.getSpielID());
+				 //ToDo Löschen-Button von EigenerSpieler wird nicht mehr angezeigt wenn zuvor ein GegenSpieler gelöscht wurde
 
-				objects.remove(position);
-				GamelobbySpielerAdapter.super.notifyDataSetChanged();
+			Spieler i = objects.get(position);
+			spielBeitretenActivity.datasource.deleteSpieler(i.getSpielerIMEI(), spielBeitretenActivity.aktuellesSpiel.getSpielID());
 
-				 JSONObject messageContent = spielBeitretenActivity.messageParser.playerStatusToJson(spielBeitretenActivity.eigenerSpieler, spielBeitretenActivity.aktuellesSpiel);
+			objects.remove(position);
+			GamelobbySpielerAdapter.super.notifyDataSetChanged();
 
-				 GameMessage requestJoinGameMessage = new GameMessage(GameMessage.MessageHeader.exitGame, messageContent);
+			 JSONObject messageContent = spielBeitretenActivity.messageParser.playerStatusToJson(spielBeitretenActivity.eigenerSpieler, spielBeitretenActivity.aktuellesSpiel);
 
-				 String jsonString = spielBeitretenActivity.messageParser.messageToJsonString(requestJoinGameMessage);
+			 GameMessage requestJoinGameMessage = new GameMessage(GameMessage.MessageHeader.exitGame, messageContent);
 
-				 spielBeitretenActivity.mGameConnection.sendMessage(jsonString);
+			 String jsonString = spielBeitretenActivity.messageParser.messageToJsonString(requestJoinGameMessage);
 
-				 RelativeLayout spielLobbyBeitretenButtonLayout = (RelativeLayout) spielBeitretenActivity.findViewById(R.id.spielLobbyBeitretenButtonLayout);
-				 spielLobbyBeitretenButtonLayout.setEnabled(true);
+			 spielBeitretenActivity.mGameConnection.sendMessage(jsonString);
+
+			 RelativeLayout spielLobbyBeitretenButtonLayout = (RelativeLayout) spielBeitretenActivity.findViewById(R.id.spielLobbyBeitretenButtonLayout);
+			 spielLobbyBeitretenButtonLayout.setEnabled(true);
 			 }
 		});
  		

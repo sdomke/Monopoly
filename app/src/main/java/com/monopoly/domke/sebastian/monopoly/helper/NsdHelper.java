@@ -131,6 +131,8 @@ public class NsdHelper {
 
                 mService = serviceInfo;
 
+                //ToDo Client Socket as a service and only if mService.getHost() has a IP
+
                 if (mService != null) {
                     Log.d(TAG, "Connecting.");
                     if(mainMenuActivity != null && mainMenuActivity.mGameConnection == null) {

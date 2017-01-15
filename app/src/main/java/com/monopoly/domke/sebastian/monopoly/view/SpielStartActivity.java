@@ -1,5 +1,7 @@
 package com.monopoly.domke.sebastian.monopoly.view;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,7 +18,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +50,9 @@ public class SpielStartActivity extends AppCompatActivity {
     EditText aktuellerBetragEditText;
     double hypothek = 0;
     int empfaengerAuswahl = 0;
+
+    FragmentManager fragmentManager;
+    FragmentTransaction fragmentTransaction;
 
     public DatabaseHandler databaseHandler;
 
@@ -139,6 +146,12 @@ public class SpielStartActivity extends AppCompatActivity {
 
     //ToDo Erase Button für Betrag
     public void init(){
+
+        fragmentManager = getFragmentManager();
+        fragmentTransaction = fragmentManager.beginTransaction();
+
+        GameStatusFragment gameStatusFragment = new GameStatusFragment();
+
         aktuellesKapitalEigenerSpielerTextView = (TextView) findViewById(R.id.deinKapitalTextView);
         try {
             aktuellesKapitalEigenerSpielerTextView.setText(String.valueOf(eigenerSpieler.getSpielerKapital()));
@@ -786,6 +799,32 @@ public class SpielStartActivity extends AppCompatActivity {
             mNsdServer.tearDown();
         }
         super.onDestroy();
+    }
+
+    public FrameLayout initGameStatusFragement(){
+
+        FrameLayout fragmentGameStatus = (FrameLayout) findViewById(R.id.fragmentGameStatus);
+        RelativeLayout itemSpielUebersicht = (RelativeLayout) findViewById(R.id.spielUebersichtItem);
+        TextView itemSpielNameView = (TextView) itemSpielUebersicht.findViewById(R.id.spielItemNameView);
+        TextView itemSpielWaehrungView = (TextView) itemSpielUebersicht.findViewById(R.id.spielItemWaehrungView);
+        TextView itemSpielCapitalView = (TextView) itemSpielUebersicht.findViewById(R.id.spielItemCapitalView);
+
+        for (Spieler spieler:gegenspielerListe) {
+
+            itemSpielNameView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), spieler.getSpielerFarbe()));
+            itemSpielNameView.setText(spieler.getSpielerName().charAt(0));
+
+            itemSpielCapitalView.setText(String.valueOf(spieler.getSpielerKapital()));
+            fragmentGameStatus.addView(itemSpielUebersicht);
+        }
+
+        itemSpielNameView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.mitte_farbe));
+        itemSpielNameView.setText("FP");
+
+        itemSpielCapitalView.setText(String.valueOf(aktuellesSpiel.getFreiParken()));
+        fragmentGameStatus.addView(itemSpielUebersicht);
+
+        return fragmentGameStatus;
     }
 
 }

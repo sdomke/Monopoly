@@ -119,6 +119,9 @@ public class SpielBeitretenActivity extends AppCompatActivity {
             playerMessageInterpreter = new PlayerMessageInterpreter(this);
         }
         else{
+
+            //ToDo Server Socket as a service
+
             mGameConnection = new GameConnection(mUpdateHandler);
             mNsdServer = new NsdHelper(this);
             mNsdServer.initializeRegistrationListener();

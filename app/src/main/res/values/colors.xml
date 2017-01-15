@@ -22,4 +22,5 @@
     <color name="grau_spieler_farbe">#a1a1a0</color>
     <color name="schwarz_spieler_farbe">#080808</color>
     <color name="weiß_spieler_farbe">#ffffff</color>
+    <color name="mitte_farbe">@android:color/holo_blue_bright</color>
 </resources>
