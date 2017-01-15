@@ -148,6 +148,8 @@ public class NsdHelper {
                         spielStartActivity.mGameConnection.connectToServer(mService.getHost(),
                                 mService.getPort());
                     }
+
+                    //ToDo Send message for requestJoinGame to server
                 } else {
                     Log.d(TAG, "No service to connect to!");
                 }

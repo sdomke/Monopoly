@@ -12,6 +12,10 @@ import com.monopoly.domke.sebastian.monopoly.view.SpielStartActivity;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
+import static com.monopoly.domke.sebastian.monopoly.view.SpielBeitretenActivity.TAG;
+
 
 /**
  * Created by Basti on 22.12.2016.
@@ -107,10 +111,12 @@ public class HostMessageInterpreter {
                 Spieler receiverPlayer = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("receiver_imei"));
 
                 senderPlayer.setSpielerKapital(roundDouble(senderPlayer.getSpielerKapital() - payment));
-                receiverPlayer.setSpielerKapital(roundDouble(senderPlayer.getSpielerKapital() + payment));
+                receiverPlayer.setSpielerKapital(roundDouble(receiverPlayer.getSpielerKapital() + payment));
 
                 spielStartActivity.databaseHandler.updateSpieler(senderPlayer);
                 spielStartActivity.databaseHandler.updateSpieler(receiverPlayer);
+
+                updatePlayerCredit(senderPlayer, receiverPlayer);
 
                 Toast.makeText(spielStartActivity.getApplicationContext(), "Überweisung erfolgreich!", Toast.LENGTH_SHORT).show();
             }catch(Exception e){
@@ -133,6 +139,8 @@ public class HostMessageInterpreter {
 
                 spielStartActivity.databaseHandler.updateSpieler(player);
 
+                updateGegenSpielerCredit(player);
+
                 Toast.makeText(spielStartActivity.getApplicationContext(), "Geld von der Bank erhalten!", Toast.LENGTH_SHORT).show();
             }catch(Exception e){
                 Log.e("MessageInterpreter", "getReceiveMoneyFromBankMessage: " + e.toString());
@@ -153,6 +161,8 @@ public class HostMessageInterpreter {
                 player.setSpielerKapital(roundDouble(player.getSpielerKapital() - payment));
 
                 spielStartActivity.databaseHandler.updateSpieler(player);
+
+                updateGegenSpielerCredit(player);
 
                 Toast.makeText(spielStartActivity.getApplicationContext(), "Geld an die Bank gezahlt!", Toast.LENGTH_SHORT).show();
             }catch(Exception e){
@@ -177,6 +187,9 @@ public class HostMessageInterpreter {
                 spielStartActivity.databaseHandler.updateSpieler(player);
                 spielStartActivity.databaseHandler.updateSpiel(aktuellesSpiel);
 
+                updateGegenSpielerCredit(player);
+                updateAktuellesSpiel(aktuellesSpiel);
+
                 Toast.makeText(spielStartActivity.getApplicationContext(), "Geld in die Mitte gezahlt!", Toast.LENGTH_SHORT).show();
             }catch(Exception e){
                 Log.e("MessageInterpreter", "getSendMoneyToFreiParkenMessage: " + e.toString());
@@ -197,6 +210,9 @@ public class HostMessageInterpreter {
 
                 spielStartActivity.databaseHandler.updateSpieler(player);
                 spielStartActivity.databaseHandler.updateSpiel(aktuellesSpiel);
+
+                updateGegenSpielerCredit(player);
+                updateAktuellesSpiel(aktuellesSpiel);
 
                 Toast.makeText(spielStartActivity.getApplicationContext(), "Geld aus der Mitte erhalten!", Toast.LENGTH_SHORT).show();
             }catch(Exception e){
@@ -277,6 +293,76 @@ public class HostMessageInterpreter {
 
     public double roundDouble(Double betrag){
         return Math.round(betrag*1000)/1000.0;
+    }
+
+    public void updateEigenerSpielerCredit(Spieler eigenerSpieler){
+
+        spielStartActivity.eigenerSpieler.setSpielerKapital(eigenerSpieler.getSpielerKapital());
+
+        double eigenerSpielerKapital = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerIMEI(spielStartActivity.aktuellesSpiel.getSpielID(), spielStartActivity.eigenerSpieler.getSpielerIMEI()).getSpielerKapital();
+        spielStartActivity.aktuellesKapitalEigenerSpielerTextView.setText(String.valueOf(eigenerSpielerKapital));
+    }
+
+    public void updateAktuellesSpiel(Spiel aktuellesSpiel){
+
+        spielStartActivity.aktuellesSpiel.setFreiParken(aktuellesSpiel.getFreiParken());
+    }
+
+    public void updatePlayerCredit(Spieler sender, Spieler receiver){
+
+        ArrayList<Spieler> gegenSpielerListe = spielStartActivity.gegenspielerListe;
+
+        if(receiver.getSpielerIMEI().equals(spielStartActivity.eigenerSpieler.getSpielerIMEI())) {
+
+            updateEigenerSpielerCredit(receiver);
+
+            for(int i = 0; i < gegenSpielerListe.size(); i++) {
+
+                Spieler gegenSpieler = gegenSpielerListe.get(i);
+
+                if(gegenSpielerListe.get(i).getSpielerIMEI().equals(sender.getSpielerIMEI())){
+                    gegenSpieler.setSpielerKapital(sender.getSpielerKapital());
+
+                    spielStartActivity.gegenspielerListe.set(i, gegenSpieler);
+                    break;
+                }
+            }
+        } else {
+
+            for (int i = 0; i < gegenSpielerListe.size(); i++) {
+
+                Spieler gegenSpieler = gegenSpielerListe.get(i);
+
+                if (gegenSpielerListe.get(i).getSpielerIMEI().equals(sender.getSpielerIMEI())) {
+                    gegenSpieler.setSpielerKapital(sender.getSpielerKapital());
+
+                    spielStartActivity.gegenspielerListe.set(i, gegenSpieler);
+                }
+
+                if (gegenSpielerListe.get(i).getSpielerIMEI().equals(receiver.getSpielerIMEI())) {
+                    gegenSpieler.setSpielerKapital(receiver.getSpielerKapital());
+
+                    spielStartActivity.gegenspielerListe.set(i, gegenSpieler);
+                }
+            }
+        }
+    }
+
+    public void updateGegenSpielerCredit(Spieler receiver) {
+
+        ArrayList<Spieler> gegenSpielerListe = spielStartActivity.gegenspielerListe;
+
+        for (int i = 0; i < gegenSpielerListe.size(); i++) {
+
+            Spieler gegenSpieler = gegenSpielerListe.get(i);
+
+            if (gegenSpielerListe.get(i).getSpielerIMEI().equals(receiver.getSpielerIMEI())) {
+                gegenSpieler.setSpielerKapital(receiver.getSpielerKapital());
+
+                spielStartActivity.gegenspielerListe.set(i, gegenSpieler);
+                break;
+            }
+        }
     }
 
 }

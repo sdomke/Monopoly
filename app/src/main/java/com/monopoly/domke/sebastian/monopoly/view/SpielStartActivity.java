@@ -38,11 +38,11 @@ import java.util.ArrayList;
 public class SpielStartActivity extends AppCompatActivity {
 
     ArrayList<String> aktuelleSpielerIMEIs;
-    ArrayList<Spieler> gegenspielerListe;
+    public ArrayList<Spieler> gegenspielerListe;
     int aktuellesSpielID;
     public Spiel aktuellesSpiel;
     public Spieler eigenerSpieler;
-    TextView aktuellesKapitalEigenerSpielerTextView;
+    public TextView aktuellesKapitalEigenerSpielerTextView;
     EditText aktuellerBetragEditText;
     double hypothek = 0;
     int empfaengerAuswahl = 0;
