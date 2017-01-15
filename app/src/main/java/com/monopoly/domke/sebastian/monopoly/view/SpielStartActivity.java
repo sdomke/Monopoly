@@ -801,6 +801,7 @@ public class SpielStartActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+    //ToDo init the gameStatusFragement and update the fragment
     public FrameLayout initGameStatusFragement(){
 
         FrameLayout fragmentGameStatus = (FrameLayout) findViewById(R.id.fragmentGameStatus);
