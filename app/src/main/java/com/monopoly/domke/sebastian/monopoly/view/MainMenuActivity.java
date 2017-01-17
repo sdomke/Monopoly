@@ -52,7 +52,6 @@ public class MainMenuActivity extends AppCompatActivity {
         messageParser = new MessageParser();
         spielBeitretenRelativeLayout = (RelativeLayout) findViewById(R.id.spielBeitretenButtonLayout);
 
-        //Todo Wieder verbergen wenn man aus der SpielBeitretenActivity zurückkehrt
         spielBeitretenRelativeLayout.setEnabled(false);
 
         mUpdateHandler = new Handler(){
@@ -153,6 +152,7 @@ public class MainMenuActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        spielBeitretenRelativeLayout.setEnabled(false);
         if (mNsdClient != null) {
             mNsdClient.discoverServices();
         }

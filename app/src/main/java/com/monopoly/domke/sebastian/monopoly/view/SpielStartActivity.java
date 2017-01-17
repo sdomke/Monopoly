@@ -1,13 +1,14 @@
 package com.monopoly.domke.sebastian.monopoly.view;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -39,7 +40,12 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class SpielStartActivity extends AppCompatActivity {
+public class SpielStartActivity extends AppCompatActivity implements GameStatusFragment.OnFragmentInteractionListener {
+
+    FragmentManager fragmentManager;
+    FragmentTransaction fragmentTransaction;
+
+    GameStatusFragment gameStatusFragment;
 
     ArrayList<String> aktuelleSpielerIMEIs;
     public ArrayList<Spieler> gegenspielerListe;
@@ -51,8 +57,7 @@ public class SpielStartActivity extends AppCompatActivity {
     double hypothek = 0;
     int empfaengerAuswahl = 0;
 
-    FragmentManager fragmentManager;
-    FragmentTransaction fragmentTransaction;
+    ImageView gameStatusButton;
 
     public DatabaseHandler databaseHandler;
 
@@ -147,10 +152,23 @@ public class SpielStartActivity extends AppCompatActivity {
     //ToDo Erase Button für Betrag
     public void init(){
 
-        fragmentManager = getFragmentManager();
+        fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
 
-        GameStatusFragment gameStatusFragment = new GameStatusFragment();
+        gameStatusFragment = new GameStatusFragment();
+
+        //initGameStatusFragment();
+
+        fragmentTransaction.add(R.id.fragmentGameStatus, gameStatusFragment);
+
+        gameStatusButton = (ImageView) findViewById(R.id.gameStatusButtonView);
+
+        gameStatusButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentTransaction.commit();
+            }
+        });
 
         aktuellesKapitalEigenerSpielerTextView = (TextView) findViewById(R.id.deinKapitalTextView);
         try {
@@ -184,12 +202,21 @@ public class SpielStartActivity extends AppCompatActivity {
         TextView bezahleHypothekButtonView = (TextView) findViewById(R.id.zahleHypothek);
 
         ImageView transaktionButtonView = (ImageView) findViewById(R.id.transaktionButton);
+        ImageView deleteButtonView = (ImageView) findViewById(R.id.deleteButton);
 
         transaktionButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 transaktionDurchfuehren();
+            }
+        });
+
+        deleteButtonView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                aktuellerBetragEditText.setText("");
             }
         });
 
@@ -802,7 +829,7 @@ public class SpielStartActivity extends AppCompatActivity {
     }
 
     //ToDo init the gameStatusFragement and update the fragment
-    public FrameLayout initGameStatusFragement(){
+    public FrameLayout initGameStatusFragment(){
 
         FrameLayout fragmentGameStatus = (FrameLayout) findViewById(R.id.fragmentGameStatus);
         RelativeLayout itemSpielUebersicht = (RelativeLayout) findViewById(R.id.spielUebersichtItem);
@@ -828,4 +855,8 @@ public class SpielStartActivity extends AppCompatActivity {
         return fragmentGameStatus;
     }
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
 }
