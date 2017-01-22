@@ -148,8 +148,7 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
         init();
     }
-
-    //ToDo Erase Button für Betrag
+    
     public void init(){
 
         fragmentManager = getSupportFragmentManager();

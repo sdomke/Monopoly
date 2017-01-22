@@ -5,7 +5,6 @@
     tools:context="com.monopoly.domke.sebastian.monopoly.view.GameStatusFragment"
     android:id="@+id/fragmentGameStatus">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
