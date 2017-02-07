@@ -21,6 +21,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,6 +33,8 @@ import com.monopoly.domke.sebastian.monopoly.common.GameMessage;
 import com.monopoly.domke.sebastian.monopoly.common.Spiel;
 import com.monopoly.domke.sebastian.monopoly.common.Spieler;
 import com.monopoly.domke.sebastian.monopoly.database.DatabaseHandler;
+import com.monopoly.domke.sebastian.monopoly.helper.GameStatusAdapter;
+import com.monopoly.domke.sebastian.monopoly.helper.GamelobbySpielerAdapter;
 import com.monopoly.domke.sebastian.monopoly.helper.HostMessageInterpreter;
 import com.monopoly.domke.sebastian.monopoly.helper.MessageParser;
 import com.monopoly.domke.sebastian.monopoly.helper.NsdHelper;
@@ -47,11 +51,17 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
     GameStatusFragment gameStatusFragment;
 
+    public ListView gameStatusListView;
+    public GameStatusAdapter game_status_adapter;
+
     ArrayList<String> aktuelleSpielerIMEIs;
     public ArrayList<Spieler> gegenspielerListe;
+
+    public ArrayList<Spieler> gameStatusListe;
     int aktuellesSpielID;
     public Spiel aktuellesSpiel;
     public Spieler eigenerSpieler;
+    Spieler mitteSpieler;
     public TextView aktuellesKapitalEigenerSpielerTextView;
     EditText aktuellerBetragEditText;
     double hypothek = 0;
@@ -148,24 +158,57 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
         init();
     }
-    
+
+    //ToDo Erase Button für Betrag
     public void init(){
 
-        fragmentManager = getSupportFragmentManager();
+        /*fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
 
         gameStatusFragment = new GameStatusFragment();
 
-        //initGameStatusFragment();
+        initGameStatusFragment();
 
-        fragmentTransaction.add(R.id.fragmentGameStatus, gameStatusFragment);
+        fragmentTransaction.add(R.id.gameStatusFragment, gameStatusFragment);
+        fragmentTransaction.commit();
+
+        fragmentTransaction.hide(gameStatusFragment);*/
+
+        gameStatusListView = (ListView) findViewById(R.id.gameStatusListView);
+
+        gameStatusListe = gegenspielerListe;
+
+        mitteSpieler = new Spieler("MitteSpieler", aktuellesSpiel.getSpielID());
+
+        mitteSpieler.setSpielerName("Mitte");
+        mitteSpieler.setSpielerFarbe(R.color.mitte_farbe);
+        mitteSpieler.setSpielerKapital(aktuellesSpiel.getFreiParken());
+
+        gameStatusListe.add(mitteSpieler);
+
+        game_status_adapter = new GameStatusAdapter(this,
+                R.layout.list_item_spieluebersicht, gegenspielerListe);
+        gameStatusListView.setAdapter(game_status_adapter);
+
+        gameStatusListView.setVisibility(View.INVISIBLE);
 
         gameStatusButton = (ImageView) findViewById(R.id.gameStatusButtonView);
 
         gameStatusButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fragmentTransaction.commit();
+
+                if(gameStatusListView.isShown()) {
+                    gameStatusListView.setVisibility(View.INVISIBLE);
+                }
+                else{
+                    mitteSpieler.setSpielerKapital(aktuellesSpiel.getFreiParken());
+                    gameStatusListe.set(gameStatusListe.size() - 1, mitteSpieler);
+                    game_status_adapter.notifyDataSetChanged();
+                    gameStatusListView.setVisibility(View.VISIBLE);
+                }
+
+
             }
         });
 
@@ -827,10 +870,10 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
         super.onDestroy();
     }
 
-    //ToDo init the gameStatusFragement and update the fragment
-    public FrameLayout initGameStatusFragment(){
+    /*//ToDo init the gameStatusFragement and update the fragment
+    public LinearLayout initGameStatusFragment(){
 
-        FrameLayout fragmentGameStatus = (FrameLayout) findViewById(R.id.fragmentGameStatus);
+        LinearLayout fragmentGameStatus = (LinearLayout) findViewById(R.id.gameStatusFragment);
         RelativeLayout itemSpielUebersicht = (RelativeLayout) findViewById(R.id.spielUebersichtItem);
         TextView itemSpielNameView = (TextView) itemSpielUebersicht.findViewById(R.id.spielItemNameView);
         TextView itemSpielWaehrungView = (TextView) itemSpielUebersicht.findViewById(R.id.spielItemWaehrungView);
@@ -852,7 +895,7 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
         fragmentGameStatus.addView(itemSpielUebersicht);
 
         return fragmentGameStatus;
-    }
+    }*/
 
     @Override
     public void onFragmentInteraction(Uri uri) {
