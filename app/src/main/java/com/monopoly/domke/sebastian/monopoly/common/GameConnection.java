@@ -20,16 +20,15 @@ package com.monopoly.domke.sebastian.monopoly.common;
  * limitations under the License.
  */
 
-import android.app.Application;
-import android.content.res.Configuration;
+import android.app.Service;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
-import android.widget.Toast;
-
-import com.monopoly.domke.sebastian.monopoly.helper.NsdHelper;
-import com.monopoly.domke.sebastian.monopoly.view.SpielBeitretenActivity;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -37,7 +36,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -45,7 +43,10 @@ import java.net.UnknownHostException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-public class GameConnection{
+public class GameConnection extends Service {
+
+    // Binder given to clients
+    private final IBinder mBinder = new LocalBinder();
 
     private GameConnection instanceGameConnection;
 
@@ -62,6 +63,23 @@ public class GameConnection{
         mUpdateHandler = handler;
         mGameServer = new GameServer(handler);
     }
+
+    /**
+     * Class used for the client Binder.  Because we know this service always
+     * runs in the same process as its clients, we don't need to deal with IPC.
+     */
+    public class LocalBinder extends Binder {
+        public GameConnection getService() {
+            // Return this instance of LocalService so clients can call public methods
+            return GameConnection.this;
+        }
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return mBinder;
+    }
+
 
     public void tearDown() {
 
