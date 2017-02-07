@@ -86,8 +86,6 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        //ToDo Fragment mit dem aktuellen Kapital der Gegenspieler und Wert von Frei Parken implementieren
-
         //ToDo Buttons für Erhalten und Bezahlen als Fragment implementieren
 
         super.onCreate(savedInstanceState);
@@ -159,7 +157,6 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
         init();
     }
 
-    //ToDo Erase Button für Betrag
     public void init(){
 
         /*fragmentManager = getSupportFragmentManager();
@@ -870,7 +867,7 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
         super.onDestroy();
     }
 
-    /*//ToDo init the gameStatusFragement and update the fragment
+    /*
     public LinearLayout initGameStatusFragment(){
 
         LinearLayout fragmentGameStatus = (LinearLayout) findViewById(R.id.gameStatusFragment);
