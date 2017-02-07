@@ -69,7 +69,7 @@ public class GameStatusAdapter extends ArrayAdapter<Spieler>{
 
 			if (spielItemName != null){
 				spielItemName.setBackgroundColor(ContextCompat.getColor(getContext(), i.getSpielerFarbe()));
-				//spielItemName.setText(i.getSpielerName().charAt(0));
+				spielItemName.setText(String.valueOf(i.getSpielerName().charAt(0)));
 			}
 			if (spielItemCapital != null){
 				spielItemCapital.setText(String.valueOf(i.getSpielerKapital()));

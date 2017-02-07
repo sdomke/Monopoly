@@ -596,9 +596,10 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
                 break;
         }
 
-        gegenSpieler.setSpielerKapital(roundDouble(eigenerSpieler.getSpielerKapital() + betrag));
+        gegenSpieler.setSpielerKapital(roundDouble(gegenSpieler.getSpielerKapital() + betrag));
         databaseHandler.updateSpieler(eigenerSpieler);
         databaseHandler.updateSpieler(gegenSpieler);
+        updateGegenSpielerCredit(gegenSpieler);
 
         JSONObject messageContent = messageParser.moneyTransactionToPlayerToJson(eigenerSpieler, gegenSpieler, betrag);
 
@@ -610,6 +611,23 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
         aktuellerBetragEditText.setText("");
         empfaengerAuswahl = 0;
+    }
+
+    public void updateGegenSpielerCredit(Spieler receiver) {
+
+        ArrayList<Spieler> gegenSpielerListe = gegenspielerListe;
+
+        for (int i = 0; i < gegenSpielerListe.size(); i++) {
+
+            Spieler gegenSpieler = gegenSpielerListe.get(i);
+
+            if (gegenSpielerListe.get(i).getSpielerIMEI().equals(receiver.getSpielerIMEI())) {
+                gegenSpieler.setSpielerKapital(receiver.getSpielerKapital());
+
+                gegenspielerListe.set(i, gegenSpieler);
+                break;
+            }
+        }
     }
 
     public void spielerInit(){
