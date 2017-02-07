@@ -916,4 +916,9 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
     public void onFragmentInteraction(Uri uri) {
 
     }
+
+    @Override
+    public void onBackPressed() {
+
+    }
 }
