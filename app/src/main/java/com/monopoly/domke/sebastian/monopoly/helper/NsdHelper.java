@@ -80,7 +80,7 @@ public class NsdHelper {
                     Log.d(TAG, "Unknown Service Type: " + service.getServiceType());
                 } else if (service.getServiceName().equals(mMonopolyGameServiceName)){
                     Log.d(TAG, "Service found");
-                    Toast.makeText(mContext, "Service found", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(mContext, "Spiel gefunden", Toast.LENGTH_SHORT).show();
                     mNsdManager.resolveService(service, mResolveListener);
                 }
             }
@@ -151,6 +151,7 @@ public class NsdHelper {
                                 mService.getPort());
                     }
 
+                    Toast.makeText(mContext, "Mit Spiel verbunden", Toast.LENGTH_SHORT).show();
                     //ToDo Send message for requestJoinGame to server
                 } else {
                     Log.d(TAG, "No service to connect to!");

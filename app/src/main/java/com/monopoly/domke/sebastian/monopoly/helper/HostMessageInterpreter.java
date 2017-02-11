@@ -21,6 +21,8 @@ import static com.monopoly.domke.sebastian.monopoly.view.SpielBeitretenActivity.
  * Created by Basti on 22.12.2016.
  */
 
+//Todo Sound und Vibrationsfeedback
+
 public class HostMessageInterpreter {
 
     private SpielBeitretenActivity spielBeitretenActivity;
@@ -118,7 +120,7 @@ public class HostMessageInterpreter {
 
                 updatePlayerCredit(senderPlayer, receiverPlayer);
 
-                Toast.makeText(spielStartActivity.getApplicationContext(), "Überweisung erfolgreich!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(spielStartActivity.getApplicationContext(), senderPlayer.getSpielerName() + " hat " + receiverPlayer.getSpielerName() + " " + payment + " M$ überwiesen!", Toast.LENGTH_SHORT).show();
             }catch(Exception e){
                 Log.e("MessageInterpreter", "getSendMoneyMessage: " + e.toString());
                 Toast.makeText(spielStartActivity.getApplicationContext(), "Überweisung nicht erfolgreich!!!", Toast.LENGTH_SHORT).show();
@@ -141,7 +143,7 @@ public class HostMessageInterpreter {
 
                 updateGegenSpielerCredit(player);
 
-                Toast.makeText(spielStartActivity.getApplicationContext(), "Geld von der Bank erhalten!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(spielStartActivity.getApplicationContext(), player.getSpielerName() + " hat " + payment + " M$ von der Bank erhalten!", Toast.LENGTH_SHORT).show();
             }catch(Exception e){
                 Log.e("MessageInterpreter", "getReceiveMoneyFromBankMessage: " + e.toString());
                 Toast.makeText(spielStartActivity.getApplicationContext(), "Geld von der Bank nicht erhalten!!!", Toast.LENGTH_SHORT).show();
@@ -164,7 +166,7 @@ public class HostMessageInterpreter {
 
                 updateGegenSpielerCredit(player);
 
-                Toast.makeText(spielStartActivity.getApplicationContext(), "Geld an die Bank gezahlt!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(spielStartActivity.getApplicationContext(), player.getSpielerName() + " hat " + payment + " M$ an die Bank gezahlt!", Toast.LENGTH_SHORT).show();
             }catch(Exception e){
                 Log.e("MessageInterpreter", "getSendMoneyToBankMessage: " + e.toString());
                 Toast.makeText(spielStartActivity.getApplicationContext(), "Geld an die Bank nicht gezahlt!!!", Toast.LENGTH_SHORT).show();
@@ -190,7 +192,7 @@ public class HostMessageInterpreter {
                 updateGegenSpielerCredit(player);
                 updateAktuellesSpiel(aktuellesSpiel);
 
-                Toast.makeText(spielStartActivity.getApplicationContext(), "Geld in die Mitte gezahlt!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(spielStartActivity.getApplicationContext(), player.getSpielerName() + " hat " + payment + " M$ in die Mitte gezahlt!", Toast.LENGTH_SHORT).show();
             }catch(Exception e){
                 Log.e("MessageInterpreter", "getSendMoneyToFreiParkenMessage: " + e.toString());
                 Toast.makeText(spielStartActivity.getApplicationContext(), "Geld in die Mitte nicht gezahlt!!!", Toast.LENGTH_SHORT).show();
@@ -206,6 +208,8 @@ public class HostMessageInterpreter {
                 Spieler player = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_imei"));
 
                 player.setSpielerKapital(roundDouble(player.getSpielerKapital() + aktuellesSpiel.getFreiParken()));
+
+                Toast.makeText(spielStartActivity.getApplicationContext(), player.getSpielerName() + " hat " + aktuellesSpiel.getFreiParken() + " M$ aus der Mitte erhalten!", Toast.LENGTH_SHORT).show();
                 aktuellesSpiel.setFreiParken(0);
 
                 spielStartActivity.databaseHandler.updateSpieler(player);
@@ -213,8 +217,6 @@ public class HostMessageInterpreter {
 
                 updateGegenSpielerCredit(player);
                 updateAktuellesSpiel(aktuellesSpiel);
-
-                Toast.makeText(spielStartActivity.getApplicationContext(), "Geld aus der Mitte erhalten!", Toast.LENGTH_SHORT).show();
             }catch(Exception e){
                 Log.e("MessageInterpreter", "getReceiveFreiParkenMessage: " + e.toString());
                 Toast.makeText(spielStartActivity.getApplicationContext(), "Geld aus der Mitte nicht erhalten!!!", Toast.LENGTH_SHORT).show();
@@ -254,7 +256,7 @@ public class HostMessageInterpreter {
                 spielBeitretenActivity.spieler_adapter.add(neuerSpieler);
                 spielBeitretenActivity.spieler_adapter.notifyDataSetChanged();
 
-                Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spieler beigetreten!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(spielBeitretenActivity.getApplicationContext(), neuerSpieler.getSpielerName() +  " ist der Gamelobby beigetreten!", Toast.LENGTH_SHORT).show();
             }catch(Exception e){
                 Log.e("MessageInterpreter", "getJoinGameMessage: " + e.toString());
                 Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spieler nicht beigetreten!!!", Toast.LENGTH_SHORT).show();
@@ -283,7 +285,7 @@ public class HostMessageInterpreter {
                     }
                 }
 
-                Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spieler hat die Gamelobby verlassen!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(spielBeitretenActivity.getApplicationContext(), neuerSpieler.getSpielerName() + " hat die Gamelobby verlassen!", Toast.LENGTH_SHORT).show();
             }catch(Exception e){
                 Log.e("MessageInterpreter", "getExitGameMessage: " + e.toString());
                 Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spieler hat die Gamelobby nicht verlassen!!!", Toast.LENGTH_SHORT).show();

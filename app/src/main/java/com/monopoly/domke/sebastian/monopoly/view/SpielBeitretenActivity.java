@@ -91,21 +91,21 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         mUpdateHandler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
-                Toast.makeText(getApplicationContext(), msg.getData().getString("msg"), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), msg.getData().getString("msg"), Toast.LENGTH_SHORT).show();
 
                 try {
                     GameMessage message = messageParser.jsonStringToMessage(msg.getData().getString("msg"));
 
                     if (!neuesSpiel) {
-                        Toast.makeText(getApplicationContext(), "Client Message Handler", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(), "Client Message Handler", Toast.LENGTH_SHORT).show();
                         playerMessageInterpreter.decideWhatToDoWithTheMassage(message);
                     } else {
-                        Toast.makeText(getApplicationContext(), "Host Message Handler", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(), "Host Message Handler", Toast.LENGTH_SHORT).show();
                         hostMessageInterpreter.decideWhatToDoWithTheMassage(message);
                     }
                 }catch (Exception e){
                     Log.d(TAG, "Keine passende Nachricht");
-                    Toast.makeText(getApplicationContext(), "Keine passende Nachricht", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), "Keine passende Nachricht", Toast.LENGTH_SHORT).show();
                 }
             }
         };
@@ -136,12 +136,13 @@ public class SpielBeitretenActivity extends AppCompatActivity {
                 Settings.Secure.ANDROID_ID);
 
         Log.d(TAG, "IMEI: " + imeiEigenerSpieler);
-        Log.d(TAG, "IP: " + ipAdresseEigenerSpieler);
+        Log.d(TAG, "SpielID: " + aktuellesSpiel.getSpielID());
 
         try{
             eigenerSpieler = datasource.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), imeiEigenerSpieler);
+            Log.d(TAG, "Spieler gefunden Init");
         }catch(Exception e){
-            Log.d(TAG, "Spieler nicht gefunden");
+            Log.d(TAG, "Spieler nicht gefunden init");
 
             eigenerSpieler = new Spieler(imeiEigenerSpieler, aktuellesSpiel.getSpielID());
             eigenerSpieler.setSpielerName(eigenerSpielerName);
@@ -307,12 +308,17 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
         adapter.add(eigenerSpieler);
 
+        Log.d(TAG, "SpiellobbyBeitreten");
+        Log.d(TAG, "IMEI: " + imeiEigenerSpieler);
+        Log.d(TAG, "SpielID: " + aktuellesSpiel.getSpielID());
+
         try{
             datasource.getSpielerBySpielIdAndSpielerIMEI(eigenerSpieler.getIdMonopolySpiel(), eigenerSpieler.getSpielerIMEI());
+            Log.d(TAG, "Spieler gefunden beitreten");
             datasource.updateSpieler(eigenerSpieler);
-            Log.d(TAG, "Spieler gefunden");
+            Log.d(TAG, "Spieler update erfolgreich");
         }catch(Exception e){
-            Log.d(TAG, "Spieler nicht gefunden");
+            Log.d(TAG, "Spieler nicht gefunden beitreten");
 
             datasource.addSpieler(eigenerSpieler);
         }

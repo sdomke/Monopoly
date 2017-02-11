@@ -113,21 +113,21 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
         mUpdateHandler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
-                Toast.makeText(getApplicationContext(), msg.getData().getString("msg"), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), msg.getData().getString("msg"), Toast.LENGTH_SHORT).show();
 
                 try {
                     GameMessage message = messageParser.jsonStringToMessage(msg.getData().getString("msg"));
 
                     if (!neuesSpiel) {
-                        Toast.makeText(getApplicationContext(), "Client Message Handler", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(), "Client Message Handler", Toast.LENGTH_SHORT).show();
                         playerMessageInterpreter.decideWhatToDoWithTheMassage(message);
                     } else {
-                        Toast.makeText(getApplicationContext(), "Host Message Handler", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(), "Host Message Handler", Toast.LENGTH_SHORT).show();
                         hostMessageInterpreter.decideWhatToDoWithTheMassage(message);
                     }
                 }catch (Exception e){
                     Log.d(TAG, "Keine passende Nachricht");
-                    Toast.makeText(getApplicationContext(), "Keine passende Nachricht", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), "Keine passende Nachricht", Toast.LENGTH_SHORT).show();
                 }
             }
         };
