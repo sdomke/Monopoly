@@ -129,7 +129,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
             advertiseGame();
         }
 
-        WifiManager manager = (WifiManager) getSystemService(getApplicationContext().WIFI_SERVICE);
+        WifiManager manager = (WifiManager) getApplicationContext().getSystemService(getApplicationContext().WIFI_SERVICE);
         ipAdresseEigenerSpieler = intToInetAddress(manager.getDhcpInfo().serverAddress).getHostAddress();
 
         imeiEigenerSpieler = Settings.Secure.getString(getApplicationContext().getContentResolver(),
