@@ -137,12 +137,18 @@ public class MainMenuActivity extends AppCompatActivity {
         if (id == R.id.send) {
             JSONObject messageContent = new JSONObject();
 
-            GameMessage requestJoinGameMessage = new GameMessage(GameMessage.MessageHeader.requestJoinGame, messageContent);
+            if(mGameConnection != null) {
+                GameMessage requestJoinGameMessage = new GameMessage(GameMessage.MessageHeader.requestJoinGame, messageContent);
 
-            String jsonString = messageParser.messageToJsonString(requestJoinGameMessage);
+                String jsonString = messageParser.messageToJsonString(requestJoinGameMessage);
 
-            mGameConnection.sendMessage(jsonString);
-            Toast.makeText(getApplicationContext(), "requestJoinGameMessage send", Toast.LENGTH_SHORT).show();
+                mGameConnection.sendMessage(jsonString);
+                Toast.makeText(getApplicationContext(), "requestJoinGameMessage send", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                Toast.makeText(getApplicationContext(), "Es muss erst ein neues Spiel gestartet werden, bevor du dich damit verbinden kannst", Toast.LENGTH_SHORT).show();
+            }
+
         }
 
         return super.onOptionsItemSelected(item);
