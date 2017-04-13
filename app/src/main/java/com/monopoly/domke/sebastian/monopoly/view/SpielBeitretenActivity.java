@@ -1,9 +1,13 @@
 package com.monopoly.domke.sebastian.monopoly.view;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
@@ -42,6 +46,8 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 public class SpielBeitretenActivity extends AppCompatActivity {
+
+    boolean mBound = false;
 
     public DatabaseHandler datasource;
     public GamelobbySpielerAdapter spieler_adapter;
@@ -389,7 +395,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
     }
 
 
-   @Override
+    @Override
     protected void onPause() {
         if (mNsdClient != null) {
             mNsdClient.stopDiscovery();

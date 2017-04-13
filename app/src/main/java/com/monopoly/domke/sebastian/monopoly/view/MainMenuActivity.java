@@ -85,44 +85,6 @@ public class MainMenuActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        // Bind to LocalService
-        Intent intent = new Intent(this, GameConnection.class);
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        // Unbind from the service
-        if (mBound) {
-            unbindService(mConnection);
-            mBound = false;
-        }
-    }
-
-
-    /** Defines callbacks for service binding, passed to bindService() */
-    private ServiceConnection mConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName className,
-                                       IBinder service) {
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
-            GameConnection.LocalBinder binder = (GameConnection.LocalBinder) service;
-            mGameConnection = binder.getService();
-            mBound = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            mBound = false;
-        }
-    };
-
-
     public void neuesSpiel(View view) {
         Intent intent = new Intent(this, NeuesSpielActivity.class);
         startActivity(intent);
@@ -132,8 +94,11 @@ public class MainMenuActivity extends AppCompatActivity {
     public void spielBeitreten(View view) {
         Intent intent = new Intent(this, SpielBeitretenActivity.class);
         intent.putExtra("spiel_datum", neuesSpiel.getSpielDatum());
-        mGameConnection.tearDown();
 
+        if (mGameConnection != null) {
+            mGameConnection.tearDown();
+            mGameConnection = null;
+        }
         startActivity(intent);
     }
 

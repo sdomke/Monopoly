@@ -23,6 +23,7 @@ package com.monopoly.domke.sebastian.monopoly.common;
 import android.app.Service;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
@@ -43,12 +44,7 @@ import java.net.UnknownHostException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-public class GameConnection extends Service {
-
-    // Binder given to clients
-    private final IBinder mBinder = new LocalBinder();
-
-    private GameConnection instanceGameConnection;
+public class GameConnection {
 
     public Handler mUpdateHandler;
     public GameServer mGameServer;
@@ -64,28 +60,14 @@ public class GameConnection extends Service {
         mGameServer = new GameServer(handler);
     }
 
-    /**
-     * Class used for the client Binder.  Because we know this service always
-     * runs in the same process as its clients, we don't need to deal with IPC.
-     */
-    public class LocalBinder extends Binder {
-        public GameConnection getService() {
-            // Return this instance of LocalService so clients can call public methods
-            return GameConnection.this;
-        }
-    }
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        return mBinder;
-    }
-
 
     public void tearDown() {
 
         Log.d(TAG, "tearDown");
 
-        mGameServer.tearDown();
+        if(mGameServer != null) {
+            mGameServer.tearDown();
+        }
 
         if(mGameClient != null) {
             mGameClient.tearDown();
@@ -96,9 +78,15 @@ public class GameConnection extends Service {
         mGameClient = new GameClient(address, port);
     }
 
-    public void sendMessage(String msg) {
+    public void sendMessage(final String msg) {
         if (mGameClient != null) {
-            mGameClient.sendMessage(msg);
+            new Thread(new Runnable() {
+                public void run() {
+                    mGameClient.sendMessage(msg);
+                }
+            }).start();
+
+
         }
     }
 
