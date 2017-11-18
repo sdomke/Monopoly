@@ -147,6 +147,8 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         try{
             eigenerSpieler = datasource.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), imeiEigenerSpieler);
             Log.d(TAG, "Spieler gefunden Init");
+            RelativeLayout spielLobbyBeitretenButtonLayout = (RelativeLayout) findViewById(R.id.spielLobbyBeitretenButtonLayout);
+            spielLobbyBeitretenButtonLayout.setEnabled(false);
         }catch(Exception e){
             Log.d(TAG, "Spieler nicht gefunden init");
 
@@ -163,7 +165,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
                 if(!gamelobbyListView.getAdapter().isEmpty()) {
 
-                    ArrayList<String> aktivePlayerList = new ArrayList<String>();
+                    ArrayList<String> aktivePlayerList = new ArrayList<>();
 
                     for (Spieler spieler : spieler_adapter.objects) {
                         aktivePlayerList.add(spieler.getSpielerIMEI());
