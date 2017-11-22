@@ -128,7 +128,6 @@ public class GameConnection {
                 try {
                     mSocket.close();
                 } catch (IOException e) {
-                    // TODO(alexlucas): Auto-generated catch block
                     Log.d(TAG, "Can't close socket");
                     e.printStackTrace();
                 }

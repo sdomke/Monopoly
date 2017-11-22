@@ -1,5 +1,6 @@
 package com.monopoly.domke.sebastian.monopoly.view;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -44,6 +45,9 @@ public class MainMenuActivity extends AppCompatActivity {
 
     public static final String TAG = "NsdGame";
 
+    private static final String BROADCAST_INTENT = "BROADCAST_INTENT";
+    private static final String BROADCAST_INTENT_EXTRA = "BROADCAST_INTENT_EXTRA";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +88,29 @@ public class MainMenuActivity extends AppCompatActivity {
         mNsdClient.initializeResolveListener();
 
     }
+
+    private BroadcastReceiver messageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            switch (intent.getAction()) {
+                case BROADCAST_INTENT:
+                    String msg = intent.getStringExtra(BROADCAST_INTENT_EXTRA);
+                    try {
+                        GameMessage message = messageParser.jsonStringToMessage(msg);
+
+                        //Toast.makeText(getApplicationContext(), "Client Message Handler", Toast.LENGTH_SHORT).show();
+                        playerMessageInterpreter.decideWhatToDoWithTheMassage(message);
+
+                    }catch (Exception e){
+                        Log.d(TAG, "Keine passende Nachricht");
+                        //Toast.makeText(getApplicationContext(), "Keine passende Nachricht", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 
     public void neuesSpiel(View view) {
         Intent intent = new Intent(this, NeuesSpielActivity.class);
@@ -179,4 +206,5 @@ public class MainMenuActivity extends AppCompatActivity {
         }
         super.onDestroy();
     }
+
 }
