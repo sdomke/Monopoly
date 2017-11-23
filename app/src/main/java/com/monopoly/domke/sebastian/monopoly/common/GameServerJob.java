@@ -50,6 +50,7 @@ public class GameServerJob extends Job {
         private static final String BROADCAST_INTENT = "BROADCAST_INTENT";
         private static final String BROADCAST_INTENT_EXTRA = "BROADCAST_INTENT_EXTRA";
 
+
         public GameClient mGameClient;
 
         public Socket mSocket;
@@ -99,13 +100,26 @@ public class GameServerJob extends Job {
 
         class ServerThread implements Runnable {
 
+            public static final String SHARED_PREF = "SHARED_PREF";
+            public static final String SHARED_PREF_IP_ADRESS = "SHARED_PREF_IP_ADRESS";
+            public static final String SHARED_PREF_PORT = "SHARED_PREF_PORT";
+
+            private SharedPreferences sharedPreferences = null;
+            private SharedPreferences.Editor editor;
+
             @Override
             public void run() {
+
+                sharedPreferences = getContext().getSharedPreferences(SHARED_PREF, 0); // 0 - for private mode
+                editor = sharedPreferences.edit();
 
                 try {
                     // Since discovery will happen via Nsd, we don't need to care which port is
                     // used.  Just grab an available one  and advertise it via Nsd.
                     mServerSocket = new ServerSocket(0);
+
+                    editor.putInt(SHARED_PREF_PORT, mServerSocket.getLocalPort());
+                    editor.apply();
 
                     Log.d(SERVER_TAG, "Server socket Port: " + mServerSocket.getLocalPort() + " Adress:" + mServerSocket.getInetAddress());
 
@@ -193,8 +207,6 @@ public class GameServerJob extends Job {
             }
             mSocket = socket;
 
-
-
             Log.d(TAG, "Client socket Port: " + mSocket.getPort() + " Adress:" + mSocket.getInetAddress());
         }
 
@@ -214,8 +226,6 @@ public class GameServerJob extends Job {
                     else {
                         Log.d(CLIENT_TAG, "Client-side socket already initialized. skipping!");
                     }
-
-
 
                     mRecThread = new Thread(new GameClient.ReceivingThread());
                     mRecThread.start();
