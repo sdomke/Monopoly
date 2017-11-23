@@ -1,17 +1,18 @@
 package com.monopoly.domke.sebastian.monopoly.view;
 
-import android.content.ComponentName;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
 import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -27,12 +28,15 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.evernote.android.job.JobManager;
 import com.monopoly.domke.sebastian.monopoly.R;
-import com.monopoly.domke.sebastian.monopoly.common.GameConnection;
 import com.monopoly.domke.sebastian.monopoly.common.GameMessage;
+import com.monopoly.domke.sebastian.monopoly.common.GameServerJob;
+import com.monopoly.domke.sebastian.monopoly.common.SendMessageJob;
 import com.monopoly.domke.sebastian.monopoly.common.Spiel;
 import com.monopoly.domke.sebastian.monopoly.common.Spieler;
 import com.monopoly.domke.sebastian.monopoly.database.DatabaseHandler;
+import com.monopoly.domke.sebastian.monopoly.helper.GameJobCreator;
 import com.monopoly.domke.sebastian.monopoly.helper.GamelobbySpielerAdapter;
 import com.monopoly.domke.sebastian.monopoly.helper.HostMessageInterpreter;
 import com.monopoly.domke.sebastian.monopoly.helper.MessageParser;
@@ -59,13 +63,20 @@ public class SpielBeitretenActivity extends AppCompatActivity {
     private String ipAdresseEigenerSpieler;
     private String imeiEigenerSpieler;
 
-    public NsdHelper mNsdClient;
     public NsdHelper mNsdServer;
-    public GameConnection mGameConnection;
     public Handler mUpdateHandler;
     public static final String TAG = "NsdGame";
 
     boolean neuesSpiel = false;
+
+    private static final String BROADCAST_INTENT = "BROADCAST_INTENT";
+    private static final String BROADCAST_INTENT_EXTRA = "BROADCAST_INTENT_EXTRA";
+
+    private SharedPreferences sharedPreferences = null;
+
+    public static final String SHARED_PREF = "SHARED_PREF";
+    public static final String SHARED_PREF_IP_ADRESS = "SHARED_PREF_IP_ADRESS";
+    public static final String SHARED_PREF_PORT = "SHARED_PREF_PORT";
 
     private PlayerMessageInterpreter playerMessageInterpreter;
     private HostMessageInterpreter hostMessageInterpreter;
@@ -77,6 +88,8 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_spiel_beitreten);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        JobManager.create(this).addJobCreator(new GameJobCreator());
 
         init();
     }
@@ -94,41 +107,28 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
         aktuellesSpiel = datasource.getSpielByDatum(spielDatum);
 
-        mUpdateHandler = new Handler(){
-            @Override
-            public void handleMessage(Message msg) {
-                //Toast.makeText(getApplicationContext(), msg.getData().getString("msg"), Toast.LENGTH_SHORT).show();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BROADCAST_INTENT);
+        LocalBroadcastManager.getInstance(SpielBeitretenActivity.this).registerReceiver(messageReceiver, filter);
 
-                try {
-                    GameMessage message = messageParser.jsonStringToMessage(msg.getData().getString("msg"));
-
-                    if (!neuesSpiel) {
-                        //Toast.makeText(getApplicationContext(), "Client Message Handler", Toast.LENGTH_SHORT).show();
-                        playerMessageInterpreter.decideWhatToDoWithTheMassage(message);
-                    } else {
-                        //Toast.makeText(getApplicationContext(), "Host Message Handler", Toast.LENGTH_SHORT).show();
-                        hostMessageInterpreter.decideWhatToDoWithTheMassage(message);
-                    }
-                }catch (Exception e){
-                    Log.d(TAG, "Keine passende Nachricht");
-                    //Toast.makeText(getApplicationContext(), "Keine passende Nachricht", Toast.LENGTH_SHORT).show();
-                }
-            }
-        };
+        sharedPreferences = this.getSharedPreferences(SHARED_PREF, 0); // 0 - for private mode
 
         if(!neuesSpiel) {
             spielStartenFB.hide();
             //mGameConnection = new GameConnection(mUpdateHandler);
-            mNsdClient = new NsdHelper(getApplicationContext(), this);
+            /*mNsdClient = new NsdHelper(getApplicationContext());
             mNsdClient.initializeDiscoveryListener();
-            mNsdClient.initializeResolveListener();
+            mNsdClient.initializeResolveListener();*/
             playerMessageInterpreter = new PlayerMessageInterpreter(this);
         }
         else{
 
             //ToDo Server Socket as a service
 
-            mGameConnection = new GameConnection(mUpdateHandler);
+            //mGameConnection = new GameConnection(mUpdateHandler);
+
+            GameServerJob.scheduleGameServerJob();
+
             mNsdServer = new NsdHelper(this);
             mNsdServer.initializeRegistrationListener();
             hostMessageInterpreter = new HostMessageInterpreter(this);
@@ -182,10 +182,15 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
                     String jsonString = messageParser.messageToJsonString(startGameMessage);
 
-                    mGameConnection.sendMessage(jsonString);
+                    String ipAdress = sharedPreferences.getString(SHARED_PREF_IP_ADRESS, null);
+                    int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
+
+                    SendMessageJob.scheduleSendMessageJob(ipAdress, port, jsonString);
+
+                    //mGameConnection.sendMessage(jsonString);
 
                     mNsdServer.tearDown();
-                    mGameConnection.tearDown();
+                    //mGameConnection.tearDown();
 
                     startActivity(intent);
 
@@ -302,6 +307,29 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         gamelobbyListView.setAdapter(spieler_adapter);
     }
 
+    private BroadcastReceiver messageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            switch (intent.getAction()) {
+                case BROADCAST_INTENT:
+                    String msg = intent.getStringExtra(BROADCAST_INTENT_EXTRA);
+                    try {
+                        GameMessage message = messageParser.jsonStringToMessage(msg);
+
+                        //Toast.makeText(getApplicationContext(), "Client Message Handler", Toast.LENGTH_SHORT).show();
+                        playerMessageInterpreter.decideWhatToDoWithTheMassage(message);
+
+                    }catch (Exception e){
+                        Log.d(TAG, "Keine passende Nachricht");
+                        //Toast.makeText(getApplicationContext(), "Keine passende Nachricht", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
     public void spielLobbyBeitreten(View view) {
 
         RelativeLayout spielLobbyBeitretenButtonLayout = (RelativeLayout) findViewById(R.id.spielLobbyBeitretenButtonLayout);
@@ -337,7 +365,12 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
         String jsonString = messageParser.messageToJsonString(requestJoinGameMessage);
 
-        mGameConnection.sendMessage(jsonString);
+        String ipAdress = sharedPreferences.getString(SHARED_PREF_IP_ADRESS, null);
+        int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
+
+        SendMessageJob.scheduleSendMessageJob(ipAdress, port, jsonString);
+
+        //mGameConnection.sendMessage(jsonString);
 
         spielLobbyBeitretenButtonLayout.setEnabled(false);
 
@@ -364,7 +397,12 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
             String jsonString = messageParser.messageToJsonString(invitationGameMessage);
 
-            mGameConnection.sendMessage(jsonString);
+            String ipAdress = sharedPreferences.getString(SHARED_PREF_IP_ADRESS, null);
+            int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
+
+            SendMessageJob.scheduleSendMessageJob(ipAdress, port, jsonString);
+
+            //mGameConnection.sendMessage(jsonString);
 
             Toast.makeText(getApplicationContext(), "invitationMessage send", Toast.LENGTH_SHORT).show();
         }
@@ -386,11 +424,15 @@ public class SpielBeitretenActivity extends AppCompatActivity {
     }
 
     public void advertiseGame() {
-        // Register service
-        if(mGameConnection.getLocalPort() > -1) {
-            mNsdServer.registerService(mGameConnection.getLocalPort());
 
-            Toast.makeText(getApplicationContext(), "Service erstellt: " + mGameConnection.getLocalPort(), Toast.LENGTH_SHORT).show();
+        int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
+        Log.d(TAG, "advertiseGame Port: " + port);
+
+        // Register service
+        if(port > -1) {
+            mNsdServer.registerService(port);
+
+            Toast.makeText(getApplicationContext(), "Service erstellt: " + port, Toast.LENGTH_SHORT).show();
         } else {
             Log.d(TAG, "ServerSocket isn't bound.");
         }
@@ -399,9 +441,9 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        if (mNsdClient != null) {
+        /*if (mNsdClient != null) {
             mNsdClient.stopDiscovery();
-        }
+        }*/
         super.onPause();
     }
 
@@ -409,9 +451,9 @@ public class SpielBeitretenActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (mNsdClient != null) {
+       /* if (mNsdClient != null) {
             mNsdClient.discoverServices();
-        }
+        }*/
     }
 
     @Override
@@ -419,9 +461,9 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         if(mNsdServer != null) {
             mNsdServer.tearDown();
         }
-        if(mGameConnection != null){
+        /*if(mGameConnection != null){
             mGameConnection.tearDown();
-        }
+        }*/
         super.onDestroy();
     }
 }

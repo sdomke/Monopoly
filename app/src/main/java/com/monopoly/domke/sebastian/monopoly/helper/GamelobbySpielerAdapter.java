@@ -1,6 +1,7 @@
 package com.monopoly.domke.sebastian.monopoly.helper;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import com.monopoly.domke.sebastian.monopoly.R;
 import com.monopoly.domke.sebastian.monopoly.common.GameMessage;
+import com.monopoly.domke.sebastian.monopoly.common.SendMessageJob;
 import com.monopoly.domke.sebastian.monopoly.common.Spieler;
 import com.monopoly.domke.sebastian.monopoly.view.SpielBeitretenActivity;
 
@@ -27,6 +29,12 @@ public class GamelobbySpielerAdapter extends ArrayAdapter<Spieler>{
 	View view;
 	SpielBeitretenActivity spielBeitretenActivity;
 
+	private SharedPreferences sharedPreferences = null;
+
+	public static final String SHARED_PREF = "SHARED_PREF";
+	public static final String SHARED_PREF_IP_ADRESS = "SHARED_PREF_IP_ADRESS";
+	public static final String SHARED_PREF_PORT = "SHARED_PREF_PORT";
+
 	/* here we must override the constructor for ArrayAdapter
 	* the only variable we care about now is ArrayList<Item> objects,
 	* because it is the list of objects we want to display.
@@ -35,6 +43,7 @@ public class GamelobbySpielerAdapter extends ArrayAdapter<Spieler>{
 		super(context, textViewResourceId, objects);
 		this.objects = objects;
 		this.spielBeitretenActivity = spielBeitretenActivity;
+		sharedPreferences = context.getSharedPreferences(SHARED_PREF, 0); // 0 - for private mode
 	}
 
 	/*
@@ -78,7 +87,12 @@ public class GamelobbySpielerAdapter extends ArrayAdapter<Spieler>{
 
 				String jsonString = spielBeitretenActivity.messageParser.messageToJsonString(requestJoinGameMessage);
 
-				spielBeitretenActivity.mGameConnection.sendMessage(jsonString);
+				String ipAdress = sharedPreferences.getString(SHARED_PREF_IP_ADRESS, null);
+				int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
+
+				SendMessageJob.scheduleSendMessageJob(ipAdress, port, jsonString);
+
+				//spielBeitretenActivity.mGameConnection.sendMessage(jsonString);
 
 				RelativeLayout spielLobbyBeitretenButtonLayout = (RelativeLayout) spielBeitretenActivity.findViewById(R.id.spielLobbyBeitretenButtonLayout);
 				spielLobbyBeitretenButtonLayout.setEnabled(true);

@@ -1,8 +1,6 @@
 package com.monopoly.domke.sebastian.monopoly.common;
 
 import android.content.Intent;
-import android.os.Bundle;
-import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -24,7 +22,6 @@ import java.net.UnknownHostException;
 
 public class GameClientJob extends Job {
 
-    public GameClient mGameClient;
     private LocalBroadcastManager broadcaster;
     public Socket mSocket;
 
@@ -38,22 +35,18 @@ public class GameClientJob extends Job {
     @Override
     protected Result onRunJob(Params params) {
 
-        broadcaster = LocalBroadcastManager.getInstance(getContext());
-
         String ipAdress = params.getExtras().getString(EXTRA_IP_ADRESS, "No Adress");
         int port = params.getExtras().getInt(EXTRA_PORT, -1);
 
         try {
-            mGameClient = new GameClient(InetAddress.getByName(ipAdress), port);
+            new GameClient(InetAddress.getByName(ipAdress), port);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
         return Result.SUCCESS;
     }
 
-    public void scheduleJob(InetAddress address, int port) {
-
-        String ipAdress = address.getHostAddress();
+    public static void scheduleGameClientJob(String ipAdress, int port) {
 
         PersistableBundleCompat extras = new PersistableBundleCompat();
         extras.putString(EXTRA_IP_ADRESS, ipAdress);
@@ -64,47 +57,6 @@ public class GameClientJob extends Job {
                 .startNow()
                 .build()
                 .schedule();
-    }
-
-    public void tearDown() {
-
-        Log.d(TAG, "tearDown");
-
-        if(mGameClient != null) {
-            mGameClient.tearDown();
-        }
-    }
-
-    private synchronized void setSocket(Socket socket) {
-        Log.d(TAG, "setSocket being called.");
-        if (socket == null) {
-            Log.d(TAG, "Setting a null socket.");
-        }
-        if (mSocket != null) {
-            if (mSocket.isConnected()) {
-                try {
-                    mSocket.close();
-                } catch (IOException e) {
-                    Log.d(TAG, "Can't close socket");
-                    e.printStackTrace();
-                }
-            }
-        }
-        mSocket = socket;
-
-        Log.d(TAG, "Client socket Port: " + mSocket.getPort() + " Adress:" + mSocket.getInetAddress());
-    }
-
-    public Socket getSocket() {
-        return mSocket;
-    }
-
-    public synchronized void broadcastMessages(String msg) {
-        Log.d(TAG, "Broadcast message: " + msg);
-
-            Intent messageReceivedIntent = new Intent(BROADCAST_INTENT);
-            messageReceivedIntent.putExtra(BROADCAST_INTENT_EXTRA, msg);
-            broadcaster.sendBroadcast(messageReceivedIntent);
     }
 
     private class GameClient {
@@ -119,12 +71,55 @@ public class GameClientJob extends Job {
 
         public GameClient(InetAddress address, int port) {
 
+            broadcaster = LocalBroadcastManager.getInstance(getContext());
+
             Log.d(CLIENT_TAG, "Creating GameClient");
             this.mAddress = address;
             this.PORT = port;
 
             mSendThread = new Thread(new GameClient.SendingThread());
             mSendThread.start();
+        }
+
+/*        public void tearDown() {
+
+            Log.d(TAG, "tearDown");
+
+            if(mGameClient != null) {
+                mGameClient.tearDown();
+            }
+        }*/
+
+        private synchronized void setSocket(Socket socket) {
+            Log.d(TAG, "setSocket being called.");
+            if (socket == null) {
+                Log.d(TAG, "Setting a null socket.");
+            }
+            if (mSocket != null) {
+                if (mSocket.isConnected()) {
+                    try {
+                        mSocket.close();
+                    } catch (IOException e) {
+                        Log.d(TAG, "Can't close socket");
+                        e.printStackTrace();
+                    }
+                }
+            }
+            mSocket = socket;
+
+            Log.d(TAG, "Client socket Port: " + mSocket.getPort() + " Adress:" + mSocket.getInetAddress());
+        }
+
+        public Socket getSocket() {
+            return mSocket;
+        }
+
+        public synchronized void broadcastMessages(String msg) {
+            Log.d(TAG, "Broadcast message: " + msg);
+
+            Intent messageReceivedIntent = new Intent(BROADCAST_INTENT);
+            messageReceivedIntent.putExtra(BROADCAST_INTENT_EXTRA, msg);
+            broadcaster.sendBroadcast(messageReceivedIntent);
         }
 
         class SendingThread implements Runnable {

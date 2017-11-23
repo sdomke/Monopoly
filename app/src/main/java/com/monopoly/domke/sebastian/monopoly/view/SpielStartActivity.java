@@ -1,7 +1,11 @@
 package com.monopoly.domke.sebastian.monopoly.view;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,6 +14,7 @@ import android.provider.Settings;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -19,22 +24,20 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.evernote.android.job.JobManager;
 import com.monopoly.domke.sebastian.monopoly.R;
-import com.monopoly.domke.sebastian.monopoly.common.GameConnection;
 import com.monopoly.domke.sebastian.monopoly.common.GameMessage;
+import com.monopoly.domke.sebastian.monopoly.common.SendMessageJob;
 import com.monopoly.domke.sebastian.monopoly.common.Spiel;
 import com.monopoly.domke.sebastian.monopoly.common.Spieler;
 import com.monopoly.domke.sebastian.monopoly.database.DatabaseHandler;
+import com.monopoly.domke.sebastian.monopoly.helper.GameJobCreator;
 import com.monopoly.domke.sebastian.monopoly.helper.GameStatusAdapter;
-import com.monopoly.domke.sebastian.monopoly.helper.GamelobbySpielerAdapter;
 import com.monopoly.domke.sebastian.monopoly.helper.HostMessageInterpreter;
 import com.monopoly.domke.sebastian.monopoly.helper.MessageParser;
 import com.monopoly.domke.sebastian.monopoly.helper.NsdHelper;
@@ -73,7 +76,6 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
     public NsdHelper mNsdServer;
     public NsdHelper mNsdClient;
-    public GameConnection mGameConnection;
     public Handler mUpdateHandler;
     public static final String TAG = "NsdGame";
 
@@ -82,6 +84,15 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
     private PlayerMessageInterpreter playerMessageInterpreter;
     private HostMessageInterpreter hostMessageInterpreter;
     public MessageParser messageParser;
+
+    private static final String BROADCAST_INTENT = "BROADCAST_INTENT";
+    private static final String BROADCAST_INTENT_EXTRA = "BROADCAST_INTENT_EXTRA";
+
+    private SharedPreferences sharedPreferences = null;
+
+    public static final String SHARED_PREF = "SHARED_PREF";
+    public static final String SHARED_PREF_IP_ADRESS = "SHARED_PREF_IP_ADRESS";
+    public static final String SHARED_PREF_PORT = "SHARED_PREF_PORT";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +105,8 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
         setSupportActionBar(toolbar);
 
         databaseHandler = new DatabaseHandler(this);
+
+        JobManager.create(this).addJobCreator(new GameJobCreator());
 
         messageParser = new MessageParser();
 
@@ -110,41 +123,25 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
         eigenerSpielerButtonViewInit();
         gegenspielerButtonViewsInit();
 
-        mUpdateHandler = new Handler(){
-            @Override
-            public void handleMessage(Message msg) {
-                //Toast.makeText(getApplicationContext(), msg.getData().getString("msg"), Toast.LENGTH_SHORT).show();
+        sharedPreferences = this.getSharedPreferences(SHARED_PREF, 0); // 0 - for private mode
 
-                try {
-                    GameMessage message = messageParser.jsonStringToMessage(msg.getData().getString("msg"));
-
-                    if (!neuesSpiel) {
-                        //Toast.makeText(getApplicationContext(), "Client Message Handler", Toast.LENGTH_SHORT).show();
-                        playerMessageInterpreter.decideWhatToDoWithTheMassage(message);
-                    } else {
-                        //Toast.makeText(getApplicationContext(), "Host Message Handler", Toast.LENGTH_SHORT).show();
-                        hostMessageInterpreter.decideWhatToDoWithTheMassage(message);
-                    }
-                }catch (Exception e){
-                    Log.d(TAG, "Keine passende Nachricht");
-                    //Toast.makeText(getApplicationContext(), "Keine passende Nachricht", Toast.LENGTH_SHORT).show();
-                }
-            }
-        };
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BROADCAST_INTENT);
+        LocalBroadcastManager.getInstance(SpielStartActivity.this).registerReceiver(messageReceiver, filter);
 
         if(!neuesSpiel) {
             //mGameConnection = new GameConnection(mUpdateHandler);
-            mNsdClient = new NsdHelper(getApplicationContext(), this);
+            /*mNsdClient = new NsdHelper(getApplicationContext(), this);
             mNsdClient.initializeDiscoveryListener();
-            mNsdClient.initializeResolveListener();
+            mNsdClient.initializeResolveListener();*/
             playerMessageInterpreter = new PlayerMessageInterpreter(this);
         }
         else{
-            mGameConnection = new GameConnection(mUpdateHandler);
+            /*mGameConnection = new GameConnection(mUpdateHandler);
             mNsdServer = new NsdHelper(this);
-            mNsdServer.initializeRegistrationListener();
+            mNsdServer.initializeRegistrationListener();*/
             hostMessageInterpreter = new HostMessageInterpreter(this);
-            advertiseGame();
+            //advertiseGame();
         }
 
         if(!neuesSpiel) {
@@ -156,6 +153,29 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
         init();
     }
+
+    private BroadcastReceiver messageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            switch (intent.getAction()) {
+                case BROADCAST_INTENT:
+                    String msg = intent.getStringExtra(BROADCAST_INTENT_EXTRA);
+                    try {
+                        GameMessage message = messageParser.jsonStringToMessage(msg);
+
+                        //Toast.makeText(getApplicationContext(), "Client Message Handler", Toast.LENGTH_SHORT).show();
+                        playerMessageInterpreter.decideWhatToDoWithTheMassage(message);
+
+                    }catch (Exception e){
+                        Log.d(TAG, "Keine passende Nachricht");
+                        //Toast.makeText(getApplicationContext(), "Keine passende Nachricht", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 
     public void init(){
 
@@ -363,7 +383,11 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
                 String jsonString = messageParser.messageToJsonString(receiveLosGameMessage);
 
-                mGameConnection.sendMessage(jsonString);
+                String ipAdress = sharedPreferences.getString(SHARED_PREF_IP_ADRESS, null);
+                int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
+
+                SendMessageJob.scheduleSendMessageJob(ipAdress, port, jsonString);
+                //mGameConnection.sendMessage(jsonString);
 
             }
         });
@@ -387,7 +411,11 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
                 String jsonString = messageParser.messageToJsonString(receiveFreiParkenGameMessage);
 
-                mGameConnection.sendMessage(jsonString);
+                String ipAdress = sharedPreferences.getString(SHARED_PREF_IP_ADRESS, null);
+                int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
+
+                SendMessageJob.scheduleSendMessageJob(ipAdress, port, jsonString);
+                //mGameConnection.sendMessage(jsonString);
 
             }
         });
@@ -430,7 +458,11 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
                 String jsonString = messageParser.messageToJsonString(moneyTransactionToBankGameMessage);
 
-                mGameConnection.sendMessage(jsonString);
+                String ipAdress = sharedPreferences.getString(SHARED_PREF_IP_ADRESS, null);
+                int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
+
+                SendMessageJob.scheduleSendMessageJob(ipAdress, port, jsonString);
+                //mGameConnection.sendMessage(jsonString);
 
             }
         });
@@ -516,7 +548,11 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
         String jsonString = messageParser.messageToJsonString(moneyTransactionToPlayerGameMessage);
 
-        mGameConnection.sendMessage(jsonString);
+        String ipAdress = sharedPreferences.getString(SHARED_PREF_IP_ADRESS, null);
+        int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
+
+        SendMessageJob.scheduleSendMessageJob(ipAdress, port, jsonString);
+        //mGameConnection.sendMessage(jsonString);
 
         aktuellerBetragEditText.setText("");
         empfaengerAuswahl = 0;
@@ -544,7 +580,11 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
         String jsonString = messageParser.messageToJsonString(moneyTransactionToBankGameMessage);
 
-        mGameConnection.sendMessage(jsonString);
+        String ipAdress = sharedPreferences.getString(SHARED_PREF_IP_ADRESS, null);
+        int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
+
+        SendMessageJob.scheduleSendMessageJob(ipAdress, port, jsonString);
+        //mGameConnection.sendMessage(jsonString);
 
         aktuellerBetragEditText.setText("");
         empfaengerAuswahl = 0;
@@ -568,7 +608,11 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
         String jsonString = messageParser.messageToJsonString(moneyTransactionToBankGameMessage);
 
-        mGameConnection.sendMessage(jsonString);
+        String ipAdress = sharedPreferences.getString(SHARED_PREF_IP_ADRESS, null);
+        int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
+
+        SendMessageJob.scheduleSendMessageJob(ipAdress, port, jsonString);
+        //mGameConnection.sendMessage(jsonString);
 
         aktuellerBetragEditText.setText("");
         empfaengerAuswahl = 0;
@@ -607,7 +651,11 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
         String jsonString = messageParser.messageToJsonString(moneyTransactionToBankGameMessage);
 
-        mGameConnection.sendMessage(jsonString);
+        String ipAdress = sharedPreferences.getString(SHARED_PREF_IP_ADRESS, null);
+        int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
+
+        SendMessageJob.scheduleSendMessageJob(ipAdress, port, jsonString);
+        //mGameConnection.sendMessage(jsonString);
 
         aktuellerBetragEditText.setText("");
         empfaengerAuswahl = 0;
@@ -806,13 +854,18 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
                             String jsonString = messageParser.messageToJsonString(startGameMessage);
 
-                            mGameConnection.sendMessage(jsonString);
+                            String ipAdress = sharedPreferences.getString(SHARED_PREF_IP_ADRESS, null);
+                            int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
+
+                            SendMessageJob.scheduleSendMessageJob(ipAdress, port, jsonString);
+                            //mGameConnection.sendMessage(jsonString);
                             Toast.makeText(getApplicationContext(), "Spiel beenden Nachricht gesendet", Toast.LENGTH_SHORT).show();
                         }
 
-                        if(mGameConnection != null){
+                        //ToDo Stop Job
+                        /*if(mGameConnection != null){
                             mGameConnection.tearDown();
-                        }
+                        }*/
                         if(mNsdServer != null){
                             mNsdServer.tearDown();
                         }
@@ -823,7 +876,7 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
                 }).create().show();
     }
 
-    public void advertiseGame() {
+    /*public void advertiseGame() {
         // Register service
         if(mGameConnection.getLocalPort() > -1) {
             mNsdServer.registerService(mGameConnection.getLocalPort());
@@ -832,7 +885,7 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
         } else {
             Log.d(TAG, "ServerSocket isn't bound.");
         }
-    }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -876,9 +929,9 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
     @Override
     protected void onDestroy() {
-        if(mGameConnection != null){
+        /*if(mGameConnection != null){
             mGameConnection.tearDown();
-        }
+        }*/
         if(mNsdServer != null) {
             mNsdServer.tearDown();
         }

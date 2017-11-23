@@ -1,10 +1,12 @@
 package com.monopoly.domke.sebastian.monopoly.helper;
 
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.monopoly.domke.sebastian.monopoly.common.GameMessage;
 import com.monopoly.domke.sebastian.monopoly.common.GameMessage.MessageHeader;
+import com.monopoly.domke.sebastian.monopoly.common.SendMessageJob;
 import com.monopoly.domke.sebastian.monopoly.common.Spiel;
 import com.monopoly.domke.sebastian.monopoly.common.Spieler;
 import com.monopoly.domke.sebastian.monopoly.view.SpielBeitretenActivity;
@@ -29,13 +31,21 @@ public class HostMessageInterpreter {
     private SpielStartActivity spielStartActivity;
     private Spieler playerToDelete;
 
+    private SharedPreferences sharedPreferences = null;
+
+    public static final String SHARED_PREF = "SHARED_PREF";
+    public static final String SHARED_PREF_IP_ADRESS = "SHARED_PREF_IP_ADRESS";
+    public static final String SHARED_PREF_PORT = "SHARED_PREF_PORT";
+
     public HostMessageInterpreter(SpielBeitretenActivity activity){
 
+        sharedPreferences = activity.getApplicationContext().getSharedPreferences(SHARED_PREF, 0); // 0 - for private mode
         this.spielBeitretenActivity = activity;
     }
 
     public HostMessageInterpreter(SpielStartActivity activity){
 
+        sharedPreferences = activity.getApplicationContext().getSharedPreferences(SHARED_PREF, 0); // 0 - for private mode
         this.spielStartActivity = activity;
     }
 
@@ -92,7 +102,12 @@ public class HostMessageInterpreter {
 
                 String jsonString = messageParser.messageToJsonString(invitePlayerGameMessage);
 
-                spielBeitretenActivity.mGameConnection.sendMessage(jsonString);
+                String ipAdress = sharedPreferences.getString(SHARED_PREF_IP_ADRESS, null);
+                int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
+
+                SendMessageJob.scheduleSendMessageJob(ipAdress, port, jsonString);
+
+                //spielBeitretenActivity.mGameConnection.sendMessage(jsonString);
                 Toast.makeText(spielBeitretenActivity.getApplicationContext(), "RequestJoinGame erhalten!", Toast.LENGTH_SHORT).show();
             }catch(Exception e){
                 Log.e("MessageInterpreter", "getRequestJoinGameMessage: " + e.toString());

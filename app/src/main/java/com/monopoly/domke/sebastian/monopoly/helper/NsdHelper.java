@@ -1,7 +1,5 @@
 package com.monopoly.domke.sebastian.monopoly.helper;
 
-import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.nsd.NsdManager;
@@ -9,10 +7,8 @@ import android.net.nsd.NsdServiceInfo;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.monopoly.domke.sebastian.monopoly.common.GameConnection;
-import com.monopoly.domke.sebastian.monopoly.view.MainMenuActivity;
-import com.monopoly.domke.sebastian.monopoly.view.SpielBeitretenActivity;
-import com.monopoly.domke.sebastian.monopoly.view.SpielStartActivity;
+import com.monopoly.domke.sebastian.monopoly.common.GameClientJob;
+import com.monopoly.domke.sebastian.monopoly.common.GameServerJob;
 
 /**
  * Created by Basti on 12.12.2016.
@@ -22,13 +18,19 @@ public class NsdHelper {
 
     Context mContext;
 
+    public boolean mServiceResolved = false;
+
     private SharedPreferences sharedPreferences = null;
+    private SharedPreferences.Editor editor;
     NsdManager mNsdManager;
-    NsdManager.ResolveListener mResolveListener;
-    NsdManager.DiscoveryListener mDiscoveryListener;
-    NsdManager.RegistrationListener mRegistrationListener;
+    public NsdManager.ResolveListener mResolveListener;
+    public NsdManager.DiscoveryListener mDiscoveryListener;
+    public NsdManager.RegistrationListener mRegistrationListener;
 
     public static final String SERVICE_TYPE = "_http._tcp.";
+    public static final String SHARED_PREF = "SHARED_PREF";
+    public static final String SHARED_PREF_IP_ADRESS = "SHARED_PREF_IP_ADRESS";
+    public static final String SHARED_PREF_PORT = "SHARED_PREF_PORT";
 
     public static final String TAG = "NsdClientGame";
     public String mServiceName = "MonopolyGameClient";
@@ -36,33 +38,11 @@ public class NsdHelper {
 
     NsdServiceInfo mService;
 
-    GameConnection gameConnection;
-    MainMenuActivity mainMenuActivity;
-    SpielBeitretenActivity spielBeitretenActivity;
-    SpielStartActivity spielStartActivity;
-
     public NsdHelper(Context context) {
         mContext = context;
         mNsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
-
-    }
-
-    public NsdHelper(Context context, MainMenuActivity mainMenuActivity) {
-        mContext = context;
-        mNsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
-        this.mainMenuActivity = mainMenuActivity;
-    }
-
-    public NsdHelper(Context context, SpielBeitretenActivity spielBeitretenActivity) {
-        mContext = context;
-        mNsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
-        this.spielBeitretenActivity = spielBeitretenActivity;
-    }
-
-    public NsdHelper(Context context, SpielStartActivity spielStartActivity) {
-        mContext = context;
-        mNsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
-        this.spielStartActivity = spielStartActivity;
+        sharedPreferences = context.getSharedPreferences(SHARED_PREF, 0); // 0 - for private mode
+        editor = sharedPreferences.edit();
     }
 
     public void initializeDiscoveryListener() {
@@ -91,6 +71,7 @@ public class NsdHelper {
                 if (mService == service) {
                     mService = null;
                 }
+                mServiceResolved = false;
             }
 
             @Override
@@ -135,21 +116,15 @@ public class NsdHelper {
 
                 if (mService != null) {
                     Log.d(TAG, "Connecting.");
-                    if(mainMenuActivity != null && mainMenuActivity.mGameConnection == null) {
-                        mainMenuActivity.mGameConnection = new GameConnection( mainMenuActivity.mUpdateHandler);
-                        mainMenuActivity.mGameConnection.connectToServer(mService.getHost(),
-                                mService.getPort());
-                    }
-                    else if(spielBeitretenActivity != null && spielBeitretenActivity.mGameConnection == null) {
-                        spielBeitretenActivity.mGameConnection = new GameConnection( spielBeitretenActivity.mUpdateHandler);
-                        spielBeitretenActivity.mGameConnection.connectToServer(mService.getHost(),
-                                mService.getPort());
-                    }
-                    else if(spielStartActivity != null) {
-                        spielStartActivity.mGameConnection = new GameConnection( spielStartActivity.mUpdateHandler);
-                        spielStartActivity.mGameConnection.connectToServer(mService.getHost(),
-                                mService.getPort());
-                    }
+
+                    GameServerJob.scheduleGameServerJob();
+                    GameClientJob.scheduleGameClientJob(mService.getHost().getHostAddress(),  mService.getPort());
+
+                    editor.putString(SHARED_PREF_IP_ADRESS, mService.getHost().getHostAddress());
+                    editor.putInt(SHARED_PREF_PORT, mService.getPort());
+                    editor.apply();
+
+                    mServiceResolved = true;
 
                     Toast.makeText(mContext, "Mit Spiel verbunden", Toast.LENGTH_SHORT).show();
                     //ToDo Send message for requestJoinGame to server
@@ -212,5 +187,6 @@ public class NsdHelper {
         }catch(Exception e){
             Log.e(TAG, "Unregister service failed");
         }
+        mServiceResolved = false;
     }
 }

@@ -141,7 +141,7 @@ public class PlayerMessageInterpreter {
 
                 Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spiel gestartet!", Toast.LENGTH_SHORT).show();
 
-                spielBeitretenActivity.mGameConnection.tearDown();
+                //spielBeitretenActivity.mGameConnection.tearDown();
 
                 spielBeitretenActivity.startActivity(intent);
 
@@ -162,7 +162,7 @@ public class PlayerMessageInterpreter {
 
                 Toast.makeText(spielStartActivity.getApplicationContext(), "Spiel beendet!", Toast.LENGTH_SHORT).show();
 
-                spielStartActivity.mGameConnection.tearDown();
+                //spielStartActivity.mGameConnection.tearDown();
 
                 spielStartActivity.startActivity(intent);
 

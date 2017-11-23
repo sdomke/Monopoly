@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.monopoly.domke.sebastian.monopoly.R;
-import com.monopoly.domke.sebastian.monopoly.common.GameConnection;
 import com.monopoly.domke.sebastian.monopoly.common.Spiel;
 import com.monopoly.domke.sebastian.monopoly.database.DatabaseHandler;
 import com.monopoly.domke.sebastian.monopoly.view.SpielBeitretenActivity;

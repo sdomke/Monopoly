@@ -50,9 +50,7 @@ public class SendMessageJob extends Job {
         return Result.SUCCESS;
     }
 
-    public void scheduleJob(InetAddress address, int port, String message) {
-
-        String ipAdress = address.getHostAddress();
+    public static void scheduleSendMessageJob(String ipAdress, int port, String message) {
 
         PersistableBundleCompat extras = new PersistableBundleCompat();
         extras.putString(EXTRA_IP_ADRESS, ipAdress);
