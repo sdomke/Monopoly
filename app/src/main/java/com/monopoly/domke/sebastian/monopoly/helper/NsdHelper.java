@@ -118,9 +118,11 @@ public class NsdHelper {
                     Log.d(TAG, "Connecting.");
 
                     GameServerJob.scheduleGameServerJob();
-                    GameClientJob.scheduleGameClientJob(mService.getHost().getHostAddress(),  mService.getPort());
+                    GameClientJob.scheduleGameClientJob(mService.getHost().getHostName(),  mService.getPort());
 
-                    editor.putString(SHARED_PREF_IP_ADRESS, mService.getHost().getHostAddress());
+                    Log.d(TAG, "Service to connect hostname: " + mService.getHost().getHostName());
+
+                    editor.putString(SHARED_PREF_IP_ADRESS, mService.getHost().getHostName());
                     editor.putInt(SHARED_PREF_PORT, mService.getPort());
                     editor.apply();
 

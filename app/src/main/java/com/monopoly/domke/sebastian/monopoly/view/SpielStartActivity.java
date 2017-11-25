@@ -106,7 +106,7 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
         databaseHandler = new DatabaseHandler(this);
 
-        JobManager.create(this).addJobCreator(new GameJobCreator());
+        //JobManager.create(this).addJobCreator(new GameJobCreator());
 
         messageParser = new MessageParser();
 

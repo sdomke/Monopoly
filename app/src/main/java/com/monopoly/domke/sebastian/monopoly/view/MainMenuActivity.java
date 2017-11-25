@@ -59,7 +59,7 @@ public class MainMenuActivity extends AppCompatActivity {
 
         datasource = new DatabaseHandler(this);
 
-        JobManager.create(this).addJobCreator(new GameJobCreator());
+        //JobManager.create(this).addJobCreator(new GameJobCreator());
 
         playerMessageInterpreter = new PlayerMessageInterpreter(this);
         messageParser = new MessageParser();

@@ -2,8 +2,6 @@ package com.monopoly.domke.sebastian.monopoly.common;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -39,6 +37,7 @@ public class GameServerJob extends Job {
     public static void scheduleGameServerJob() {
 
         new JobRequest.Builder(GameServerJob.TAG)
+                .setUpdateCurrent(false)
                 .startNow()
                 .build()
                 .schedule();
@@ -49,7 +48,6 @@ public class GameServerJob extends Job {
 
         private static final String BROADCAST_INTENT = "BROADCAST_INTENT";
         private static final String BROADCAST_INTENT_EXTRA = "BROADCAST_INTENT_EXTRA";
-
 
         public GameClient mGameClient;
 
@@ -80,22 +78,22 @@ public class GameServerJob extends Job {
 
         private synchronized void setSocket(Socket socket) {
 
-            Log.d(TAG, "setSocket being called.");
+            Log.d(SERVER_TAG, "setSocket being called.");
             if (socket == null) {
-                Log.d(TAG, "Setting a null socket.");
+                Log.d(SERVER_TAG, "Setting a null socket.");
             }
             if (mSocket != null) {
                 if (mSocket.isConnected()) {
                     try {
                         mSocket.close();
                     } catch (IOException e) {
-                        Log.d(TAG, "Can't close socket");
+                        Log.d(SERVER_TAG, "Can't close socket");
                         e.printStackTrace();
                     }
                 }
             }
             mSocket = socket;
-            Log.d(TAG, "Client socket Port: " + mSocket.getPort() + " Adress:" + mSocket.getInetAddress());
+            Log.d(SERVER_TAG, "Client socket Port: " + mSocket.getPort() + " Adress:" + mSocket.getInetAddress());
         }
 
         class ServerThread implements Runnable {
@@ -156,7 +154,7 @@ public class GameServerJob extends Job {
         private LocalBroadcastManager broadcaster;
 
         private InetAddress mAddress;
-        private int PORT;
+        private int port;
 
         private final String CLIENT_TAG = "GameClient";
 
@@ -169,7 +167,7 @@ public class GameServerJob extends Job {
 
             Log.d(CLIENT_TAG, "Creating GameClient");
             this.mAddress = address;
-            this.PORT = port;
+            this.port = port;
 
             broadcaster = LocalBroadcastManager.getInstance(getContext());
 
@@ -182,7 +180,7 @@ public class GameServerJob extends Job {
 
 
         public synchronized void broadcastMessages(String msg) {
-            Log.d(TAG, "Broadcast message: " + msg);
+            Log.d(CLIENT_TAG, "Broadcast message: " + msg);
 
             Intent messageReceivedIntent = new Intent(BROADCAST_INTENT);
             messageReceivedIntent.putExtra(BROADCAST_INTENT_EXTRA, msg);
@@ -191,23 +189,23 @@ public class GameServerJob extends Job {
 
         private synchronized void setSocket(Socket socket) {
 
-            Log.d(TAG, "setSocket being called.");
+            Log.d(CLIENT_TAG, "setSocket being called.");
             if (socket == null) {
-                Log.d(TAG, "Setting a null socket.");
+                Log.d(CLIENT_TAG, "Setting a null socket.");
             }
             if (mSocket != null) {
                 if (mSocket.isConnected()) {
                     try {
                         mSocket.close();
                     } catch (IOException e) {
-                        Log.d(TAG, "Can't close socket");
+                        Log.d(CLIENT_TAG, "Can't close socket");
                         e.printStackTrace();
                     }
                 }
             }
             mSocket = socket;
 
-            Log.d(TAG, "Client socket Port: " + mSocket.getPort() + " Adress:" + mSocket.getInetAddress());
+            Log.d(CLIENT_TAG, "Client socket Port: " + mSocket.getPort() + " Adress:" + mSocket.getInetAddress());
         }
 
         public Socket getSocket() {
@@ -220,7 +218,7 @@ public class GameServerJob extends Job {
             public void run() {
                 try {
                     if (getSocket() == null) {
-                        setSocket(new Socket(mAddress, PORT));
+                        setSocket(new Socket(mAddress.getHostAddress(), port));
                         Log.d(CLIENT_TAG, "Client-side socket initialized.");
                     }
                     else {

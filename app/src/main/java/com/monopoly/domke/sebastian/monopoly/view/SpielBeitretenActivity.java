@@ -89,7 +89,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        JobManager.create(this).addJobCreator(new GameJobCreator());
+        //JobManager.create(this).addJobCreator(new GameJobCreator());
 
         init();
     }
