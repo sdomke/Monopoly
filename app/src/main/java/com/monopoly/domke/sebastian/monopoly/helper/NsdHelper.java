@@ -1,14 +1,19 @@
 package com.monopoly.domke.sebastian.monopoly.helper;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
+import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.monopoly.domke.sebastian.monopoly.common.GameClientJob;
-import com.monopoly.domke.sebastian.monopoly.common.GameServerJob;
+import com.monopoly.domke.sebastian.monopoly.common.GameConnectionJob;
+import com.monopoly.domke.sebastian.monopoly.common.GameConnectionService;
 
 /**
  * Created by Basti on 12.12.2016.
@@ -19,6 +24,8 @@ public class NsdHelper {
     Context mContext;
 
     public boolean mServiceResolved = false;
+    boolean mServiceBound = false;
+    public GameConnectionService mGameConnectionService;
 
     private SharedPreferences sharedPreferences = null;
     private SharedPreferences.Editor editor;
@@ -117,14 +124,25 @@ public class NsdHelper {
                 if (mService != null) {
                     Log.d(TAG, "Connecting.");
 
-                    GameServerJob.scheduleGameServerJob();
-                    GameClientJob.scheduleGameClientJob(mService.getHost().getHostName(),  mService.getPort());
+                    Intent gameConnectionServiceIntent = new Intent(mContext, GameConnectionService.class);
+                    mContext.startService(gameConnectionServiceIntent);
+                    mContext.bindService(gameConnectionServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
+
+                    mGameConnectionService.mGameConnection.connectToServer(mService.getHost(), mService.getPort());
+
+                    //GameConnectionJob.scheduleGameConnectionJob();
+
+                    //GameConnectionJob.gameConnectionInstanze.connectToServer(mService.getHost(), mService.getPort());
+
+//                    GameConnectionJob.scheduleGameConnectionJob();
+//                    GameClientJob.scheduleGameClientJob(mService.getHost().getHostAddress(),  mService.getPort());
 
                     Log.d(TAG, "Service to connect hostname: " + mService.getHost().getHostName());
+                    Log.d(TAG, "Service to connect hostaddress: " + mService.getHost().getHostAddress());
 
-                    editor.putString(SHARED_PREF_IP_ADRESS, mService.getHost().getHostName());
-                    editor.putInt(SHARED_PREF_PORT, mService.getPort());
-                    editor.apply();
+//                    editor.putString(SHARED_PREF_IP_ADRESS, mService.getHost().getHostAddress());
+//                    editor.putInt(SHARED_PREF_PORT, mService.getPort());
+//                    editor.apply();
 
                     mServiceResolved = true;
 
@@ -191,4 +209,19 @@ public class NsdHelper {
         }
         mServiceResolved = false;
     }
+
+    private ServiceConnection mServiceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mServiceBound = false;
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            GameConnectionService.MyBinder myBinder = (GameConnectionService.MyBinder) service;
+            mGameConnectionService = myBinder.getService();
+            mServiceBound = true;
+        }
+    };
 }

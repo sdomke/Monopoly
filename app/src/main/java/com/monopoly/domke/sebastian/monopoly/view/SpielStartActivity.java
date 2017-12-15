@@ -29,14 +29,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.evernote.android.job.JobManager;
 import com.monopoly.domke.sebastian.monopoly.R;
 import com.monopoly.domke.sebastian.monopoly.common.GameMessage;
-import com.monopoly.domke.sebastian.monopoly.common.SendMessageJob;
 import com.monopoly.domke.sebastian.monopoly.common.Spiel;
 import com.monopoly.domke.sebastian.monopoly.common.Spieler;
 import com.monopoly.domke.sebastian.monopoly.database.DatabaseHandler;
-import com.monopoly.domke.sebastian.monopoly.helper.GameJobCreator;
 import com.monopoly.domke.sebastian.monopoly.helper.GameStatusAdapter;
 import com.monopoly.domke.sebastian.monopoly.helper.HostMessageInterpreter;
 import com.monopoly.domke.sebastian.monopoly.helper.MessageParser;
@@ -386,7 +383,6 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
                 String ipAdress = sharedPreferences.getString(SHARED_PREF_IP_ADRESS, null);
                 int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
 
-                SendMessageJob.scheduleSendMessageJob(ipAdress, port, jsonString);
                 //mGameConnection.sendMessage(jsonString);
 
             }
@@ -414,7 +410,6 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
                 String ipAdress = sharedPreferences.getString(SHARED_PREF_IP_ADRESS, null);
                 int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
 
-                SendMessageJob.scheduleSendMessageJob(ipAdress, port, jsonString);
                 //mGameConnection.sendMessage(jsonString);
 
             }
@@ -461,7 +456,6 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
                 String ipAdress = sharedPreferences.getString(SHARED_PREF_IP_ADRESS, null);
                 int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
 
-                SendMessageJob.scheduleSendMessageJob(ipAdress, port, jsonString);
                 //mGameConnection.sendMessage(jsonString);
 
             }
@@ -551,7 +545,6 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
         String ipAdress = sharedPreferences.getString(SHARED_PREF_IP_ADRESS, null);
         int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
 
-        SendMessageJob.scheduleSendMessageJob(ipAdress, port, jsonString);
         //mGameConnection.sendMessage(jsonString);
 
         aktuellerBetragEditText.setText("");
@@ -583,7 +576,6 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
         String ipAdress = sharedPreferences.getString(SHARED_PREF_IP_ADRESS, null);
         int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
 
-        SendMessageJob.scheduleSendMessageJob(ipAdress, port, jsonString);
         //mGameConnection.sendMessage(jsonString);
 
         aktuellerBetragEditText.setText("");
@@ -611,7 +603,6 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
         String ipAdress = sharedPreferences.getString(SHARED_PREF_IP_ADRESS, null);
         int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
 
-        SendMessageJob.scheduleSendMessageJob(ipAdress, port, jsonString);
         //mGameConnection.sendMessage(jsonString);
 
         aktuellerBetragEditText.setText("");
@@ -654,7 +645,6 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
         String ipAdress = sharedPreferences.getString(SHARED_PREF_IP_ADRESS, null);
         int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
 
-        SendMessageJob.scheduleSendMessageJob(ipAdress, port, jsonString);
         //mGameConnection.sendMessage(jsonString);
 
         aktuellerBetragEditText.setText("");
@@ -857,7 +847,6 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
                             String ipAdress = sharedPreferences.getString(SHARED_PREF_IP_ADRESS, null);
                             int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
 
-                            SendMessageJob.scheduleSendMessageJob(ipAdress, port, jsonString);
                             //mGameConnection.sendMessage(jsonString);
                             Toast.makeText(getApplicationContext(), "Spiel beenden Nachricht gesendet", Toast.LENGTH_SHORT).show();
                         }

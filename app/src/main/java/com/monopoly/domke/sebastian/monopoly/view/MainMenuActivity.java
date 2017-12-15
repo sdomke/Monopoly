@@ -1,11 +1,14 @@
 package com.monopoly.domke.sebastian.monopoly.view;
 
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,13 +19,11 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.evernote.android.job.JobManager;
 import com.monopoly.domke.sebastian.monopoly.R;
+import com.monopoly.domke.sebastian.monopoly.common.GameConnectionService;
 import com.monopoly.domke.sebastian.monopoly.common.GameMessage;
-import com.monopoly.domke.sebastian.monopoly.common.SendMessageJob;
 import com.monopoly.domke.sebastian.monopoly.common.Spiel;
 import com.monopoly.domke.sebastian.monopoly.database.DatabaseHandler;
-import com.monopoly.domke.sebastian.monopoly.helper.GameJobCreator;
 import com.monopoly.domke.sebastian.monopoly.helper.MessageParser;
 import com.monopoly.domke.sebastian.monopoly.helper.NsdHelper;
 import com.monopoly.domke.sebastian.monopoly.helper.PlayerMessageInterpreter;
@@ -38,6 +39,9 @@ public class MainMenuActivity extends AppCompatActivity {
     private PlayerMessageInterpreter playerMessageInterpreter;
     public MessageParser messageParser;
     private RelativeLayout spielBeitretenRelativeLayout;
+
+    boolean mServiceBound = false;
+    public GameConnectionService mGameConnectionService;
 
     private SharedPreferences sharedPreferences = null;
 
@@ -156,10 +160,14 @@ public class MainMenuActivity extends AppCompatActivity {
 
                 String jsonString = messageParser.messageToJsonString(requestJoinGameMessage);
 
-                String ipAdress = sharedPreferences.getString(SHARED_PREF_IP_ADRESS, null);
-                int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
+/*                String ipAdress = sharedPreferences.getString(SHARED_PREF_IP_ADRESS, null);
+                int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);*/
 
-                SendMessageJob.scheduleSendMessageJob(ipAdress, port, jsonString);
+                //SendMessageJob.scheduleSendMessageJob(ipAdress, port, jsonString);
+
+                mGameConnectionService.mGameConnection.sendMessage(jsonString);
+
+                //GameConnectionJob.gameConnectionInstanze.sendMessage(jsonString);
 
                 //mGameConnection.sendMessage(jsonString);
                 Toast.makeText(getApplicationContext(), "requestJoinGameMessage send", Toast.LENGTH_SHORT).show();
@@ -198,5 +206,20 @@ public class MainMenuActivity extends AppCompatActivity {
         }*/
         super.onDestroy();
     }
+
+    private ServiceConnection mServiceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mServiceBound = false;
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            GameConnectionService.MyBinder myBinder = (GameConnectionService.MyBinder) service;
+            mGameConnectionService = myBinder.getService();
+            mServiceBound = true;
+        }
+    };
 
 }

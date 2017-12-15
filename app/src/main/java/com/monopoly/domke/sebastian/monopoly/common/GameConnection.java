@@ -1,65 +1,106 @@
 package com.monopoly.domke.sebastian.monopoly.common;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
+import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.evernote.android.job.Job;
-import com.evernote.android.job.JobRequest;
-
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
 /**
- * Created by Basti on 22.11.2017.
+ * Created by Basti on 12.12.2017.
  */
 
-public class GameServerJob extends Job {
+public class GameConnection {
 
-    public static final String TAG = "job_game_server_tag";
-    private static final String EXTRA_ID = "EXTRA_ID";
+    private static final String BROADCAST_INTENT = "BROADCAST_INTENT";
+    private static final String BROADCAST_INTENT_EXTRA = "BROADCAST_INTENT_EXTRA";
 
-    @NonNull
-    @Override
-    protected Result onRunJob(Params params) {
+    public GameClient mGameClient;
+    public GameServer mGameServer;
 
-        new GameServer();
-        return Result.SUCCESS;
+    public Socket mSocket;
+    public Context mContext;
+
+    private final String SERVER_TAG = "GameConnection";
+
+    public GameConnection(Context context) {
+
+        this.mContext = context;
+        mGameServer = new GameServer();
     }
 
-    public static void scheduleGameServerJob() {
+    public void tearDown() {
 
-        new JobRequest.Builder(GameServerJob.TAG)
-                .setUpdateCurrent(false)
-                .startNow()
-                .build()
-                .schedule();
+        Log.d(SERVER_TAG, "tearDown");
+
+        if(mGameServer != null) {
+            mGameServer.tearDown();
+        }
+
+        if(mGameClient != null) {
+            mGameClient.tearDown();
+        }
     }
 
+    public void connectToServer(InetAddress address, int port) {
+        mGameClient = new GameClient(address, port);
+    }
+
+    public void sendMessage(final String msg) {
+        if (mGameClient != null) {
+            new Thread(new Runnable() {
+                public void run() {
+                    mGameClient.sendMessage(msg);
+                }
+            }).start();
+
+
+        }
+    }
+
+    private synchronized void setSocket(Socket socket) {
+
+        Log.d(SERVER_TAG, "setSocket being called.");
+        if (socket == null) {
+            Log.d(SERVER_TAG, "Setting a null socket.");
+        }
+        if (mSocket != null) {
+            if (mSocket.isConnected()) {
+                try {
+                    mSocket.close();
+                } catch (IOException e) {
+                    Log.d(SERVER_TAG, "Can't close socket");
+                    e.printStackTrace();
+                }
+            }
+        }
+        mSocket = socket;
+        Log.d(SERVER_TAG, "Client socket Port: " + mSocket.getPort() + " Adress:" + mSocket.getInetAddress());
+    }
+
+    public Socket getSocket() {
+        return mSocket;
+    }
 
     private class GameServer {
-
-        private static final String BROADCAST_INTENT = "BROADCAST_INTENT";
-        private static final String BROADCAST_INTENT_EXTRA = "BROADCAST_INTENT_EXTRA";
-
-        public GameClient mGameClient;
-
-        public Socket mSocket;
-
         ServerSocket mServerSocket = null;
         Thread mThread = null;
         private final String SERVER_TAG = "GameServer";
 
         public GameServer() {
-
-            mThread = new Thread(new GameServer.ServerThread());
+            mThread = new Thread(new ServerThread());
             mThread.start();
         }
 
@@ -70,30 +111,6 @@ public class GameServerJob extends Job {
             } catch (IOException ioe) {
                 Log.e(SERVER_TAG, "Error when closing server socket.");
             }
-        }
-
-        public void connectToServer(InetAddress address, int port) {
-            mGameClient = new GameClient(address, port);
-        }
-
-        private synchronized void setSocket(Socket socket) {
-
-            Log.d(SERVER_TAG, "setSocket being called.");
-            if (socket == null) {
-                Log.d(SERVER_TAG, "Setting a null socket.");
-            }
-            if (mSocket != null) {
-                if (mSocket.isConnected()) {
-                    try {
-                        mSocket.close();
-                    } catch (IOException e) {
-                        Log.d(SERVER_TAG, "Can't close socket");
-                        e.printStackTrace();
-                    }
-                }
-            }
-            mSocket = socket;
-            Log.d(SERVER_TAG, "Client socket Port: " + mSocket.getPort() + " Adress:" + mSocket.getInetAddress());
         }
 
         class ServerThread implements Runnable {
@@ -108,7 +125,7 @@ public class GameServerJob extends Job {
             @Override
             public void run() {
 
-                sharedPreferences = getContext().getSharedPreferences(SHARED_PREF, 0); // 0 - for private mode
+                sharedPreferences = mContext.getSharedPreferences(SHARED_PREF, 0); // 0 - for private mode
                 editor = sharedPreferences.edit();
 
                 try {
@@ -126,7 +143,7 @@ public class GameServerJob extends Job {
                         setSocket(mServerSocket.accept());
                         Log.d(SERVER_TAG, "Connected.");
 
-                        Log.d(SERVER_TAG, "GameClient == null -> connectToServer(" +  mSocket.getInetAddress() + ", " + mSocket.getPort() + ")");
+                        Log.d(SERVER_TAG, "GameClient == null -> connectToServer(" + mSocket.getInetAddress() + ", " + mSocket.getPort() + ")");
                         int port = mSocket.getPort();
                         InetAddress address = mSocket.getInetAddress();
                         connectToServer(address, port);
@@ -144,13 +161,6 @@ public class GameServerJob extends Job {
         private static final String BROADCAST_INTENT = "BROADCAST_INTENT";
         private static final String BROADCAST_INTENT_EXTRA = "BROADCAST_INTENT_EXTRA";
 
-        public static final String SHARED_PREF = "SHARED_PREF";
-        public static final String SHARED_PREF_IP_ADRESS = "SHARED_PREF_IP_ADRESS";
-        public static final String SHARED_PREF_PORT = "SHARED_PREF_PORT";
-
-        private SharedPreferences sharedPreferences = null;
-        private SharedPreferences.Editor editor;
-
         private LocalBroadcastManager broadcaster;
 
         private InetAddress mAddress;
@@ -161,18 +171,13 @@ public class GameServerJob extends Job {
         private Thread mSendThread;
         private Thread mRecThread;
 
-        public Socket mSocket;
-
         public GameClient(InetAddress address, int port) {
 
             Log.d(CLIENT_TAG, "Creating GameClient");
             this.mAddress = address;
             this.port = port;
 
-            broadcaster = LocalBroadcastManager.getInstance(getContext());
-
-            sharedPreferences = getContext().getSharedPreferences(SHARED_PREF, 0); // 0 - for private mode
-            editor = sharedPreferences.edit();
+            broadcaster = LocalBroadcastManager.getInstance(mContext);
 
             mSendThread = new Thread(new GameClient.SendingThread());
             mSendThread.start();
@@ -187,31 +192,6 @@ public class GameServerJob extends Job {
             broadcaster.sendBroadcast(messageReceivedIntent);
         }
 
-        private synchronized void setSocket(Socket socket) {
-
-            Log.d(CLIENT_TAG, "setSocket being called.");
-            if (socket == null) {
-                Log.d(CLIENT_TAG, "Setting a null socket.");
-            }
-            if (mSocket != null) {
-                if (mSocket.isConnected()) {
-                    try {
-                        mSocket.close();
-                    } catch (IOException e) {
-                        Log.d(CLIENT_TAG, "Can't close socket");
-                        e.printStackTrace();
-                    }
-                }
-            }
-            mSocket = socket;
-
-            Log.d(CLIENT_TAG, "Client socket Port: " + mSocket.getPort() + " Adress:" + mSocket.getInetAddress());
-        }
-
-        public Socket getSocket() {
-            return mSocket;
-        }
-
         class SendingThread implements Runnable {
 
             @Override
@@ -220,8 +200,7 @@ public class GameServerJob extends Job {
                     if (getSocket() == null) {
                         setSocket(new Socket(mAddress.getHostAddress(), port));
                         Log.d(CLIENT_TAG, "Client-side socket initialized.");
-                    }
-                    else {
+                    } else {
                         Log.d(CLIENT_TAG, "Client-side socket already initialized. skipping!");
                     }
 
@@ -269,24 +248,24 @@ public class GameServerJob extends Job {
         public void tearDown() {
             try {
                 mSendThread.interrupt();
-            }catch(Exception e){
+            } catch (Exception e) {
                 Log.d(CLIENT_TAG, "Error when interrupting SendThread");
             }
             try {
                 mRecThread.interrupt();
-            }catch(Exception e){
+            } catch (Exception e) {
                 Log.d(CLIENT_TAG, "Error when interrupting RecordingThread");
             }
 
             try {
                 getSocket().getInputStream().close();
-            }catch(Exception e){
+            } catch (Exception e) {
                 Log.d(CLIENT_TAG, "Error when closing inputStream");
             }
 
             try {
                 getSocket().getOutputStream().close();
-            }catch(Exception e){
+            } catch (Exception e) {
                 Log.d(CLIENT_TAG, "Error when interrupting RecordingThread");
             }
 
@@ -297,6 +276,32 @@ public class GameServerJob extends Job {
             }
         }
 
-    }
+        public void sendMessage(String msg) {
+            try {
+                Socket socket = getSocket();
+                if (socket == null) {
+                    Log.d(CLIENT_TAG, "Socket is null, wtf?");
+                } else if (socket.getOutputStream() == null) {
+                    Log.d(CLIENT_TAG, "Socket output stream is null, wtf?");
+                }
 
+                PrintWriter out = new PrintWriter(
+                        new BufferedWriter(
+                                new OutputStreamWriter(getSocket().getOutputStream())), true);
+                out.println(msg);
+                out.flush();
+
+                broadcastMessages(msg);
+                //updateMessages(msg, true);
+            } catch (UnknownHostException e) {
+                Log.d(CLIENT_TAG, "Unknown Host", e);
+            } catch (IOException e) {
+                Log.d(CLIENT_TAG, "I/O Exception", e);
+            } catch (Exception e) {
+                Log.d(CLIENT_TAG, "Error3", e);
+            }
+            Log.d(CLIENT_TAG, "Client sent message: " + msg);
+        }
+
+    }
 }

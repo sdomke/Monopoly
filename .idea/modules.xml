@@ -3,9 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Monopoly.iml" filepath="$PROJECT_DIR$/.idea/Monopoly.iml" />
-      <module fileurl="file://C:\Users\Basti\StudioProjects\Monopoly\Monopoly.iml" filepath="C:\Users\Basti\StudioProjects\Monopoly\Monopoly.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://C:\Users\Basti\StudioProjects\Monopoly\app\app.iml" filepath="C:\Users\Basti\StudioProjects\Monopoly\app\app.iml" />
     </modules>
   </component>
 </project>

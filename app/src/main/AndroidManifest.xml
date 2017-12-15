@@ -51,6 +51,8 @@
         <activity
             android:name="com.monopoly.domke.sebastian.monopoly.view.EinstellungenActivity"
             android:label="@string/title_activity_einstellungen"></activity>
+
+        <service android:name=".common.GameConnectionService" />
     </application>
 
 </manifest>
