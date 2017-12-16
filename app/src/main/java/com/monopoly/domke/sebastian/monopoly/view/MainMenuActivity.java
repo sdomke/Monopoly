@@ -55,6 +55,14 @@ public class MainMenuActivity extends AppCompatActivity {
     private static final String BROADCAST_INTENT_EXTRA = "BROADCAST_INTENT_EXTRA";
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        Intent gameConnectionServiceIntent = new Intent(this, GameConnectionService.class);
+        startService(gameConnectionServiceIntent);
+        bindService(gameConnectionServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
@@ -79,7 +87,7 @@ public class MainMenuActivity extends AppCompatActivity {
 
         //mGameConnection = new GameConnection(mUpdateHandler);
 
-        mNsdClient = new NsdHelper(getApplicationContext());
+        mNsdClient = new NsdHelper(getApplicationContext(), this);
         mNsdClient.initializeDiscoveryListener();
         mNsdClient.initializeResolveListener();
 
@@ -216,6 +224,7 @@ public class MainMenuActivity extends AppCompatActivity {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
+            Log.d(TAG, "onServiceConnected");
             GameConnectionService.MyBinder myBinder = (GameConnectionService.MyBinder) service;
             mGameConnectionService = myBinder.getService();
             mServiceBound = true;

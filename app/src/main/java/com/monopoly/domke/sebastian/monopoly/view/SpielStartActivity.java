@@ -1,14 +1,17 @@
 package com.monopoly.domke.sebastian.monopoly.view;
 
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.provider.Settings;
 import android.support.v4.app.FragmentManager;
@@ -30,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.monopoly.domke.sebastian.monopoly.R;
+import com.monopoly.domke.sebastian.monopoly.common.GameConnectionService;
 import com.monopoly.domke.sebastian.monopoly.common.GameMessage;
 import com.monopoly.domke.sebastian.monopoly.common.Spiel;
 import com.monopoly.domke.sebastian.monopoly.common.Spieler;
@@ -45,6 +49,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class SpielStartActivity extends AppCompatActivity implements GameStatusFragment.OnFragmentInteractionListener {
+
+    boolean mServiceBound = false;
+    public GameConnectionService mGameConnectionService;
 
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
@@ -131,21 +138,18 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
             /*mNsdClient = new NsdHelper(getApplicationContext(), this);
             mNsdClient.initializeDiscoveryListener();
             mNsdClient.initializeResolveListener();*/
+            Intent gameConnectionServiceIntent = new Intent(this, GameConnectionService.class);
+            bindService(gameConnectionServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
             playerMessageInterpreter = new PlayerMessageInterpreter(this);
         }
         else{
             /*mGameConnection = new GameConnection(mUpdateHandler);
             mNsdServer = new NsdHelper(this);
             mNsdServer.initializeRegistrationListener();*/
+            Intent gameConnectionServiceIntent = new Intent(this, GameConnectionService.class);
+            bindService(gameConnectionServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
             hostMessageInterpreter = new HostMessageInterpreter(this);
             //advertiseGame();
-        }
-
-        if(!neuesSpiel) {
-            playerMessageInterpreter = new PlayerMessageInterpreter(this);
-        }
-        else{
-            hostMessageInterpreter = new HostMessageInterpreter(this);
         }
 
         init();
@@ -161,7 +165,13 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
                         GameMessage message = messageParser.jsonStringToMessage(msg);
 
                         //Toast.makeText(getApplicationContext(), "Client Message Handler", Toast.LENGTH_SHORT).show();
-                        playerMessageInterpreter.decideWhatToDoWithTheMassage(message);
+                        if (!neuesSpiel) {
+                            //Toast.makeText(getApplicationContext(), "Client Message Handler", Toast.LENGTH_SHORT).show();
+                            playerMessageInterpreter.decideWhatToDoWithTheMassage(message);
+                        } else {
+                            //Toast.makeText(getApplicationContext(), "Host Message Handler", Toast.LENGTH_SHORT).show();
+                            hostMessageInterpreter.decideWhatToDoWithTheMassage(message);
+                        }
 
                     }catch (Exception e){
                         Log.d(TAG, "Keine passende Nachricht");
@@ -380,9 +390,7 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
                 String jsonString = messageParser.messageToJsonString(receiveLosGameMessage);
 
-                String ipAdress = sharedPreferences.getString(SHARED_PREF_IP_ADRESS, null);
-                int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
-
+                mGameConnectionService.mGameConnection.sendMessage(jsonString);
                 //mGameConnection.sendMessage(jsonString);
 
             }
@@ -407,9 +415,7 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
                 String jsonString = messageParser.messageToJsonString(receiveFreiParkenGameMessage);
 
-                String ipAdress = sharedPreferences.getString(SHARED_PREF_IP_ADRESS, null);
-                int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
-
+                mGameConnectionService.mGameConnection.sendMessage(jsonString);
                 //mGameConnection.sendMessage(jsonString);
 
             }
@@ -453,8 +459,7 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
                 String jsonString = messageParser.messageToJsonString(moneyTransactionToBankGameMessage);
 
-                String ipAdress = sharedPreferences.getString(SHARED_PREF_IP_ADRESS, null);
-                int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
+                mGameConnectionService.mGameConnection.sendMessage(jsonString);
 
                 //mGameConnection.sendMessage(jsonString);
 
@@ -542,8 +547,7 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
         String jsonString = messageParser.messageToJsonString(moneyTransactionToPlayerGameMessage);
 
-        String ipAdress = sharedPreferences.getString(SHARED_PREF_IP_ADRESS, null);
-        int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
+        mGameConnectionService.mGameConnection.sendMessage(jsonString);
 
         //mGameConnection.sendMessage(jsonString);
 
@@ -573,8 +577,7 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
         String jsonString = messageParser.messageToJsonString(moneyTransactionToBankGameMessage);
 
-        String ipAdress = sharedPreferences.getString(SHARED_PREF_IP_ADRESS, null);
-        int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
+        mGameConnectionService.mGameConnection.sendMessage(jsonString);
 
         //mGameConnection.sendMessage(jsonString);
 
@@ -600,8 +603,7 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
         String jsonString = messageParser.messageToJsonString(moneyTransactionToBankGameMessage);
 
-        String ipAdress = sharedPreferences.getString(SHARED_PREF_IP_ADRESS, null);
-        int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
+        mGameConnectionService.mGameConnection.sendMessage(jsonString);
 
         //mGameConnection.sendMessage(jsonString);
 
@@ -642,8 +644,7 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
         String jsonString = messageParser.messageToJsonString(moneyTransactionToBankGameMessage);
 
-        String ipAdress = sharedPreferences.getString(SHARED_PREF_IP_ADRESS, null);
-        int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
+        mGameConnectionService.mGameConnection.sendMessage(jsonString);
 
         //mGameConnection.sendMessage(jsonString);
 
@@ -844,8 +845,7 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
                             String jsonString = messageParser.messageToJsonString(startGameMessage);
 
-                            String ipAdress = sharedPreferences.getString(SHARED_PREF_IP_ADRESS, null);
-                            int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
+                            mGameConnectionService.mGameConnection.sendMessage(jsonString);
 
                             //mGameConnection.sendMessage(jsonString);
                             Toast.makeText(getApplicationContext(), "Spiel beenden Nachricht gesendet", Toast.LENGTH_SHORT).show();
@@ -963,4 +963,19 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
     public void onBackPressed() {
 
     }
+
+    private ServiceConnection mServiceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mServiceBound = false;
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            GameConnectionService.MyBinder myBinder = (GameConnectionService.MyBinder) service;
+            mGameConnectionService = myBinder.getService();
+            mServiceBound = true;
+        }
+    };
 }

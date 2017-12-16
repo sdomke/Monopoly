@@ -50,8 +50,6 @@ import java.util.ArrayList;
 
 public class SpielBeitretenActivity extends AppCompatActivity {
 
-    boolean mBound = false;
-
     boolean mServiceBound = false;
     public GameConnectionService mGameConnectionService;
 
@@ -121,6 +119,8 @@ public class SpielBeitretenActivity extends AppCompatActivity {
             /*mNsdClient = new NsdHelper(getApplicationContext());
             mNsdClient.initializeDiscoveryListener();
             mNsdClient.initializeResolveListener();*/
+            Intent gameConnectionServiceIntent = new Intent(this, GameConnectionService.class);
+            bindService(gameConnectionServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
             playerMessageInterpreter = new PlayerMessageInterpreter(this);
         }
         else{
@@ -187,9 +187,6 @@ public class SpielBeitretenActivity extends AppCompatActivity {
                     GameMessage startGameMessage = new GameMessage(GameMessage.MessageHeader.gameStart, messageContent);
 
                     String jsonString = messageParser.messageToJsonString(startGameMessage);
-
-                    String ipAdress = sharedPreferences.getString(SHARED_PREF_IP_ADRESS, null);
-                    int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
 
                     mGameConnectionService.mGameConnection.sendMessage(jsonString);
                     //GameConnectionJob.gameConnectionInstanze.sendMessage(jsonString);
@@ -325,7 +322,13 @@ public class SpielBeitretenActivity extends AppCompatActivity {
                         GameMessage message = messageParser.jsonStringToMessage(msg);
 
                         //Toast.makeText(getApplicationContext(), "Client Message Handler", Toast.LENGTH_SHORT).show();
-                        playerMessageInterpreter.decideWhatToDoWithTheMassage(message);
+                        if (!neuesSpiel) {
+                            //Toast.makeText(getApplicationContext(), "Client Message Handler", Toast.LENGTH_SHORT).show();
+                            playerMessageInterpreter.decideWhatToDoWithTheMassage(message);
+                        } else {
+                            //Toast.makeText(getApplicationContext(), "Host Message Handler", Toast.LENGTH_SHORT).show();
+                            hostMessageInterpreter.decideWhatToDoWithTheMassage(message);
+                        }
 
                     }catch (Exception e){
                         Log.d(TAG, "Keine passende Nachricht");
@@ -373,9 +376,6 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
         String jsonString = messageParser.messageToJsonString(requestJoinGameMessage);
 
-        String ipAdress = sharedPreferences.getString(SHARED_PREF_IP_ADRESS, null);
-        int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
-
         mGameConnectionService.mGameConnection.sendMessage(jsonString);
         //GameConnectionJob.gameConnectionInstanze.sendMessage(jsonString);
         //SendMessageJob.scheduleSendMessageJob(ipAdress, port, jsonString);
@@ -405,9 +405,6 @@ public class SpielBeitretenActivity extends AppCompatActivity {
             GameMessage invitationGameMessage = new GameMessage(GameMessage.MessageHeader.invitation, messageContent);
 
             String jsonString = messageParser.messageToJsonString(invitationGameMessage);
-
-            String ipAdress = sharedPreferences.getString(SHARED_PREF_IP_ADRESS, null);
-            int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
 
             mGameConnectionService.mGameConnection.sendMessage(jsonString);
             //GameConnectionJob.gameConnectionInstanze.sendMessage(jsonString);

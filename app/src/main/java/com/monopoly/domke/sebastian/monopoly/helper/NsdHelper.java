@@ -11,9 +11,8 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.monopoly.domke.sebastian.monopoly.common.GameClientJob;
-import com.monopoly.domke.sebastian.monopoly.common.GameConnectionJob;
 import com.monopoly.domke.sebastian.monopoly.common.GameConnectionService;
+import com.monopoly.domke.sebastian.monopoly.view.MainMenuActivity;
 
 /**
  * Created by Basti on 12.12.2016.
@@ -26,6 +25,8 @@ public class NsdHelper {
     public boolean mServiceResolved = false;
     boolean mServiceBound = false;
     public GameConnectionService mGameConnectionService;
+
+    MainMenuActivity mainMenuActivity;
 
     private SharedPreferences sharedPreferences = null;
     private SharedPreferences.Editor editor;
@@ -49,7 +50,12 @@ public class NsdHelper {
         mContext = context;
         mNsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
         sharedPreferences = context.getSharedPreferences(SHARED_PREF, 0); // 0 - for private mode
-        editor = sharedPreferences.edit();
+    }
+
+    public NsdHelper(Context context, MainMenuActivity mainMenuActivity) {
+        mContext = context;
+        mNsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
+        this.mainMenuActivity = mainMenuActivity;
     }
 
     public void initializeDiscoveryListener() {
@@ -124,11 +130,7 @@ public class NsdHelper {
                 if (mService != null) {
                     Log.d(TAG, "Connecting.");
 
-                    Intent gameConnectionServiceIntent = new Intent(mContext, GameConnectionService.class);
-                    mContext.startService(gameConnectionServiceIntent);
-                    mContext.bindService(gameConnectionServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
-
-                    mGameConnectionService.mGameConnection.connectToServer(mService.getHost(), mService.getPort());
+                    mainMenuActivity.mGameConnectionService.mGameConnection.connectToServer(mService.getHost(), mService.getPort());
 
                     //GameConnectionJob.scheduleGameConnectionJob();
 
@@ -209,19 +211,4 @@ public class NsdHelper {
         }
         mServiceResolved = false;
     }
-
-    private ServiceConnection mServiceConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            mServiceBound = false;
-        }
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            GameConnectionService.MyBinder myBinder = (GameConnectionService.MyBinder) service;
-            mGameConnectionService = myBinder.getService();
-            mServiceBound = true;
-        }
-    };
 }

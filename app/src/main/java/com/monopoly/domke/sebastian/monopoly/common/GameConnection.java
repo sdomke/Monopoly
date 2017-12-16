@@ -184,12 +184,14 @@ public class GameConnection {
         }
 
 
-        public synchronized void broadcastMessages(String msg) {
+        public synchronized void broadcastMessages(String msg, boolean local) {
             Log.d(CLIENT_TAG, "Broadcast message: " + msg);
 
-            Intent messageReceivedIntent = new Intent(BROADCAST_INTENT);
-            messageReceivedIntent.putExtra(BROADCAST_INTENT_EXTRA, msg);
-            broadcaster.sendBroadcast(messageReceivedIntent);
+            if (!local) {
+                Intent messageReceivedIntent = new Intent(BROADCAST_INTENT);
+                messageReceivedIntent.putExtra(BROADCAST_INTENT_EXTRA, msg);
+                broadcaster.sendBroadcast(messageReceivedIntent);
+            }
         }
 
         class SendingThread implements Runnable {
@@ -231,7 +233,7 @@ public class GameConnection {
                         if (messageStr != null) {
                             Log.d(CLIENT_TAG, "Read from the stream: " + messageStr);
                             // ToDo Broadcastreceiver aufrufen
-                            broadcastMessages(messageStr);
+                            broadcastMessages(messageStr, false);
                         } else {
                             Log.d(CLIENT_TAG, "The nulls! The nulls!");
                             break;
@@ -291,7 +293,7 @@ public class GameConnection {
                 out.println(msg);
                 out.flush();
 
-                broadcastMessages(msg);
+                broadcastMessages(msg, true);
                 //updateMessages(msg, true);
             } catch (UnknownHostException e) {
                 Log.d(CLIENT_TAG, "Unknown Host", e);

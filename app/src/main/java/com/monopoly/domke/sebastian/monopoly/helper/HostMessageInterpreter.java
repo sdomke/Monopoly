@@ -6,7 +6,6 @@ import android.widget.Toast;
 
 import com.monopoly.domke.sebastian.monopoly.common.GameMessage;
 import com.monopoly.domke.sebastian.monopoly.common.GameMessage.MessageHeader;
-import com.monopoly.domke.sebastian.monopoly.common.SendMessageJob;
 import com.monopoly.domke.sebastian.monopoly.common.Spiel;
 import com.monopoly.domke.sebastian.monopoly.common.Spieler;
 import com.monopoly.domke.sebastian.monopoly.view.SpielBeitretenActivity;
@@ -102,10 +101,7 @@ public class HostMessageInterpreter {
 
                 String jsonString = messageParser.messageToJsonString(invitePlayerGameMessage);
 
-                String ipAdress = sharedPreferences.getString(SHARED_PREF_IP_ADRESS, null);
-                int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
-
-                SendMessageJob.scheduleSendMessageJob(ipAdress, port, jsonString);
+                spielBeitretenActivity.mGameConnectionService.mGameConnection.sendMessage(jsonString);
 
                 //spielBeitretenActivity.mGameConnection.sendMessage(jsonString);
                 Toast.makeText(spielBeitretenActivity.getApplicationContext(), "RequestJoinGame erhalten!", Toast.LENGTH_SHORT).show();
