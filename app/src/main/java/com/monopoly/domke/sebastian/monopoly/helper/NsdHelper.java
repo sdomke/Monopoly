@@ -133,20 +133,6 @@ public class NsdHelper {
 
                     mainMenuActivity.mGameConnectionService.mGameConnection.connectToServer(mService.getHost(), mService.getPort());
 
-                    //GameConnectionJob.scheduleGameConnectionJob();
-
-                    //GameConnectionJob.gameConnectionInstanze.connectToServer(mService.getHost(), mService.getPort());
-
-//                    GameConnectionJob.scheduleGameConnectionJob();
-//                    GameClientJob.scheduleGameClientJob(mService.getHost().getHostAddress(),  mService.getPort());
-
-                    Log.d(TAG, "Service to connect hostname: " + mService.getHost().getHostName());
-                    Log.d(TAG, "Service to connect hostaddress: " + mService.getHost().getHostAddress());
-
-//                    editor.putString(SHARED_PREF_IP_ADRESS, mService.getHost().getHostAddress());
-//                    editor.putInt(SHARED_PREF_PORT, mService.getPort());
-//                    editor.apply();
-
                     mServiceResolved = true;
 
                     JSONObject messageContent = new JSONObject();
@@ -158,8 +144,7 @@ public class NsdHelper {
 
                     mainMenuActivity.mGameConnectionService.mGameConnection.sendMessage(jsonString);
 
-                    Toast.makeText(mContext, "Mit Spiel verbunden", Toast.LENGTH_SHORT).show();
-                    //ToDo Send message for requestJoinGame to server
+                    //Toast.makeText(mContext, "Mit Spiel verbunden", Toast.LENGTH_SHORT).show();
                 } else {
                     Log.d(TAG, "No service to connect to!");
                 }

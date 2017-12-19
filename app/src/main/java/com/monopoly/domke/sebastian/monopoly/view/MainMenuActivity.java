@@ -165,17 +165,9 @@ public class MainMenuActivity extends AppCompatActivity {
 
                 String jsonString = messageParser.messageToJsonString(requestJoinGameMessage);
 
-/*                String ipAdress = sharedPreferences.getString(SHARED_PREF_IP_ADRESS, null);
-                int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);*/
-
-                //SendMessageJob.scheduleSendMessageJob(ipAdress, port, jsonString);
-
                 mGameConnectionService.mGameConnection.sendMessage(jsonString);
 
-                //GameConnectionJob.gameConnectionInstanze.sendMessage(jsonString);
-
-                //mGameConnection.sendMessage(jsonString);
-                Toast.makeText(getApplicationContext(), "requestJoinGameMessage send", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Einladung zum Spiel angefordert", Toast.LENGTH_SHORT).show();
             }
             else{
                 Toast.makeText(getApplicationContext(), "Es muss erst ein neues Spiel gestartet werden, bevor du dich damit verbinden kannst", Toast.LENGTH_SHORT).show();

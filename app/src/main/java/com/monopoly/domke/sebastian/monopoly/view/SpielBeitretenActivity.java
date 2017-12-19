@@ -124,9 +124,6 @@ public class SpielBeitretenActivity extends AppCompatActivity {
             playerMessageInterpreter = new PlayerMessageInterpreter(this);
         }
         else{
-
-            //ToDo Server Socket as a service
-
             //mGameConnection = new GameConnection(mUpdateHandler);
 
             //GameConnectionJob.scheduleGameConnectionJob();
@@ -411,7 +408,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
             //SendMessageJob.scheduleSendMessageJob(ipAdress, port, jsonString);
             //mGameConnection.sendMessage(jsonString);
 
-            Toast.makeText(getApplicationContext(), "invitationMessage send", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Spieler wurden eingeladen", Toast.LENGTH_SHORT).show();
         }
 
         return true;

@@ -40,7 +40,7 @@
     <string name="waehrungDollar">$</string>
     <string name="waehrungMonopolyDollar">M$</string>
 
-    <string name="title_activity_spiel_laden">SpielLadenActivity</string>
+    <string name="title_activity_spiel_laden">Spiel laden</string>
     <string name="title_activity_einstellungen">Settings</string>
 
     <string-array name="waehrungenArray">

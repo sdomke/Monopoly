@@ -101,7 +101,7 @@ public class PlayerMessageInterpreter {
                 try{
                     neuesSpiel = mainMenuActivity.datasource.getSpielByDatum(gameMessage.getMessageContent().getString("game_date"));
                 }catch(Exception e){
-                    Log.e("MessageInterpreter", "Spieler noch nicht angelegt: " + e.toString());
+                    Log.e("MessageInterpreter", "Spiel noch nicht angelegt: " + e.toString());
 
                     neuesSpiel = new Spiel(gameMessage.getMessageContent().getString("game_date"));
                     neuesSpiel.setSpielerStartkapital(gameMessage.getMessageContent().getDouble("game_seed_capital"));
@@ -116,10 +116,11 @@ public class PlayerMessageInterpreter {
 
                 spielBeitretenRelativeLayout.setEnabled(true);
 
-                Toast.makeText(mainMenuActivity.getApplicationContext(), "Spieler eingeladen!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(mainMenuActivity.getApplicationContext(), "Spieler eingeladen!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mainMenuActivity.getApplicationContext(), "Mit Spiel verbunden und du kannst nun beitreten", Toast.LENGTH_SHORT).show();
             }catch(Exception e){
                 Log.e("MessageInterpreter", "getInvitationMessage: " + e.toString());
-                Toast.makeText(mainMenuActivity.getApplicationContext(), "Spieler nicht eingeladen!!!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(mainMenuActivity.getApplicationContext(), "Spieler nicht eingeladen!!!", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -139,7 +140,7 @@ public class PlayerMessageInterpreter {
                 intent.putExtra("aktuellesSpielID", spielBeitretenActivity.aktuellesSpiel.getSpielID());
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-                Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spiel gestartet!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spiel wird gestartet...", Toast.LENGTH_SHORT).show();
 
                 //spielBeitretenActivity.mGameConnection.tearDown();
 
@@ -160,7 +161,7 @@ public class PlayerMessageInterpreter {
                 intent.putExtra("spiel_beendet", "Spiel beendet");
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-                Toast.makeText(spielStartActivity.getApplicationContext(), "Spiel beendet!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(spielStartActivity.getApplicationContext(), "Spiel wird beendet...", Toast.LENGTH_SHORT).show();
 
                 //spielStartActivity.mGameConnection.tearDown();
 

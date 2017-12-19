@@ -68,7 +68,7 @@ public class HighscoreSpielerAdapter extends ArrayAdapter<Spieler>{
 			}
 
 			if (spielerKapital != null){
-				spielerKapital.setText(Double.toString(i.getSpielerKapital()));
+				spielerKapital.setText(Double.toString(i.getSpielerKapital()) + " M$");
 			}
 
 			if (spielerRanking != null){
