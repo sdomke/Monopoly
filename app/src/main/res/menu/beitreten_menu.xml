@@ -6,7 +6,7 @@
     <item
         android:id="@+id/send"
         android:orderInCategory="100"
-        android:icon="@android:drawable/ic_media_play"
+        android:icon="@drawable/refresh_klein"
         android:title="Send"
         app:showAsAction="always" />
 </menu>

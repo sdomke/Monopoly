@@ -232,7 +232,6 @@ public class GameConnection {
                         messageStr = input.readLine();
                         if (messageStr != null) {
                             Log.d(CLIENT_TAG, "Read from the stream: " + messageStr);
-                            // ToDo Broadcastreceiver aufrufen
                             broadcastMessages(messageStr, false);
                         } else {
                             Log.d(CLIENT_TAG, "The nulls! The nulls!");
