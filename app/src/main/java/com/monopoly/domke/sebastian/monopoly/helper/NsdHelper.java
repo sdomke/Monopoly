@@ -12,7 +12,10 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.monopoly.domke.sebastian.monopoly.common.GameConnectionService;
+import com.monopoly.domke.sebastian.monopoly.common.GameMessage;
 import com.monopoly.domke.sebastian.monopoly.view.MainMenuActivity;
+
+import org.json.JSONObject;
 
 /**
  * Created by Basti on 12.12.2016.
@@ -125,8 +128,6 @@ public class NsdHelper {
 
                 mService = serviceInfo;
 
-                //ToDo Client Socket as a service and only if mService.getHost() has a IP
-
                 if (mService != null) {
                     Log.d(TAG, "Connecting.");
 
@@ -147,6 +148,15 @@ public class NsdHelper {
 //                    editor.apply();
 
                     mServiceResolved = true;
+
+                    JSONObject messageContent = new JSONObject();
+                    MessageParser messageParser = new MessageParser();
+
+                    GameMessage requestJoinGameMessage = new GameMessage(GameMessage.MessageHeader.requestJoinGame, messageContent);
+
+                    String jsonString = messageParser.messageToJsonString(requestJoinGameMessage);
+
+                    mainMenuActivity.mGameConnectionService.mGameConnection.sendMessage(jsonString);
 
                     Toast.makeText(mContext, "Mit Spiel verbunden", Toast.LENGTH_SHORT).show();
                     //ToDo Send message for requestJoinGame to server

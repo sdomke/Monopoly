@@ -127,8 +127,6 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
         eigenerSpielerButtonViewInit();
         gegenspielerButtonViewsInit();
 
-        sharedPreferences = this.getSharedPreferences(SHARED_PREF, 0); // 0 - for private mode
-
         IntentFilter filter = new IntentFilter();
         filter.addAction(BROADCAST_INTENT);
         LocalBroadcastManager.getInstance(SpielStartActivity.this).registerReceiver(messageReceiver, filter);
@@ -855,6 +853,10 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
                         /*if(mGameConnection != null){
                             mGameConnection.tearDown();
                         }*/
+                        Intent gameConnectionServiceIntent = new Intent(getApplicationContext(), GameConnectionService.class);
+                        mGameConnectionService.onUnbind(gameConnectionServiceIntent);
+                        mGameConnectionService.onDestroy();
+
                         if(mNsdServer != null){
                             mNsdServer.tearDown();
                         }
@@ -896,35 +898,6 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
     public double roundDouble(Double betrag){
         return Math.round(betrag*1000)/1000.0;
-    }
-
-    @Override
-    protected void onPause() {
-        if (mNsdClient != null) {
-            mNsdClient.stopDiscovery();
-        }
-        super.onPause();
-    }
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (mNsdClient != null) {
-            mNsdClient.discoverServices();
-        }
-    }
-
-
-    @Override
-    protected void onDestroy() {
-        /*if(mGameConnection != null){
-            mGameConnection.tearDown();
-        }*/
-        if(mNsdServer != null) {
-            mNsdServer.tearDown();
-        }
-        super.onDestroy();
     }
 
     /*

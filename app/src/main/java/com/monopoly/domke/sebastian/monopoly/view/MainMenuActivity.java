@@ -57,6 +57,7 @@ public class MainMenuActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
         Intent gameConnectionServiceIntent = new Intent(this, GameConnectionService.class);
         startService(gameConnectionServiceIntent);
         bindService(gameConnectionServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
@@ -71,8 +72,6 @@ public class MainMenuActivity extends AppCompatActivity {
 
         datasource = new DatabaseHandler(this);
 
-        //JobManager.create(this).addJobCreator(new GameJobCreator());
-
         playerMessageInterpreter = new PlayerMessageInterpreter(this);
         messageParser = new MessageParser();
         spielBeitretenRelativeLayout = (RelativeLayout) findViewById(R.id.spielBeitretenButtonLayout);
@@ -84,8 +83,6 @@ public class MainMenuActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter();
         filter.addAction(BROADCAST_INTENT);
         LocalBroadcastManager.getInstance(MainMenuActivity.this).registerReceiver(messageReceiver, filter);
-
-        //mGameConnection = new GameConnection(mUpdateHandler);
 
         mNsdClient = new NsdHelper(getApplicationContext(), this);
         mNsdClient.initializeDiscoveryListener();

@@ -13,7 +13,7 @@ import android.util.Log;
 
 public class GameConnectionService extends Service {
 
-    private static String LOG_TAG = "BoundService";
+    private static String LOG_TAG = "GameConnectionService";
     private IBinder mBinder = new MyBinder();
     public GameConnection mGameConnection;
 

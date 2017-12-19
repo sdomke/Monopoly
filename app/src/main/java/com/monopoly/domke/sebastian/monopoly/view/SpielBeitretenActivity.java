@@ -488,4 +488,13 @@ public class SpielBeitretenActivity extends AppCompatActivity {
             mServiceBound = true;
         }
     };
+
+    @Override
+    public void onBackPressed() {
+        Intent gameConnectionServiceIntent = new Intent(getApplicationContext(), GameConnectionService.class);
+        mGameConnectionService.onUnbind(gameConnectionServiceIntent);
+        mGameConnectionService.onDestroy();
+
+        super.onBackPressed();
+    }
 }
