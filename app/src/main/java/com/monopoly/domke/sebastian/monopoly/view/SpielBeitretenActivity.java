@@ -330,6 +330,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
                     }catch (Exception e){
                         Log.d(TAG, "Keine passende Nachricht");
+                        e.printStackTrace();
                         //Toast.makeText(getApplicationContext(), "Keine passende Nachricht", Toast.LENGTH_SHORT).show();
                     }
                     break;

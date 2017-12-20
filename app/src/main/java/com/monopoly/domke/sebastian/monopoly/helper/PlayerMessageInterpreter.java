@@ -14,6 +14,8 @@ import com.monopoly.domke.sebastian.monopoly.view.MainMenuActivity;
 import com.monopoly.domke.sebastian.monopoly.view.SpielBeitretenActivity;
 import com.monopoly.domke.sebastian.monopoly.view.SpielStartActivity;
 
+import org.json.JSONException;
+
 import java.util.ArrayList;
 
 import static com.monopoly.domke.sebastian.monopoly.view.SpielBeitretenActivity.TAG;
@@ -63,31 +65,31 @@ public class PlayerMessageInterpreter {
                 break;
 
             case sendMoney:
-                getSendMoneyMessage(gameMessage);
+                    getSendMoneyMessage(gameMessage);
                 break;
 
             case receiveMoneyFromBank:
-                getReceiveMoneyFromBankMessage(gameMessage);
+                    getReceiveMoneyFromBankMessage(gameMessage);
                 break;
 
             case receiveFreiParken:
-                getReceiveFreiParkenMessage(gameMessage);
+                    getReceiveFreiParkenMessage(gameMessage);
                 break;
 
             case sendMoneyToBank:
-                getSendMoneyToBankMessage(gameMessage);
+                    getSendMoneyToBankMessage(gameMessage);
                 break;
 
             case sendMoneyToFreiParken:
-                getSendMoneyToFreiParkenMessage(gameMessage);
+                    getSendMoneyToFreiParkenMessage(gameMessage);
                 break;
 
             case joinGame:
-                getJoinGameMessage(gameMessage);
+                    getJoinGameMessage(gameMessage);
                 break;
 
             case exitGame:
-                getExitGameMessage(gameMessage);
+                    getExitGameMessage(gameMessage);
                 break;
         }
     }
@@ -178,23 +180,30 @@ public class PlayerMessageInterpreter {
     public void getSendMoneyMessage(GameMessage gameMessage){
         if(spielStartActivity != null){
             try {
-                Spiel aktuellesSpiel = spielStartActivity.aktuellesSpiel;
+                if (!gameMessage.getMessageContent().getString("sender_imei").equals(spielStartActivity.eigenerSpieler.getSpielerIMEI())) {
+                    try {
+                        Spiel aktuellesSpiel = spielStartActivity.aktuellesSpiel;
 
-                double payment = gameMessage.getMessageContent().getDouble("payment");
+                        double payment = gameMessage.getMessageContent().getDouble("payment");
 
-                Spieler senderPlayer = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("sender_imei"));
+                        Spieler senderPlayer = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("sender_imei"));
 
-                Spieler receiverPlayer = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("receiver_imei"));
+                        Spieler receiverPlayer = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("receiver_imei"));
 
-                senderPlayer.setSpielerKapital(roundDouble(senderPlayer.getSpielerKapital() - payment));
-                receiverPlayer.setSpielerKapital(roundDouble(receiverPlayer.getSpielerKapital() + payment));
+                        senderPlayer.setSpielerKapital(roundDouble(senderPlayer.getSpielerKapital() - payment));
+                        receiverPlayer.setSpielerKapital(roundDouble(receiverPlayer.getSpielerKapital() + payment));
 
-                spielStartActivity.databaseHandler.updateSpieler(senderPlayer);
-                spielStartActivity.databaseHandler.updateSpieler(receiverPlayer);
+                        spielStartActivity.databaseHandler.updateSpieler(senderPlayer);
+                        spielStartActivity.databaseHandler.updateSpieler(receiverPlayer);
 
-                updatePlayerCredit(senderPlayer, receiverPlayer);
+                        updatePlayerCredit(senderPlayer, receiverPlayer);
 
-                Toast.makeText(spielStartActivity.getApplicationContext(), senderPlayer.getSpielerName() + " hat " + receiverPlayer.getSpielerName() + " " + payment + " M$ überwiesen!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(spielStartActivity.getApplicationContext(), senderPlayer.getSpielerName() + " hat " + receiverPlayer.getSpielerName() + " " + payment + " M$ überwiesen!", Toast.LENGTH_SHORT).show();
+                    }catch(Exception e){
+                        Log.e("MessageInterpreter", "getSendMoneyMessage: " + e.toString());
+                        Toast.makeText(spielStartActivity.getApplicationContext(), "Überweisung nicht erfolgreich!!!", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }catch(Exception e){
                 Log.e("MessageInterpreter", "getSendMoneyMessage: " + e.toString());
                 Toast.makeText(spielStartActivity.getApplicationContext(), "Überweisung nicht erfolgreich!!!", Toast.LENGTH_SHORT).show();
@@ -205,19 +214,26 @@ public class PlayerMessageInterpreter {
     public void getReceiveMoneyFromBankMessage(GameMessage gameMessage){
         if(spielStartActivity != null){
             try {
-                Spiel aktuellesSpiel = spielStartActivity.aktuellesSpiel;
+                if (!gameMessage.getMessageContent().getString("player_imei").equals(spielStartActivity.eigenerSpieler.getSpielerIMEI())) {
+                    try {
+                        Spiel aktuellesSpiel = spielStartActivity.aktuellesSpiel;
 
-                double payment = gameMessage.getMessageContent().getDouble("payment");
+                        double payment = gameMessage.getMessageContent().getDouble("payment");
 
-                Spieler player = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_imei"));
+                        Spieler player = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_imei"));
 
-                player.setSpielerKapital(roundDouble(player.getSpielerKapital() + payment));
+                        player.setSpielerKapital(roundDouble(player.getSpielerKapital() + payment));
 
-                spielStartActivity.databaseHandler.updateSpieler(player);
+                        spielStartActivity.databaseHandler.updateSpieler(player);
 
-                updateGegenSpielerCredit(player);
+                        updateGegenSpielerCredit(player);
 
-                Toast.makeText(spielStartActivity.getApplicationContext(), player.getSpielerName() + " hat " + payment + " M$ von der Bank erhalten!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(spielStartActivity.getApplicationContext(), player.getSpielerName() + " hat " + payment + " M$ von der Bank erhalten!", Toast.LENGTH_SHORT).show();
+                    }catch(Exception e){
+                        Log.e("MessageInterpreter", "getReceiveMoneyFromBankMessage: " + e.toString());
+                        Toast.makeText(spielStartActivity.getApplicationContext(), "Geld von der Bank nicht erhalten!!!", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }catch(Exception e){
                 Log.e("MessageInterpreter", "getReceiveMoneyFromBankMessage: " + e.toString());
                 Toast.makeText(spielStartActivity.getApplicationContext(), "Geld von der Bank nicht erhalten!!!", Toast.LENGTH_SHORT).show();
@@ -228,19 +244,26 @@ public class PlayerMessageInterpreter {
     public void getSendMoneyToBankMessage(GameMessage gameMessage){
         if(spielStartActivity != null){
             try {
-                Spiel aktuellesSpiel = spielStartActivity.aktuellesSpiel;
+                if (!gameMessage.getMessageContent().getString("player_imei").equals(spielStartActivity.eigenerSpieler.getSpielerIMEI())) {
+                    try {
+                        Spiel aktuellesSpiel = spielStartActivity.aktuellesSpiel;
 
-                double payment = gameMessage.getMessageContent().getDouble("payment");
+                        double payment = gameMessage.getMessageContent().getDouble("payment");
 
-                Spieler player = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_imei"));
+                        Spieler player = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_imei"));
 
-                player.setSpielerKapital(roundDouble(player.getSpielerKapital() - payment));
+                        player.setSpielerKapital(roundDouble(player.getSpielerKapital() - payment));
 
-                spielStartActivity.databaseHandler.updateSpieler(player);
+                        spielStartActivity.databaseHandler.updateSpieler(player);
 
-                updateGegenSpielerCredit(player);
+                        updateGegenSpielerCredit(player);
 
-                Toast.makeText(spielStartActivity.getApplicationContext(), player.getSpielerName() + " hat " + payment + " M$ an die Bank gezahlt!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(spielStartActivity.getApplicationContext(), player.getSpielerName() + " hat " + payment + " M$ an die Bank gezahlt!", Toast.LENGTH_SHORT).show();
+                    }catch(Exception e){
+                        Log.e("MessageInterpreter", "getSendMoneyToBankMessage: " + e.toString());
+                        Toast.makeText(spielStartActivity.getApplicationContext(), "Geld an die Bank nicht gezahlt!!!", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }catch(Exception e){
                 Log.e("MessageInterpreter", "getSendMoneyToBankMessage: " + e.toString());
                 Toast.makeText(spielStartActivity.getApplicationContext(), "Geld an die Bank nicht gezahlt!!!", Toast.LENGTH_SHORT).show();
@@ -251,22 +274,29 @@ public class PlayerMessageInterpreter {
     public void getSendMoneyToFreiParkenMessage(GameMessage gameMessage){
         if(spielStartActivity != null){
             try {
-                Spiel aktuellesSpiel = spielStartActivity.aktuellesSpiel;
+                if (!gameMessage.getMessageContent().getString("player_imei").equals(spielStartActivity.eigenerSpieler.getSpielerIMEI())) {
+                    try {
+                        Spiel aktuellesSpiel = spielStartActivity.aktuellesSpiel;
 
-                double payment = gameMessage.getMessageContent().getDouble("payment");
+                        double payment = gameMessage.getMessageContent().getDouble("payment");
 
-                Spieler player = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_imei"));
+                        Spieler player = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_imei"));
 
-                player.setSpielerKapital(roundDouble(player.getSpielerKapital() - payment));
-                aktuellesSpiel.setFreiParken(roundDouble(aktuellesSpiel.getFreiParken() + payment));
+                        player.setSpielerKapital(roundDouble(player.getSpielerKapital() - payment));
+                        aktuellesSpiel.setFreiParken(roundDouble(aktuellesSpiel.getFreiParken() + payment));
 
-                spielStartActivity.databaseHandler.updateSpieler(player);
-                spielStartActivity.databaseHandler.updateSpiel(aktuellesSpiel);
+                        spielStartActivity.databaseHandler.updateSpieler(player);
+                        spielStartActivity.databaseHandler.updateSpiel(aktuellesSpiel);
 
-                updateGegenSpielerCredit(player);
-                updateAktuellesSpiel(aktuellesSpiel);
+                        updateGegenSpielerCredit(player);
+                        updateAktuellesSpiel(aktuellesSpiel);
 
-                Toast.makeText(spielStartActivity.getApplicationContext(), player.getSpielerName() + " hat " + payment + " M$ in die Mitte gezahlt!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(spielStartActivity.getApplicationContext(), player.getSpielerName() + " hat " + payment + " M$ in die Mitte gezahlt!", Toast.LENGTH_SHORT).show();
+                    }catch(Exception e){
+                        Log.e("MessageInterpreter", "getSendMoneyToFreiParkenMessage: " + e.toString());
+                        Toast.makeText(spielStartActivity.getApplicationContext(), "Geld in die Mitte nicht gezahlt!!!", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }catch(Exception e){
                 Log.e("MessageInterpreter", "getSendMoneyToFreiParkenMessage: " + e.toString());
                 Toast.makeText(spielStartActivity.getApplicationContext(), "Geld in die Mitte nicht gezahlt!!!", Toast.LENGTH_SHORT).show();
@@ -277,20 +307,27 @@ public class PlayerMessageInterpreter {
     public void getReceiveFreiParkenMessage(GameMessage gameMessage){
         if(spielStartActivity != null){
             try {
-                Spiel aktuellesSpiel = spielStartActivity.aktuellesSpiel;
+                if (!gameMessage.getMessageContent().getString("player_imei").equals(spielStartActivity.eigenerSpieler.getSpielerIMEI())) {
+                    try {
+                        Spiel aktuellesSpiel = spielStartActivity.aktuellesSpiel;
 
-                Spieler player = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_imei"));
+                        Spieler player = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_imei"));
 
-                player.setSpielerKapital(roundDouble(player.getSpielerKapital() + aktuellesSpiel.getFreiParken()));
-                Toast.makeText(spielStartActivity.getApplicationContext(), player.getSpielerName() + " hat " + aktuellesSpiel.getFreiParken() + " M$ aus der Mitte erhalten!", Toast.LENGTH_SHORT).show();
-                aktuellesSpiel.setFreiParken(0);
+                        player.setSpielerKapital(roundDouble(player.getSpielerKapital() + aktuellesSpiel.getFreiParken()));
+                        Toast.makeText(spielStartActivity.getApplicationContext(), player.getSpielerName() + " hat " + aktuellesSpiel.getFreiParken() + " M$ aus der Mitte erhalten!", Toast.LENGTH_SHORT).show();
+                        aktuellesSpiel.setFreiParken(0);
 
-                spielStartActivity.databaseHandler.updateSpieler(player);
-                spielStartActivity.databaseHandler.updateSpiel(aktuellesSpiel);
+                        spielStartActivity.databaseHandler.updateSpieler(player);
+                        spielStartActivity.databaseHandler.updateSpiel(aktuellesSpiel);
 
-                updateGegenSpielerCredit(player);
-                updateAktuellesSpiel(aktuellesSpiel);
+                        updateGegenSpielerCredit(player);
+                        updateAktuellesSpiel(aktuellesSpiel);
 
+                    }catch(Exception e){
+                        Log.e("MessageInterpreter", "getReceiveFreiParkenMessage: " + e.toString());
+                        Toast.makeText(spielStartActivity.getApplicationContext(), "Geld aus der Mitte nicht erhalten!!!", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }catch(Exception e){
                 Log.e("MessageInterpreter", "getReceiveFreiParkenMessage: " + e.toString());
                 Toast.makeText(spielStartActivity.getApplicationContext(), "Geld aus der Mitte nicht erhalten!!!", Toast.LENGTH_SHORT).show();
@@ -301,34 +338,41 @@ public class PlayerMessageInterpreter {
     public void getJoinGameMessage(GameMessage gameMessage){
         if(spielBeitretenActivity != null){
             try {
-                Spiel aktuellesSpiel = spielBeitretenActivity.aktuellesSpiel;
+                if (!gameMessage.getMessageContent().getString("player_imei").equals(spielBeitretenActivity.eigenerSpieler.getSpielerIMEI())) {
+                    try {
+                        Spiel aktuellesSpiel = spielBeitretenActivity.aktuellesSpiel;
 
-                Spieler neuerSpieler;
+                        Spieler neuerSpieler;
 
-                try{
-                    neuerSpieler = spielBeitretenActivity.datasource.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_imei"));
+                        try{
+                            neuerSpieler = spielBeitretenActivity.datasource.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_imei"));
 
-                    neuerSpieler.setSpielerName(gameMessage.getMessageContent().getString("player_name"));
-                    neuerSpieler.setSpielerFarbe(gameMessage.getMessageContent().getInt("player_color"));
-                    neuerSpieler.setSpielerIpAdresse(gameMessage.getMessageContent().getString("player_ip_adress"));
+                            neuerSpieler.setSpielerName(gameMessage.getMessageContent().getString("player_name"));
+                            neuerSpieler.setSpielerFarbe(gameMessage.getMessageContent().getInt("player_color"));
+                            neuerSpieler.setSpielerIpAdresse(gameMessage.getMessageContent().getString("player_ip_adress"));
 
-                    spielBeitretenActivity.datasource.updateSpieler(neuerSpieler);
-                }catch(Exception e){
-                    Log.e("MessageInterpreter", "Spieler noch nicht angelegt: " + e.toString());
+                            spielBeitretenActivity.datasource.updateSpieler(neuerSpieler);
+                        }catch(Exception e){
+                            Log.e("MessageInterpreter", "Spieler noch nicht angelegt: " + e.toString());
 
-                    neuerSpieler = new Spieler(gameMessage.getMessageContent().getString("player_imei"), aktuellesSpiel.getSpielID());
-                    neuerSpieler.setSpielerName(gameMessage.getMessageContent().getString("player_name"));
-                    neuerSpieler.setSpielerKapital(aktuellesSpiel.getSpielerStartkapital());
-                    neuerSpieler.setSpielerFarbe(gameMessage.getMessageContent().getInt("player_color"));
-                    neuerSpieler.setSpielerIpAdresse(gameMessage.getMessageContent().getString("player_ip_adress"));
+                            neuerSpieler = new Spieler(gameMessage.getMessageContent().getString("player_imei"), aktuellesSpiel.getSpielID());
+                            neuerSpieler.setSpielerName(gameMessage.getMessageContent().getString("player_name"));
+                            neuerSpieler.setSpielerKapital(aktuellesSpiel.getSpielerStartkapital());
+                            neuerSpieler.setSpielerFarbe(gameMessage.getMessageContent().getInt("player_color"));
+                            neuerSpieler.setSpielerIpAdresse(gameMessage.getMessageContent().getString("player_ip_adress"));
 
-                    spielBeitretenActivity.datasource.addSpieler(neuerSpieler);
+                            spielBeitretenActivity.datasource.addSpieler(neuerSpieler);
+                        }
+
+                        spielBeitretenActivity.spieler_adapter.add(neuerSpieler);
+                        spielBeitretenActivity.spieler_adapter.notifyDataSetChanged();
+
+                        Toast.makeText(spielBeitretenActivity.getApplicationContext(), neuerSpieler.getSpielerName() +  " ist der Gamelobby beigetreten!", Toast.LENGTH_SHORT).show();
+                    }catch(Exception e){
+                        Log.e("MessageInterpreter", "getJoinGameMessage: " + e.toString());
+                        Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spieler nicht beigetreten!!!", Toast.LENGTH_SHORT).show();
+                    }
                 }
-
-                spielBeitretenActivity.spieler_adapter.add(neuerSpieler);
-                spielBeitretenActivity.spieler_adapter.notifyDataSetChanged();
-
-                Toast.makeText(spielBeitretenActivity.getApplicationContext(), neuerSpieler.getSpielerName() +  " ist der Gamelobby beigetreten!", Toast.LENGTH_SHORT).show();
             }catch(Exception e){
                 Log.e("MessageInterpreter", "getJoinGameMessage: " + e.toString());
                 Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spieler nicht beigetreten!!!", Toast.LENGTH_SHORT).show();
@@ -339,25 +383,32 @@ public class PlayerMessageInterpreter {
     public void getExitGameMessage(GameMessage gameMessage){
         if(spielBeitretenActivity != null){
             try {
-                Spiel aktuellesSpiel = spielBeitretenActivity.aktuellesSpiel;
+                if (!gameMessage.getMessageContent().getString("player_imei").equals(spielBeitretenActivity.eigenerSpieler.getSpielerIMEI())) {
+                    try {
+                        Spiel aktuellesSpiel = spielBeitretenActivity.aktuellesSpiel;
 
-                Spieler neuerSpieler;
+                        Spieler neuerSpieler;
 
-                neuerSpieler = spielBeitretenActivity.datasource.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_imei"));
+                        neuerSpieler = spielBeitretenActivity.datasource.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_imei"));
 
-                spielBeitretenActivity.datasource.deleteSpieler(neuerSpieler.getSpielerIMEI(), aktuellesSpiel.getSpielID());
+                        spielBeitretenActivity.datasource.deleteSpieler(neuerSpieler.getSpielerIMEI(), aktuellesSpiel.getSpielID());
 
-                for (int i=0; i < spielBeitretenActivity.spieler_adapter.getCount(); i++) {
+                        for (int i = 0; i < spielBeitretenActivity.spieler_adapter.getCount(); i++) {
 
-                    Spieler spielerToDelete = spielBeitretenActivity.spieler_adapter.getItem(i);
+                            Spieler spielerToDelete = spielBeitretenActivity.spieler_adapter.getItem(i);
 
-                    if(spielerToDelete.getSpielerIMEI().equals(neuerSpieler.getSpielerIMEI())){
-                        spielBeitretenActivity.spieler_adapter.objects.remove(i);
-                        spielBeitretenActivity.spieler_adapter.notifyDataSetChanged();
+                            if (spielerToDelete.getSpielerIMEI().equals(neuerSpieler.getSpielerIMEI())) {
+                                spielBeitretenActivity.spieler_adapter.objects.remove(i);
+                                spielBeitretenActivity.spieler_adapter.notifyDataSetChanged();
+                            }
+                        }
+
+                        Toast.makeText(spielBeitretenActivity.getApplicationContext(), neuerSpieler.getSpielerName() + " hat die Gamelobby verlassen!", Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                        Log.e("MessageInterpreter", "getExitGameMessage: " + e.toString());
+                        Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spieler hat die Gamelobby nicht verlassen!!!", Toast.LENGTH_SHORT).show();
                     }
                 }
-
-                Toast.makeText(spielBeitretenActivity.getApplicationContext(), neuerSpieler.getSpielerName() + " hat die Gamelobby verlassen!", Toast.LENGTH_SHORT).show();
             }catch(Exception e){
                 Log.e("MessageInterpreter", "getExitGameMessage: " + e.toString());
                 Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spieler hat die Gamelobby nicht verlassen!!!", Toast.LENGTH_SHORT).show();

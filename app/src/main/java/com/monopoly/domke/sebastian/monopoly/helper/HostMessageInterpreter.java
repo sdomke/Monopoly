@@ -54,30 +54,37 @@ public class HostMessageInterpreter {
 
         switch(messageHeader){
             case sendMoney:
+                forwardGameMessageToClients(gameMessage);
                 getSendMoneyMessage(gameMessage);
                 break;
 
             case receiveMoneyFromBank:
+                forwardGameMessageToClients(gameMessage);
                 getReceiveMoneyFromBankMessage(gameMessage);
                 break;
 
             case receiveFreiParken:
+                forwardGameMessageToClients(gameMessage);
                 getReceiveFreiParkenMessage(gameMessage);
                 break;
 
             case sendMoneyToBank:
+                forwardGameMessageToClients(gameMessage);
                 getSendMoneyToBankMessage(gameMessage);
                 break;
 
             case sendMoneyToFreiParken:
+                forwardGameMessageToClients(gameMessage);
                 getSendMoneyToFreiParkenMessage(gameMessage);
                 break;
 
             case joinGame:
+                forwardGameMessageToClients(gameMessage);
                 getJoinGameMessage(gameMessage);
                 break;
 
             case exitGame:
+                forwardGameMessageToClients(gameMessage);
                 getExitGameMessage(gameMessage);
                 break;
 
@@ -302,6 +309,21 @@ public class HostMessageInterpreter {
                 Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spieler hat die Gamelobby nicht verlassen!!!", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    public void forwardGameMessageToClients(GameMessage gameMessage){
+
+        if(spielBeitretenActivity != null) {
+            MessageParser messageParser = new MessageParser();
+            String jsonString = messageParser.messageToJsonString(gameMessage);
+            spielBeitretenActivity.mGameConnectionService.mGameConnection.sendMessage(jsonString);
+        }
+        else if(spielStartActivity != null) {
+            MessageParser messageParser = new MessageParser();
+            String jsonString = messageParser.messageToJsonString(gameMessage);
+            spielStartActivity.mGameConnectionService.mGameConnection.sendMessage(jsonString);
+        }
+        Log.d("MessageInterpreter", "GameMessage forwarded: ");
     }
 
     public double roundDouble(Double betrag){
