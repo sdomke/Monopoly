@@ -54,6 +54,15 @@ public class GameConnection {
         }
     }
 
+    public void tearDownGameClient() {
+
+        Log.d(SERVER_TAG, "tearDownGameClient");
+
+        if(mGameClient != null) {
+            mGameClient.tearDown();
+        }
+    }
+
     public void connectToServer(InetAddress address, int port) {
         mGameClient = new GameClient(address, port);
     }

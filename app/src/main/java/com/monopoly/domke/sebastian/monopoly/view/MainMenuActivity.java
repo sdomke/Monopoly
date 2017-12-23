@@ -61,9 +61,9 @@ public class MainMenuActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Intent gameConnectionServiceIntent = new Intent(this, GameConnectionService.class);
-        startService(gameConnectionServiceIntent);
-        bindService(gameConnectionServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
+        Intent gameConnectionServiceIntent = new Intent(getApplicationContext(), GameConnectionService.class);
+        getApplicationContext().startService(gameConnectionServiceIntent);
+        getApplicationContext().bindService(gameConnectionServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
 
         datasource = new DatabaseHandler(this);
 
@@ -185,8 +185,17 @@ public class MainMenuActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if(!mServiceBound) {
+            Intent gameConnectionServiceIntent = new Intent(getApplicationContext(), GameConnectionService.class);
+            getApplicationContext().startService(gameConnectionServiceIntent);
+            getApplicationContext().bindService(gameConnectionServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
+        }
+
         spielBeitretenRelativeLayout.setEnabled(false);
         if (mNsdClient != null) {
+            mNsdClient = new NsdHelper(getApplicationContext(), this);
+            mNsdClient.initializeDiscoveryListener();
+            mNsdClient.initializeResolveListener();
             mNsdClient.discoverServices();
         }
     }

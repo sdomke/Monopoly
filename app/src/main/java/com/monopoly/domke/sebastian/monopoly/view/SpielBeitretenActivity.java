@@ -51,7 +51,7 @@ import java.util.ArrayList;
 
 public class SpielBeitretenActivity extends AppCompatActivity {
 
-    boolean mServiceBound = false;
+    public boolean mServiceBound = false;
     public GameConnectionService mGameConnectionService;
 
     public DatabaseHandler datasource;
@@ -118,22 +118,14 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
         if(!neuesSpiel && !spielLaden) {
             spielStartenFB.hide();
-            //mGameConnection = new GameConnection(mUpdateHandler);
-            /*mNsdClient = new NsdHelper(getApplicationContext());
-            mNsdClient.initializeDiscoveryListener();
-            mNsdClient.initializeResolveListener();*/
-            Intent gameConnectionServiceIntent = new Intent(this, GameConnectionService.class);
-            bindService(gameConnectionServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
+            Intent gameConnectionServiceIntent = new Intent(getApplicationContext(), GameConnectionService.class);
+            getApplicationContext().bindService(gameConnectionServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
             playerMessageInterpreter = new PlayerMessageInterpreter(this);
         }
         else{
-            //mGameConnection = new GameConnection(mUpdateHandler);
-
-            //GameConnectionJob.scheduleGameConnectionJob();
-
-            Intent gameConnectionServiceIntent = new Intent(this, GameConnectionService.class);
-            startService(gameConnectionServiceIntent);
-            bindService(gameConnectionServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
+            Intent gameConnectionServiceIntent = new Intent(getApplicationContext(), GameConnectionService.class);
+            getApplicationContext().startService(gameConnectionServiceIntent);
+            getApplicationContext().bindService(gameConnectionServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
 
             mNsdServer = new NsdHelper(this);
             mNsdServer.initializeRegistrationListener();
@@ -189,13 +181,8 @@ public class SpielBeitretenActivity extends AppCompatActivity {
                     String jsonString = messageParser.messageToJsonString(startGameMessage);
 
                     mGameConnectionService.mGameConnection.sendMessage(jsonString);
-                    //GameConnectionJob.gameConnectionInstanze.sendMessage(jsonString);
-                    //SendMessageJob.scheduleSendMessageJob(ipAdress, port, jsonString);
-
-                    //mGameConnection.sendMessage(jsonString);
 
                     mNsdServer.tearDown();
-                    //mGameConnection.tearDown();
 
                     startActivity(intent);
 
@@ -378,9 +365,6 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         String jsonString = messageParser.messageToJsonString(requestJoinGameMessage);
 
         mGameConnectionService.mGameConnection.sendMessage(jsonString);
-        //GameConnectionJob.gameConnectionInstanze.sendMessage(jsonString);
-        //SendMessageJob.scheduleSendMessageJob(ipAdress, port, jsonString);
-        //mGameConnection.sendMessage(jsonString);
 
         spielLobbyBeitretenButtonLayout.setEnabled(false);
 
@@ -450,32 +434,11 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         }
     }
 
-
-    @Override
-    protected void onPause() {
-        /*if (mNsdClient != null) {
-            mNsdClient.stopDiscovery();
-        }*/
-        super.onPause();
-    }
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-       /* if (mNsdClient != null) {
-            mNsdClient.discoverServices();
-        }*/
-    }
-
     @Override
     protected void onDestroy() {
         if(mNsdServer != null) {
             mNsdServer.tearDown();
         }
-        /*if(mGameConnection != null){
-            mGameConnection.tearDown();
-        }*/
         super.onDestroy();
     }
 
@@ -513,9 +476,11 @@ public class SpielBeitretenActivity extends AppCompatActivity {
             Intent intent = new Intent(getApplicationContext(), NeuesSpielActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-            Intent gameConnectionServiceIntent = new Intent(getApplicationContext(), GameConnectionService.class);
-            mGameConnectionService.unbindService(mServiceConnection);
-            mGameConnectionService.stopService(gameConnectionServiceIntent);
+            if(mServiceBound) {
+                Intent gameConnectionServiceIntent = new Intent(getApplicationContext(), GameConnectionService.class);
+                getApplicationContext().unbindService(mServiceConnection);
+                getApplicationContext().stopService(gameConnectionServiceIntent);
+            }
 
             if(mNsdServer != null){
                 mNsdServer.tearDown();
@@ -537,9 +502,11 @@ public class SpielBeitretenActivity extends AppCompatActivity {
             Intent intent = new Intent(getApplicationContext(), SpielLadenActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-            Intent gameConnectionServiceIntent = new Intent(getApplicationContext(), GameConnectionService.class);
-            mGameConnectionService.unbindService(mServiceConnection);
-            mGameConnectionService.stopService(gameConnectionServiceIntent);
+            if(mServiceBound) {
+                Intent gameConnectionServiceIntent = new Intent(getApplicationContext(), GameConnectionService.class);
+                getApplicationContext().unbindService(mServiceConnection);
+                getApplicationContext().stopService(gameConnectionServiceIntent);
+            }
 
             if(mNsdServer != null){
                 mNsdServer.tearDown();
@@ -551,7 +518,9 @@ public class SpielBeitretenActivity extends AppCompatActivity {
             //ToDo Error service stop
             datasource.deleteSpiel(aktuellesSpiel.getSpielDatum());
 
-            unbindService(mServiceConnection);
+            if(mServiceBound) {
+                getApplicationContext().unbindService(mServiceConnection);
+            }
 
             Intent intent = new Intent(getApplicationContext(), MainMenuActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

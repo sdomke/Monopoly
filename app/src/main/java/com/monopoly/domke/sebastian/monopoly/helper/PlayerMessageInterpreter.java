@@ -170,8 +170,9 @@ public class PlayerMessageInterpreter {
 
                 Toast.makeText(spielStartActivity.getApplicationContext(), "Spiel wird beendet...", Toast.LENGTH_SHORT).show();
 
-                //spielStartActivity.mGameConnection.tearDown();
-
+                if(spielStartActivity.mServiceBound) {
+                    spielStartActivity.getApplicationContext().unbindService(spielStartActivity.mServiceConnection);
+                }
                 spielStartActivity.startActivity(intent);
 
             }catch(Exception e){
@@ -194,7 +195,9 @@ public class PlayerMessageInterpreter {
 
                 Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spiel wird geschlossen...", Toast.LENGTH_SHORT).show();
 
-                spielBeitretenActivity.unbindService(spielBeitretenActivity.mServiceConnection);
+                if(spielBeitretenActivity.mServiceBound) {
+                    spielBeitretenActivity.getApplicationContext().unbindService(spielBeitretenActivity.mServiceConnection);
+                }
 
                 spielBeitretenActivity.startActivity(intent);
 

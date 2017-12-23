@@ -50,13 +50,8 @@ import java.util.ArrayList;
 
 public class SpielStartActivity extends AppCompatActivity implements GameStatusFragment.OnFragmentInteractionListener {
 
-    boolean mServiceBound = false;
+    public boolean mServiceBound = false;
     public GameConnectionService mGameConnectionService;
-
-    FragmentManager fragmentManager;
-    FragmentTransaction fragmentTransaction;
-
-    GameStatusFragment gameStatusFragment;
 
     public ListView gameStatusListView;
     public GameStatusAdapter game_status_adapter;
@@ -132,20 +127,13 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
         LocalBroadcastManager.getInstance(SpielStartActivity.this).registerReceiver(messageReceiver, filter);
 
         if(!neuesSpiel) {
-            //mGameConnection = new GameConnection(mUpdateHandler);
-            /*mNsdClient = new NsdHelper(getApplicationContext(), this);
-            mNsdClient.initializeDiscoveryListener();
-            mNsdClient.initializeResolveListener();*/
-            Intent gameConnectionServiceIntent = new Intent(this, GameConnectionService.class);
-            bindService(gameConnectionServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
+            Intent gameConnectionServiceIntent = new Intent(getApplicationContext(), GameConnectionService.class);
+            getApplicationContext().bindService(gameConnectionServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
             playerMessageInterpreter = new PlayerMessageInterpreter(this);
         }
         else{
-            /*mGameConnection = new GameConnection(mUpdateHandler);
-            mNsdServer = new NsdHelper(this);
-            mNsdServer.initializeRegistrationListener();*/
-            Intent gameConnectionServiceIntent = new Intent(this, GameConnectionService.class);
-            bindService(gameConnectionServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
+            Intent gameConnectionServiceIntent = new Intent(getApplicationContext(), GameConnectionService.class);
+            getApplicationContext().bindService(gameConnectionServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
             hostMessageInterpreter = new HostMessageInterpreter(this);
             //advertiseGame();
         }
@@ -183,19 +171,6 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
     };
 
     public void init(){
-
-        /*fragmentManager = getSupportFragmentManager();
-        fragmentTransaction = fragmentManager.beginTransaction();
-
-        gameStatusFragment = new GameStatusFragment();
-
-        initGameStatusFragment();
-
-        fragmentTransaction.add(R.id.gameStatusFragment, gameStatusFragment);
-        fragmentTransaction.commit();
-
-        fragmentTransaction.hide(gameStatusFragment);*/
-
         gameStatusListView = (ListView) findViewById(R.id.gameStatusListView);
 
         gameStatusListe = gegenspielerListe;
@@ -850,9 +825,9 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
                             Toast.makeText(getApplicationContext(), "Spiel beenden Nachricht gesendet", Toast.LENGTH_SHORT).show();
                         }
 
-                        Intent gameConnectionServiceIntent = new Intent(getApplicationContext(), GameConnectionService.class);
-                        mGameConnectionService.onUnbind(gameConnectionServiceIntent);
-                        mGameConnectionService.onDestroy();
+                        if(mServiceBound) {
+                            getApplicationContext().unbindService(mServiceConnection);
+                        }
 
                         if(mNsdServer != null){
                             mNsdServer.tearDown();
@@ -933,7 +908,7 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
     }
 
-    private ServiceConnection mServiceConnection = new ServiceConnection() {
+    public ServiceConnection mServiceConnection = new ServiceConnection() {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
