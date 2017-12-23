@@ -274,7 +274,7 @@ public class HostMessageInterpreter {
                 spielBeitretenActivity.spieler_adapter.add(neuerSpieler);
                 spielBeitretenActivity.spieler_adapter.notifyDataSetChanged();
 
-                Toast.makeText(spielBeitretenActivity.getApplicationContext(), neuerSpieler.getSpielerName() +  " ist der Gamelobby beigetreten!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(spielBeitretenActivity.getApplicationContext(), neuerSpieler.getSpielerName() +  " ist der Spiellobby beigetreten!", Toast.LENGTH_SHORT).show();
             }catch(Exception e){
                 Log.e("MessageInterpreter", "getJoinGameMessage: " + e.toString());
                 Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spieler nicht beigetreten!!!", Toast.LENGTH_SHORT).show();
@@ -303,7 +303,7 @@ public class HostMessageInterpreter {
                     }
                 }
 
-                Toast.makeText(spielBeitretenActivity.getApplicationContext(), neuerSpieler.getSpielerName() + " hat die Gamelobby verlassen!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(spielBeitretenActivity.getApplicationContext(), neuerSpieler.getSpielerName() + " hat die Spiellobby verlassen!", Toast.LENGTH_SHORT).show();
             }catch(Exception e){
                 Log.e("MessageInterpreter", "getExitGameMessage: " + e.toString());
                 Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spieler hat die Gamelobby nicht verlassen!!!", Toast.LENGTH_SHORT).show();

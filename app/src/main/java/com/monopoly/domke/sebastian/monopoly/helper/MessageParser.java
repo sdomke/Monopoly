@@ -166,6 +166,9 @@ public class MessageParser {
             case "gameEnd":
                 return GameMessage.MessageHeader.gameEnd;
 
+            case "gameAbort":
+                return GameMessage.MessageHeader.gameAbort;
+
             case "sendMoney":
                 return GameMessage.MessageHeader.sendMoney;
 

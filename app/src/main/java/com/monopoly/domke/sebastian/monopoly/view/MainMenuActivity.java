@@ -55,20 +55,15 @@ public class MainMenuActivity extends AppCompatActivity {
     private static final String BROADCAST_INTENT_EXTRA = "BROADCAST_INTENT_EXTRA";
 
     @Override
-    protected void onStart() {
-        super.onStart();
-
-        Intent gameConnectionServiceIntent = new Intent(this, GameConnectionService.class);
-        startService(gameConnectionServiceIntent);
-        bindService(gameConnectionServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        Intent gameConnectionServiceIntent = new Intent(this, GameConnectionService.class);
+        startService(gameConnectionServiceIntent);
+        bindService(gameConnectionServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
 
         datasource = new DatabaseHandler(this);
 

@@ -6,6 +6,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.monopoly.domke.sebastian.monopoly.R;
+import com.monopoly.domke.sebastian.monopoly.common.GameConnectionService;
 import com.monopoly.domke.sebastian.monopoly.common.GameMessage;
 import com.monopoly.domke.sebastian.monopoly.common.GameMessage.MessageHeader;
 import com.monopoly.domke.sebastian.monopoly.common.Spiel;
@@ -64,32 +65,36 @@ public class PlayerMessageInterpreter {
                 getGameEndMessage();
                 break;
 
+            case gameAbort:
+                getGameAbortMessage();
+                break;
+
             case sendMoney:
-                    getSendMoneyMessage(gameMessage);
+                getSendMoneyMessage(gameMessage);
                 break;
 
             case receiveMoneyFromBank:
-                    getReceiveMoneyFromBankMessage(gameMessage);
+                getReceiveMoneyFromBankMessage(gameMessage);
                 break;
 
             case receiveFreiParken:
-                    getReceiveFreiParkenMessage(gameMessage);
+                getReceiveFreiParkenMessage(gameMessage);
                 break;
 
             case sendMoneyToBank:
-                    getSendMoneyToBankMessage(gameMessage);
+                getSendMoneyToBankMessage(gameMessage);
                 break;
 
             case sendMoneyToFreiParken:
-                    getSendMoneyToFreiParkenMessage(gameMessage);
+                getSendMoneyToFreiParkenMessage(gameMessage);
                 break;
 
             case joinGame:
-                    getJoinGameMessage(gameMessage);
+                getJoinGameMessage(gameMessage);
                 break;
 
             case exitGame:
-                    getExitGameMessage(gameMessage);
+                getExitGameMessage(gameMessage);
                 break;
         }
     }
@@ -172,6 +177,30 @@ public class PlayerMessageInterpreter {
             }catch(Exception e){
                 Log.e("MessageInterpreter", "Spiel beendet: " + e.toString());
                 Toast.makeText(spielStartActivity.getApplicationContext(), "Spiel nicht beendet!!!", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    public void getGameAbortMessage(){
+        if(spielBeitretenActivity != null) {
+
+            try {
+
+                spielBeitretenActivity.datasource.deleteSpiel(spielBeitretenActivity.aktuellesSpiel.getSpielDatum());
+
+                Intent intent = new Intent(spielBeitretenActivity.getApplicationContext(), MainMenuActivity.class);
+                intent.putExtra("spiel_beendet", "Spiel beendet");
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spiel wird geschlossen...", Toast.LENGTH_SHORT).show();
+
+                spielBeitretenActivity.unbindService(spielBeitretenActivity.mServiceConnection);
+
+                spielBeitretenActivity.startActivity(intent);
+
+            }catch(Exception e){
+                Log.e("MessageInterpreter", "Spiel nicht beendet: " + e.toString());
+                Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spiel nicht geschlossen!!!", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -367,7 +396,7 @@ public class PlayerMessageInterpreter {
                         spielBeitretenActivity.spieler_adapter.add(neuerSpieler);
                         spielBeitretenActivity.spieler_adapter.notifyDataSetChanged();
 
-                        Toast.makeText(spielBeitretenActivity.getApplicationContext(), neuerSpieler.getSpielerName() +  " ist der Gamelobby beigetreten!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(spielBeitretenActivity.getApplicationContext(), neuerSpieler.getSpielerName() +  " ist der Spiellobby beigetreten!", Toast.LENGTH_SHORT).show();
                     }catch(Exception e){
                         Log.e("MessageInterpreter", "getJoinGameMessage: " + e.toString());
                         Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spieler nicht beigetreten!!!", Toast.LENGTH_SHORT).show();
@@ -403,7 +432,7 @@ public class PlayerMessageInterpreter {
                             }
                         }
 
-                        Toast.makeText(spielBeitretenActivity.getApplicationContext(), neuerSpieler.getSpielerName() + " hat die Gamelobby verlassen!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(spielBeitretenActivity.getApplicationContext(), neuerSpieler.getSpielerName() + " hat die Spiellobby verlassen!", Toast.LENGTH_SHORT).show();
                     } catch (Exception e) {
                         Log.e("MessageInterpreter", "getExitGameMessage: " + e.toString());
                         Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spieler hat die Gamelobby nicht verlassen!!!", Toast.LENGTH_SHORT).show();

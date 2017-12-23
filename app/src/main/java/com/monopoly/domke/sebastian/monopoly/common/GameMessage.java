@@ -18,6 +18,7 @@ public class GameMessage {
         invitation,
         gameStart,
         gameEnd,
+        gameAbort,
         sendMoney,
         receiveMoneyFromBank,
         receiveFreiParken,

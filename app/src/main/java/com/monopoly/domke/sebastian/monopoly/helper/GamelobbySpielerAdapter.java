@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.monopoly.domke.sebastian.monopoly.R;
 import com.monopoly.domke.sebastian.monopoly.common.GameMessage;
@@ -90,6 +91,8 @@ public class GamelobbySpielerAdapter extends ArrayAdapter<Spieler>{
 				int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
 
 				spielBeitretenActivity.mGameConnectionService.mGameConnection.sendMessage(jsonString);
+
+				Toast.makeText(getContext(), "Du hast die Spiellobby verlassen!", Toast.LENGTH_SHORT).show();
 
 				//SendMessageJob.scheduleSendMessageJob(ipAdress, port, jsonString);
 

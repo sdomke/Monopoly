@@ -86,7 +86,7 @@ public class MonopolySpieleAdapter extends ArrayAdapter<Spiel>{
 
 				Intent intent = new Intent(getContext(), SpielBeitretenActivity.class);
 				intent.putExtra("spiel_datum", i.getSpielDatum());
-				intent.putExtra("neues_spiel", true);
+				intent.putExtra("spiel_laden", true);
 				getContext().startActivity(intent);
 			}
 		});

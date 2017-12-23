@@ -69,6 +69,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
     public static final String TAG = "NsdGame";
 
     boolean neuesSpiel = false;
+    boolean spielLaden = false;
 
     private static final String BROADCAST_INTENT = "BROADCAST_INTENT";
     private static final String BROADCAST_INTENT_EXTRA = "BROADCAST_INTENT_EXTRA";
@@ -105,6 +106,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
         String spielDatum = intent.getStringExtra("spiel_datum");
         neuesSpiel = intent.getBooleanExtra("neues_spiel", false);
+        spielLaden = intent.getBooleanExtra("spiel_laden", false);
 
         aktuellesSpiel = datasource.getSpielByDatum(spielDatum);
 
@@ -114,7 +116,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
         sharedPreferences = this.getSharedPreferences(SHARED_PREF, 0); // 0 - for private mode
 
-        if(!neuesSpiel) {
+        if(!neuesSpiel && !spielLaden) {
             spielStartenFB.hide();
             //mGameConnection = new GameConnection(mUpdateHandler);
             /*mNsdClient = new NsdHelper(getApplicationContext());
@@ -382,6 +384,8 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
         spielLobbyBeitretenButtonLayout.setEnabled(false);
 
+        Toast.makeText(getApplicationContext(), "Du bist der Spiellobby beigetreten!", Toast.LENGTH_SHORT).show();
+
         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(eigenerSpielerNameEditText.getWindowToken(), 0);
     }
@@ -475,7 +479,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    private ServiceConnection mServiceConnection = new ServiceConnection() {
+    public ServiceConnection mServiceConnection = new ServiceConnection() {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
@@ -492,10 +496,68 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent gameConnectionServiceIntent = new Intent(getApplicationContext(), GameConnectionService.class);
-        mGameConnectionService.onUnbind(gameConnectionServiceIntent);
-        mGameConnectionService.onDestroy();
 
-        super.onBackPressed();
+        if(neuesSpiel) {
+            JSONObject messageContent = messageParser.gameStatusToJson(eigenerSpieler, aktuellesSpiel);
+
+            GameMessage startGameMessage = new GameMessage(GameMessage.MessageHeader.gameAbort, messageContent);
+
+            String jsonString = messageParser.messageToJsonString(startGameMessage);
+
+            mGameConnectionService.mGameConnection.sendMessage(jsonString);
+
+            datasource.deleteSpiel(aktuellesSpiel.getSpielDatum());
+
+            Toast.makeText(getApplicationContext(), "Spiel wird geschlossen...", Toast.LENGTH_SHORT).show();
+
+            Intent intent = new Intent(getApplicationContext(), NeuesSpielActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+            Intent gameConnectionServiceIntent = new Intent(getApplicationContext(), GameConnectionService.class);
+            mGameConnectionService.unbindService(mServiceConnection);
+            mGameConnectionService.stopService(gameConnectionServiceIntent);
+
+            if(mNsdServer != null){
+                mNsdServer.tearDown();
+            }
+
+            startActivity(intent);
+        }
+        else if(spielLaden) {
+            JSONObject messageContent = messageParser.gameStatusToJson(eigenerSpieler, aktuellesSpiel);
+
+            GameMessage startGameMessage = new GameMessage(GameMessage.MessageHeader.gameAbort, messageContent);
+
+            String jsonString = messageParser.messageToJsonString(startGameMessage);
+
+            mGameConnectionService.mGameConnection.sendMessage(jsonString);
+
+            Toast.makeText(getApplicationContext(), "Spiel wird geschlossen...", Toast.LENGTH_SHORT).show();
+
+            Intent intent = new Intent(getApplicationContext(), SpielLadenActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+            Intent gameConnectionServiceIntent = new Intent(getApplicationContext(), GameConnectionService.class);
+            mGameConnectionService.unbindService(mServiceConnection);
+            mGameConnectionService.stopService(gameConnectionServiceIntent);
+
+            if(mNsdServer != null){
+                mNsdServer.tearDown();
+            }
+
+            startActivity(intent);
+        }
+        else {
+            //ToDo Error service stop
+            datasource.deleteSpiel(aktuellesSpiel.getSpielDatum());
+
+            unbindService(mServiceConnection);
+
+            Intent intent = new Intent(getApplicationContext(), MainMenuActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+            startActivity(intent);
+        }
+
     }
 }

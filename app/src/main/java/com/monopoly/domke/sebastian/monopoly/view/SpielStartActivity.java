@@ -389,7 +389,8 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
                 String jsonString = messageParser.messageToJsonString(receiveLosGameMessage);
 
                 mGameConnectionService.mGameConnection.sendMessage(jsonString);
-                //mGameConnection.sendMessage(jsonString);
+
+                Toast.makeText(getApplicationContext(), "Du hast " + betrag + " M$ für Los erhalten!", Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -414,7 +415,8 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
                 String jsonString = messageParser.messageToJsonString(receiveFreiParkenGameMessage);
 
                 mGameConnectionService.mGameConnection.sendMessage(jsonString);
-                //mGameConnection.sendMessage(jsonString);
+
+                Toast.makeText(getApplicationContext(), "Du hast " + betrag + " M$ von Frei Parken erhalten!", Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -459,7 +461,7 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
                 mGameConnectionService.mGameConnection.sendMessage(jsonString);
 
-                //mGameConnection.sendMessage(jsonString);
+                Toast.makeText(getApplicationContext(), "Du hast " + betrag + " M$ in die Mitte gezahlt!", Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -547,7 +549,7 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
         mGameConnectionService.mGameConnection.sendMessage(jsonString);
 
-        //mGameConnection.sendMessage(jsonString);
+        Toast.makeText(getApplicationContext(), "Du hast " + betrag + " M$ von der Bank erhalten!", Toast.LENGTH_SHORT).show();
 
         aktuellerBetragEditText.setText("");
         empfaengerAuswahl = 0;
@@ -577,7 +579,7 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
         mGameConnectionService.mGameConnection.sendMessage(jsonString);
 
-        //mGameConnection.sendMessage(jsonString);
+        Toast.makeText(getApplicationContext(), "Du hast " + betrag + " M$ an die Bank überwiesen!", Toast.LENGTH_SHORT).show();
 
         aktuellerBetragEditText.setText("");
         empfaengerAuswahl = 0;
@@ -603,7 +605,7 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
         mGameConnectionService.mGameConnection.sendMessage(jsonString);
 
-        //mGameConnection.sendMessage(jsonString);
+        Toast.makeText(getApplicationContext(), "Du hast " + betrag + " M$ in die Mitte gezahlt!", Toast.LENGTH_SHORT).show();
 
         aktuellerBetragEditText.setText("");
         empfaengerAuswahl = 0;
@@ -644,7 +646,7 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
         mGameConnectionService.mGameConnection.sendMessage(jsonString);
 
-        //mGameConnection.sendMessage(jsonString);
+        Toast.makeText(getApplicationContext(), "Du hast " + betrag + " M$ an " + gegenSpieler.getSpielerName() + " überwiesen!", Toast.LENGTH_SHORT).show();
 
         aktuellerBetragEditText.setText("");
         empfaengerAuswahl = 0;
@@ -845,14 +847,9 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
                             mGameConnectionService.mGameConnection.sendMessage(jsonString);
 
-                            //mGameConnection.sendMessage(jsonString);
                             Toast.makeText(getApplicationContext(), "Spiel beenden Nachricht gesendet", Toast.LENGTH_SHORT).show();
                         }
 
-                        //ToDo Stop Job
-                        /*if(mGameConnection != null){
-                            mGameConnection.tearDown();
-                        }*/
                         Intent gameConnectionServiceIntent = new Intent(getApplicationContext(), GameConnectionService.class);
                         mGameConnectionService.onUnbind(gameConnectionServiceIntent);
                         mGameConnectionService.onDestroy();
@@ -861,7 +858,6 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
                             mNsdServer.tearDown();
                         }
 
-                        //Todo Crashed wenn vom server ausgeführt (resolvelistener in der mainActivity bereits aktiv)
                         startActivity(intent);
                     }
                 }).create().show();
