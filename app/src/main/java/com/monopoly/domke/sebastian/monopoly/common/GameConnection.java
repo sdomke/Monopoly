@@ -3,6 +3,7 @@ package com.monopoly.domke.sebastian.monopoly.common;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.nfc.Tag;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -24,14 +25,13 @@ import java.net.UnknownHostException;
 
 public class GameConnection {
 
-    private static final String BROADCAST_INTENT = "BROADCAST_INTENT";
-    private static final String BROADCAST_INTENT_EXTRA = "BROADCAST_INTENT_EXTRA";
-
     public GameClient mGameClient;
     public GameServer mGameServer;
 
     public Socket mSocket;
     public Context mContext;
+
+    private int mPort = -1;
 
     private final String SERVER_TAG = "GameConnection";
 
@@ -65,6 +65,10 @@ public class GameConnection {
 
     public void connectToServer(InetAddress address, int port) {
         mGameClient = new GameClient(address, port);
+    }
+
+    public void connectToServerBySocket(Socket clientSocket) {
+        mGameClient = new GameClient(clientSocket);
     }
 
     public void sendMessage(final String msg) {
@@ -103,6 +107,14 @@ public class GameConnection {
         return mSocket;
     }
 
+    public int getLocalPort() {
+        return mPort;
+    }
+
+    public void setLocalPort(int port) {
+        mPort = port;
+    }
+
     private class GameServer {
         ServerSocket mServerSocket = null;
         Thread mThread = null;
@@ -124,38 +136,30 @@ public class GameConnection {
 
         class ServerThread implements Runnable {
 
-            public static final String SHARED_PREF = "SHARED_PREF";
-            public static final String SHARED_PREF_IP_ADRESS = "SHARED_PREF_IP_ADRESS";
-            public static final String SHARED_PREF_PORT = "SHARED_PREF_PORT";
-
-            private SharedPreferences sharedPreferences = null;
-            private SharedPreferences.Editor editor;
-
             @Override
             public void run() {
-
-                sharedPreferences = mContext.getSharedPreferences(SHARED_PREF, 0); // 0 - for private mode
-                editor = sharedPreferences.edit();
 
                 try {
                     // Since discovery will happen via Nsd, we don't need to care which port is
                     // used.  Just grab an available one  and advertise it via Nsd.
                     mServerSocket = new ServerSocket(0);
-
-                    editor.putInt(SHARED_PREF_PORT, mServerSocket.getLocalPort());
-                    editor.apply();
+                    setLocalPort(mServerSocket.getLocalPort());
 
                     Log.d(SERVER_TAG, "Server socket Port: " + mServerSocket.getLocalPort() + " Adress:" + mServerSocket.getInetAddress());
 
                     while (!Thread.currentThread().isInterrupted()) {
                         Log.d(SERVER_TAG, "ServerSocket Created, awaiting connection");
-                        setSocket(mServerSocket.accept());
+                        //setSocket(mServerSocket.accept());
                         Log.d(SERVER_TAG, "Connected.");
 
-                        Log.d(SERVER_TAG, "GameClient == null -> connectToServer(" + mSocket.getInetAddress() + ", " + mSocket.getPort() + ")");
-                        int port = mSocket.getPort();
-                        InetAddress address = mSocket.getInetAddress();
-                        connectToServer(address, port);
+                        Socket newClientSocket = mServerSocket.accept();
+
+                        Log.d(SERVER_TAG, "GameClient == null -> connectToServer(" + newClientSocket.getInetAddress() + ", " + newClientSocket.getPort() + ")");
+                        //int port = mSocket.getPort();
+                        //InetAddress address = mSocket.getInetAddress();
+                        //connectToServer(address, port);
+
+                        connectToServerBySocket(newClientSocket);
                     }
                 } catch (IOException e) {
                     Log.e(SERVER_TAG, "Error creating ServerSocket: ", e);
@@ -171,6 +175,8 @@ public class GameConnection {
         private static final String BROADCAST_INTENT_EXTRA = "BROADCAST_INTENT_EXTRA";
 
         private LocalBroadcastManager broadcaster;
+
+        private Socket mClientSocket;
 
         private InetAddress mAddress;
         private int port;
@@ -190,6 +196,17 @@ public class GameConnection {
 
             mSendThread = new Thread(new GameClient.SendingThread());
             mSendThread.start();
+        }
+
+        public GameClient(Socket clientSocket) {
+            this.mClientSocket = clientSocket;
+
+            Log.d(CLIENT_TAG, "Create GameClientConstructor - mClientSocket.Address: " + mClientSocket.getInetAddress() + " | mClientSocket.Port: " + mClientSocket.getPort());
+
+            broadcaster = LocalBroadcastManager.getInstance(mContext);
+
+            mRecThread = new Thread(new GameClient.ReceivingThread());
+            mRecThread.start();
         }
 
 
@@ -233,8 +250,10 @@ public class GameConnection {
 
                 BufferedReader input;
                 try {
+                    /*input = new BufferedReader(new InputStreamReader(
+                            getSocket().getInputStream()));*/
                     input = new BufferedReader(new InputStreamReader(
-                            getSocket().getInputStream()));
+                            mClientSocket.getInputStream()));
                     while (!Thread.currentThread().isInterrupted()) {
 
                         String messageStr = null;
@@ -268,19 +287,22 @@ public class GameConnection {
             }
 
             try {
-                getSocket().getInputStream().close();
+                //getSocket().getInputStream().close();
+                mClientSocket.getInputStream().close();
             } catch (Exception e) {
                 Log.d(CLIENT_TAG, "Error when closing inputStream");
             }
 
             try {
-                getSocket().getOutputStream().close();
+                //getSocket().getOutputStream().close();
+                mClientSocket.getOutputStream().close();
             } catch (Exception e) {
                 Log.d(CLIENT_TAG, "Error when interrupting RecordingThread");
             }
 
             try {
-                getSocket().close();
+                //getSocket().close();
+                mClientSocket.close();
             } catch (IOException ioe) {
                 Log.e(CLIENT_TAG, "Error when closing client socket.");
             }
@@ -288,16 +310,20 @@ public class GameConnection {
 
         public void sendMessage(String msg) {
             try {
-                Socket socket = getSocket();
+                //Socket socket = getSocket();
+                Socket socket = mClientSocket;
                 if (socket == null) {
                     Log.d(CLIENT_TAG, "Socket is null, wtf?");
                 } else if (socket.getOutputStream() == null) {
                     Log.d(CLIENT_TAG, "Socket output stream is null, wtf?");
                 }
 
+                /*PrintWriter out = new PrintWriter(
+                        new BufferedWriter(
+                                new OutputStreamWriter(getSocket().getOutputStream())), true);*/
                 PrintWriter out = new PrintWriter(
                         new BufferedWriter(
-                                new OutputStreamWriter(getSocket().getOutputStream())), true);
+                                new OutputStreamWriter(mClientSocket.getOutputStream())), true);
                 out.println(msg);
                 out.flush();
 

@@ -91,8 +91,6 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //JobManager.create(this).addJobCreator(new GameJobCreator());
-
         init();
     }
 
@@ -421,17 +419,27 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
     public void advertiseGame() {
 
-        int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
-        Log.d(TAG, "advertiseGame Port: " + port);
+        new Thread(new Runnable() {
+            public void run() {
 
-        // Register service
-        if(port > -1) {
-            mNsdServer.registerService(port);
+                while (!mServiceBound){
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
 
-            Toast.makeText(getApplicationContext(), "Service erstellt: " + port, Toast.LENGTH_SHORT).show();
-        } else {
-            Log.d(TAG, "ServerSocket isn't bound.");
-        }
+                // Register service
+                if(mGameConnectionService.mGameConnection.getLocalPort() > -1) {
+                    mNsdServer.registerService(mGameConnectionService.mGameConnection.getLocalPort());
+                    //Toast.makeText(getApplicationContext(), "Service erstellt: " + port, Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.d(TAG, "ServerSocket isn't bound.");
+                }
+            }
+        }).start();
+
     }
 
     @Override
@@ -515,7 +523,6 @@ public class SpielBeitretenActivity extends AppCompatActivity {
             startActivity(intent);
         }
         else {
-            //ToDo Error service stop
             datasource.deleteSpiel(aktuellesSpiel.getSpielDatum());
 
             if(mServiceBound) {

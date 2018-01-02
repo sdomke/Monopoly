@@ -9,13 +9,19 @@ import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.monopoly.domke.sebastian.monopoly.R;
 import com.monopoly.domke.sebastian.monopoly.common.GameConnectionService;
 import com.monopoly.domke.sebastian.monopoly.common.GameMessage;
 import com.monopoly.domke.sebastian.monopoly.view.MainMenuActivity;
 
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.net.Socket;
 
 /**
  * Created by Basti on 12.12.2016.
@@ -26,22 +32,17 @@ public class NsdHelper {
     Context mContext;
 
     public boolean mServiceResolved = false;
-    boolean mServiceBound = false;
-    public GameConnectionService mGameConnectionService;
+
+    private ProgressBar progressBar;
 
     MainMenuActivity mainMenuActivity;
 
-    private SharedPreferences sharedPreferences = null;
-    private SharedPreferences.Editor editor;
     NsdManager mNsdManager;
     public NsdManager.ResolveListener mResolveListener;
     public NsdManager.DiscoveryListener mDiscoveryListener;
     public NsdManager.RegistrationListener mRegistrationListener;
 
     public static final String SERVICE_TYPE = "_http._tcp.";
-    public static final String SHARED_PREF = "SHARED_PREF";
-    public static final String SHARED_PREF_IP_ADRESS = "SHARED_PREF_IP_ADRESS";
-    public static final String SHARED_PREF_PORT = "SHARED_PREF_PORT";
 
     public static final String TAG = "NsdClientGame";
     public String mServiceName = "MonopolyGameClient";
@@ -52,7 +53,6 @@ public class NsdHelper {
     public NsdHelper(Context context) {
         mContext = context;
         mNsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
-        sharedPreferences = context.getSharedPreferences(SHARED_PREF, 0); // 0 - for private mode
     }
 
     public NsdHelper(Context context, MainMenuActivity mainMenuActivity) {
@@ -128,22 +128,34 @@ public class NsdHelper {
 
                 mService = serviceInfo;
 
-                if (mService != null) {
+                if (mService != null && !mServiceResolved) {
                     Log.d(TAG, "Connecting.");
 
-                    mainMenuActivity.mGameConnectionService.mGameConnection.connectToServer(mService.getHost(), mService.getPort());
+                    //mainMenuActivity.mGameConnectionService.mGameConnection.connectToServer(mService.getHost(), mService.getPort());
 
-                    mServiceResolved = true;
+                    if(mService.getPort() != 0) {
+                        Log.d(TAG, "mServiceHost: " + mService.getHost() + " | mServicePort: " + mService.getPort());
 
-                    JSONObject messageContent = new JSONObject();
-                    MessageParser messageParser = new MessageParser();
+                        try {
+                            Socket newClientSocket = new Socket(mService.getHost(), mService.getPort());
+                            mainMenuActivity.mGameConnectionService.mGameConnection.connectToServerBySocket(newClientSocket);
+                            Log.d(TAG, "ConnectedToServer successfully.");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            Log.d(TAG, "ConnectedToServer NOT successfully.");
+                        }
 
-                    GameMessage requestJoinGameMessage = new GameMessage(GameMessage.MessageHeader.requestJoinGame, messageContent);
+                        mServiceResolved = true;
 
-                    String jsonString = messageParser.messageToJsonString(requestJoinGameMessage);
+                        JSONObject messageContent = new JSONObject();
+                        MessageParser messageParser = new MessageParser();
 
-                    mainMenuActivity.mGameConnectionService.mGameConnection.sendMessage(jsonString);
+                        GameMessage requestJoinGameMessage = new GameMessage(GameMessage.MessageHeader.requestJoinGame, messageContent);
 
+                        String jsonString = messageParser.messageToJsonString(requestJoinGameMessage);
+
+                        mainMenuActivity.mGameConnectionService.mGameConnection.sendMessage(jsonString);
+                    }
                     //Toast.makeText(mContext, "Mit Spiel verbunden", Toast.LENGTH_SHORT).show();
                 } else {
                     Log.d(TAG, "No service to connect to!");
