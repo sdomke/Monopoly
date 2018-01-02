@@ -1,5 +1,6 @@
 package com.monopoly.domke.sebastian.monopoly.helper;
 
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.RelativeLayout;
@@ -149,7 +150,9 @@ public class PlayerMessageInterpreter {
 
                 Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spiel wird gestartet...", Toast.LENGTH_SHORT).show();
 
-                //spielBeitretenActivity.mGameConnection.tearDown();
+                if(spielBeitretenActivity.mServiceBound) {
+                    spielBeitretenActivity.getApplicationContext().unbindService(spielBeitretenActivity.mServiceConnection);
+                }
 
                 spielBeitretenActivity.startActivity(intent);
 
@@ -171,6 +174,8 @@ public class PlayerMessageInterpreter {
                 Toast.makeText(spielStartActivity.getApplicationContext(), "Spiel wird beendet...", Toast.LENGTH_SHORT).show();
 
                 if(spielStartActivity.mServiceBound) {
+                    Intent gameConnectionServiceIntent = new Intent(spielBeitretenActivity.getApplicationContext(), GameConnectionService.class);
+                    spielStartActivity.getApplicationContext().stopService(gameConnectionServiceIntent);
                     spielStartActivity.getApplicationContext().unbindService(spielStartActivity.mServiceConnection);
                 }
                 spielStartActivity.startActivity(intent);
@@ -196,6 +201,8 @@ public class PlayerMessageInterpreter {
                 Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spiel wird geschlossen...", Toast.LENGTH_SHORT).show();
 
                 if(spielBeitretenActivity.mServiceBound) {
+                    Intent gameConnectionServiceIntent = new Intent(spielBeitretenActivity.getApplicationContext(), GameConnectionService.class);
+                    spielBeitretenActivity.getApplicationContext().stopService(gameConnectionServiceIntent);
                     spielBeitretenActivity.getApplicationContext().unbindService(spielBeitretenActivity.mServiceConnection);
                 }
 
@@ -204,6 +211,27 @@ public class PlayerMessageInterpreter {
             }catch(Exception e){
                 Log.e("MessageInterpreter", "Spiel nicht beendet: " + e.toString());
                 Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spiel nicht geschlossen!!!", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else if(mainMenuActivity != null) {
+            try {
+
+                if(mainMenuActivity.mServiceBound) {
+                    Intent gameConnectionServiceIntent = new Intent(mainMenuActivity.getApplicationContext(), GameConnectionService.class);
+                    mainMenuActivity.getApplicationContext().stopService(gameConnectionServiceIntent);
+                    mainMenuActivity.getApplicationContext().unbindService(mainMenuActivity.mServiceConnection);
+                }
+
+                mainMenuActivity.spielBeitretenRelativeLayout.setEnabled(false);
+
+                Intent gameConnectionServiceIntent = new Intent(mainMenuActivity.getApplicationContext(), GameConnectionService.class);
+                mainMenuActivity.getApplicationContext().bindService(gameConnectionServiceIntent, mainMenuActivity.mServiceConnection, Context.BIND_AUTO_CREATE);
+                mainMenuActivity.getApplicationContext().startService(gameConnectionServiceIntent);
+
+                Toast.makeText(mainMenuActivity.getApplicationContext(), "Spiel wird geschlossen...", Toast.LENGTH_SHORT).show();
+            }catch(Exception e){
+                Log.e("MessageInterpreter", "Spiel nicht beendet: " + e.toString());
+                Toast.makeText(mainMenuActivity.getApplicationContext(), "Spiel nicht geschlossen!!!", Toast.LENGTH_SHORT).show();
             }
         }
     }

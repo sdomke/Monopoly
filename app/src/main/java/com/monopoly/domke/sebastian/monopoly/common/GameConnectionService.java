@@ -20,34 +20,35 @@ public class GameConnectionService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.v(LOG_TAG, "in onCreate");
+        Log.d(LOG_TAG, "in onCreate");
         mGameConnection = new GameConnection(getApplicationContext());
     }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        Log.v(LOG_TAG, "in onBind");
+        Log.d(LOG_TAG, "in onBind");
         return mBinder;
     }
 
     @Override
     public void onRebind(Intent intent) {
-        Log.v(LOG_TAG, "in onRebind");
+        Log.d(LOG_TAG, "in onRebind");
         super.onRebind(intent);
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
-        Log.v(LOG_TAG, "in onUnbind");
+        Log.d(LOG_TAG, "in onUnbind");
         return true;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.v(LOG_TAG, "in onDestroy");
+        Log.d(LOG_TAG, "in onDestroy");
 
+        mGameConnection = null;
     }
 
     public class MyBinder extends Binder {

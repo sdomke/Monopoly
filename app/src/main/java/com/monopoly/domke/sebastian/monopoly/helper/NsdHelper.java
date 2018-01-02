@@ -139,22 +139,22 @@ public class NsdHelper {
                         try {
                             Socket newClientSocket = new Socket(mService.getHost(), mService.getPort());
                             mainMenuActivity.mGameConnectionService.mGameConnection.connectToServerBySocket(newClientSocket);
+
+                            mServiceResolved = true;
+
+                            JSONObject messageContent = new JSONObject();
+                            MessageParser messageParser = new MessageParser();
+
+                            GameMessage requestJoinGameMessage = new GameMessage(GameMessage.MessageHeader.requestJoinGame, messageContent);
+
+                            String jsonString = messageParser.messageToJsonString(requestJoinGameMessage);
+
+                            mainMenuActivity.mGameConnectionService.mGameConnection.sendMessage(jsonString);
                             Log.d(TAG, "ConnectedToServer successfully.");
                         } catch (IOException e) {
                             e.printStackTrace();
                             Log.d(TAG, "ConnectedToServer NOT successfully.");
                         }
-
-                        mServiceResolved = true;
-
-                        JSONObject messageContent = new JSONObject();
-                        MessageParser messageParser = new MessageParser();
-
-                        GameMessage requestJoinGameMessage = new GameMessage(GameMessage.MessageHeader.requestJoinGame, messageContent);
-
-                        String jsonString = messageParser.messageToJsonString(requestJoinGameMessage);
-
-                        mainMenuActivity.mGameConnectionService.mGameConnection.sendMessage(jsonString);
                     }
                     //Toast.makeText(mContext, "Mit Spiel verbunden", Toast.LENGTH_SHORT).show();
                 } else {

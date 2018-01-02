@@ -73,9 +73,6 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
     public DatabaseHandler databaseHandler;
 
-    public NsdHelper mNsdServer;
-    public NsdHelper mNsdClient;
-    public Handler mUpdateHandler;
     public static final String TAG = "NsdGame";
 
     boolean neuesSpiel = false;
@@ -86,12 +83,6 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
     private static final String BROADCAST_INTENT = "BROADCAST_INTENT";
     private static final String BROADCAST_INTENT_EXTRA = "BROADCAST_INTENT_EXTRA";
-
-    private SharedPreferences sharedPreferences = null;
-
-    public static final String SHARED_PREF = "SHARED_PREF";
-    public static final String SHARED_PREF_IP_ADRESS = "SHARED_PREF_IP_ADRESS";
-    public static final String SHARED_PREF_PORT = "SHARED_PREF_PORT";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -826,28 +817,16 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
                         }
 
                         if(mServiceBound) {
+                            Intent gameConnectionServiceIntent = new Intent(getApplicationContext(), GameConnectionService.class);
+                            getApplicationContext().stopService(gameConnectionServiceIntent);
                             getApplicationContext().unbindService(mServiceConnection);
-                        }
 
-                        if(mNsdServer != null){
-                            mNsdServer.tearDown();
                         }
 
                         startActivity(intent);
                     }
                 }).create().show();
     }
-
-    /*public void advertiseGame() {
-        // Register service
-        if(mGameConnection.getLocalPort() > -1) {
-            mNsdServer.registerService(mGameConnection.getLocalPort());
-
-            Toast.makeText(getApplicationContext(), "Service erstellt: " + mGameConnection.getLocalPort(), Toast.LENGTH_SHORT).show();
-        } else {
-            Log.d(TAG, "ServerSocket isn't bound.");
-        }
-    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -870,33 +849,6 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
     public double roundDouble(Double betrag){
         return Math.round(betrag*1000)/1000.0;
     }
-
-    /*
-    public LinearLayout initGameStatusFragment(){
-
-        LinearLayout fragmentGameStatus = (LinearLayout) findViewById(R.id.gameStatusFragment);
-        RelativeLayout itemSpielUebersicht = (RelativeLayout) findViewById(R.id.spielUebersichtItem);
-        TextView itemSpielNameView = (TextView) itemSpielUebersicht.findViewById(R.id.spielItemNameView);
-        TextView itemSpielWaehrungView = (TextView) itemSpielUebersicht.findViewById(R.id.spielItemWaehrungView);
-        TextView itemSpielCapitalView = (TextView) itemSpielUebersicht.findViewById(R.id.spielItemCapitalView);
-
-        for (Spieler spieler:gegenspielerListe) {
-
-            itemSpielNameView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), spieler.getSpielerFarbe()));
-            itemSpielNameView.setText(spieler.getSpielerName().charAt(0));
-
-            itemSpielCapitalView.setText(String.valueOf(spieler.getSpielerKapital()));
-            fragmentGameStatus.addView(itemSpielUebersicht);
-        }
-
-        itemSpielNameView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.mitte_farbe));
-        itemSpielNameView.setText("FP");
-
-        itemSpielCapitalView.setText(String.valueOf(aktuellesSpiel.getFreiParken()));
-        fragmentGameStatus.addView(itemSpielUebersicht);
-
-        return fragmentGameStatus;
-    }*/
 
     @Override
     public void onFragmentInteraction(Uri uri) {

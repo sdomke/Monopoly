@@ -18,6 +18,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 /**
  * Created by Basti on 12.12.2017.
@@ -28,7 +29,8 @@ public class GameConnection {
     public GameClient mGameClient;
     public GameServer mGameServer;
 
-    public Socket mSocket;
+    public ArrayList<GameClient> gameClients;
+
     public Context mContext;
 
     private int mPort = -1;
@@ -36,21 +38,17 @@ public class GameConnection {
     private final String SERVER_TAG = "GameConnection";
 
     public GameConnection(Context context) {
-
+        gameClients = new ArrayList<>();
         this.mContext = context;
         mGameServer = new GameServer();
     }
 
-    public void tearDown() {
+    public void tearDownGameServer() {
 
-        Log.d(SERVER_TAG, "tearDown");
+        Log.d(SERVER_TAG, "tearDownGameServer");
 
         if(mGameServer != null) {
             mGameServer.tearDown();
-        }
-
-        if(mGameClient != null) {
-            mGameClient.tearDown();
         }
     }
 
@@ -63,12 +61,9 @@ public class GameConnection {
         }
     }
 
-    public void connectToServer(InetAddress address, int port) {
-        mGameClient = new GameClient(address, port);
-    }
-
     public void connectToServerBySocket(Socket clientSocket) {
         mGameClient = new GameClient(clientSocket);
+        gameClients.add(mGameClient);
     }
 
     public void sendMessage(final String msg) {
@@ -81,30 +76,6 @@ public class GameConnection {
 
 
         }
-    }
-
-    private synchronized void setSocket(Socket socket) {
-
-        Log.d(SERVER_TAG, "setSocket being called.");
-        if (socket == null) {
-            Log.d(SERVER_TAG, "Setting a null socket.");
-        }
-        if (mSocket != null) {
-            if (mSocket.isConnected()) {
-                try {
-                    mSocket.close();
-                } catch (IOException e) {
-                    Log.d(SERVER_TAG, "Can't close socket");
-                    e.printStackTrace();
-                }
-            }
-        }
-        mSocket = socket;
-        Log.d(SERVER_TAG, "Client socket Port: " + mSocket.getPort() + " Adress:" + mSocket.getInetAddress());
-    }
-
-    public Socket getSocket() {
-        return mSocket;
     }
 
     public int getLocalPort() {
@@ -126,7 +97,11 @@ public class GameConnection {
         }
 
         public void tearDown() {
-            mThread.interrupt();
+            try {
+                mThread.interrupt();
+            } catch (Exception e) {
+                Log.e(SERVER_TAG, "Error when interrupting server thread.");
+            }
             try {
                 mServerSocket.close();
             } catch (IOException ioe) {
@@ -149,15 +124,10 @@ public class GameConnection {
 
                     while (!Thread.currentThread().isInterrupted()) {
                         Log.d(SERVER_TAG, "ServerSocket Created, awaiting connection");
-                        //setSocket(mServerSocket.accept());
-                        Log.d(SERVER_TAG, "Connected.");
 
                         Socket newClientSocket = mServerSocket.accept();
-
+                        Log.d(SERVER_TAG, "Connected.");
                         Log.d(SERVER_TAG, "GameClient == null -> connectToServer(" + newClientSocket.getInetAddress() + ", " + newClientSocket.getPort() + ")");
-                        //int port = mSocket.getPort();
-                        //InetAddress address = mSocket.getInetAddress();
-                        //connectToServer(address, port);
 
                         connectToServerBySocket(newClientSocket);
                     }
@@ -178,25 +148,9 @@ public class GameConnection {
 
         private Socket mClientSocket;
 
-        private InetAddress mAddress;
-        private int port;
-
         private final String CLIENT_TAG = "GameClient";
 
-        private Thread mSendThread;
         private Thread mRecThread;
-
-        public GameClient(InetAddress address, int port) {
-
-            Log.d(CLIENT_TAG, "Creating GameClient");
-            this.mAddress = address;
-            this.port = port;
-
-            broadcaster = LocalBroadcastManager.getInstance(mContext);
-
-            mSendThread = new Thread(new GameClient.SendingThread());
-            mSendThread.start();
-        }
 
         public GameClient(Socket clientSocket) {
             this.mClientSocket = clientSocket;
@@ -220,29 +174,6 @@ public class GameConnection {
             }
         }
 
-        class SendingThread implements Runnable {
-
-            @Override
-            public void run() {
-                try {
-                    if (getSocket() == null) {
-                        setSocket(new Socket(mAddress.getHostAddress(), port));
-                        Log.d(CLIENT_TAG, "Client-side socket initialized.");
-                    } else {
-                        Log.d(CLIENT_TAG, "Client-side socket already initialized. skipping!");
-                    }
-
-                    mRecThread = new Thread(new GameClient.ReceivingThread());
-                    mRecThread.start();
-
-                } catch (UnknownHostException e) {
-                    Log.d(CLIENT_TAG, "Initializing client-side socket failed, UHE", e);
-                } catch (IOException e) {
-                    Log.d(CLIENT_TAG, "Initializing client-side socket failed, IOE.", e);
-                }
-            }
-        }
-
         class ReceivingThread implements Runnable {
 
             @Override
@@ -250,8 +181,6 @@ public class GameConnection {
 
                 BufferedReader input;
                 try {
-                    /*input = new BufferedReader(new InputStreamReader(
-                            getSocket().getInputStream()));*/
                     input = new BufferedReader(new InputStreamReader(
                             mClientSocket.getInputStream()));
                     while (!Thread.currentThread().isInterrupted()) {
@@ -275,36 +204,17 @@ public class GameConnection {
         }
 
         public void tearDown() {
-            try {
-                mSendThread.interrupt();
-            } catch (Exception e) {
-                Log.d(CLIENT_TAG, "Error when interrupting SendThread");
-            }
-            try {
-                mRecThread.interrupt();
-            } catch (Exception e) {
-                Log.d(CLIENT_TAG, "Error when interrupting RecordingThread");
-            }
 
-            try {
-                //getSocket().getInputStream().close();
-                mClientSocket.getInputStream().close();
-            } catch (Exception e) {
-                Log.d(CLIENT_TAG, "Error when closing inputStream");
-            }
+            while(gameClients.listIterator().hasNext()) {
 
-            try {
-                //getSocket().getOutputStream().close();
-                mClientSocket.getOutputStream().close();
-            } catch (Exception e) {
-                Log.d(CLIENT_TAG, "Error when interrupting RecordingThread");
-            }
+                GameClient nextGameClient = gameClients.listIterator().next();
 
-            try {
-                //getSocket().close();
-                mClientSocket.close();
-            } catch (IOException ioe) {
-                Log.e(CLIENT_TAG, "Error when closing client socket.");
+                try {
+                    nextGameClient.mRecThread.interrupt();
+
+                } catch (Exception e) {
+                    Log.d(CLIENT_TAG, "Error when interrupting RecordingThread");
+                }
             }
         }
 
@@ -318,9 +228,6 @@ public class GameConnection {
                     Log.d(CLIENT_TAG, "Socket output stream is null, wtf?");
                 }
 
-                /*PrintWriter out = new PrintWriter(
-                        new BufferedWriter(
-                                new OutputStreamWriter(getSocket().getOutputStream())), true);*/
                 PrintWriter out = new PrintWriter(
                         new BufferedWriter(
                                 new OutputStreamWriter(mClientSocket.getOutputStream())), true);

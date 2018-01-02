@@ -122,8 +122,8 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         }
         else{
             Intent gameConnectionServiceIntent = new Intent(getApplicationContext(), GameConnectionService.class);
-            getApplicationContext().startService(gameConnectionServiceIntent);
             getApplicationContext().bindService(gameConnectionServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
+            getApplicationContext().startService(gameConnectionServiceIntent);
 
             mNsdServer = new NsdHelper(this);
             mNsdServer.initializeRegistrationListener();
@@ -132,7 +132,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         }
 
         WifiManager manager = (WifiManager) getApplicationContext().getSystemService(getApplicationContext().WIFI_SERVICE);
-        ipAdresseEigenerSpieler = intToInetAddress(manager.getDhcpInfo().serverAddress).getHostAddress();
+        ipAdresseEigenerSpieler = intToInetAddress(manager.getDhcpInfo().ipAddress).getHostAddress();
 
         imeiEigenerSpieler = Settings.Secure.getString(getApplicationContext().getContentResolver(),
                 Settings.Secure.ANDROID_ID);
@@ -181,6 +181,10 @@ public class SpielBeitretenActivity extends AppCompatActivity {
                     mGameConnectionService.mGameConnection.sendMessage(jsonString);
 
                     mNsdServer.tearDown();
+
+                    if(mServiceBound) {
+                        getApplicationContext().unbindService(mServiceConnection);
+                    }
 
                     startActivity(intent);
 
@@ -394,9 +398,6 @@ public class SpielBeitretenActivity extends AppCompatActivity {
             String jsonString = messageParser.messageToJsonString(invitationGameMessage);
 
             mGameConnectionService.mGameConnection.sendMessage(jsonString);
-            //GameConnectionJob.gameConnectionInstanze.sendMessage(jsonString);
-            //SendMessageJob.scheduleSendMessageJob(ipAdress, port, jsonString);
-            //mGameConnection.sendMessage(jsonString);
 
             Toast.makeText(getApplicationContext(), "Spieler wurden eingeladen", Toast.LENGTH_SHORT).show();
         }
@@ -486,8 +487,9 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
             if(mServiceBound) {
                 Intent gameConnectionServiceIntent = new Intent(getApplicationContext(), GameConnectionService.class);
-                getApplicationContext().unbindService(mServiceConnection);
                 getApplicationContext().stopService(gameConnectionServiceIntent);
+                getApplicationContext().unbindService(mServiceConnection);
+
             }
 
             if(mNsdServer != null){
@@ -512,8 +514,9 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
             if(mServiceBound) {
                 Intent gameConnectionServiceIntent = new Intent(getApplicationContext(), GameConnectionService.class);
-                getApplicationContext().unbindService(mServiceConnection);
                 getApplicationContext().stopService(gameConnectionServiceIntent);
+                getApplicationContext().unbindService(mServiceConnection);
+
             }
 
             if(mNsdServer != null){
@@ -526,6 +529,8 @@ public class SpielBeitretenActivity extends AppCompatActivity {
             datasource.deleteSpiel(aktuellesSpiel.getSpielDatum());
 
             if(mServiceBound) {
+                Intent gameConnectionServiceIntent = new Intent(getApplicationContext(), GameConnectionService.class);
+                getApplicationContext().stopService(gameConnectionServiceIntent);
                 getApplicationContext().unbindService(mServiceConnection);
             }
 

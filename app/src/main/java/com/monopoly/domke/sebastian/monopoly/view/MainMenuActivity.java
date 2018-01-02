@@ -38,12 +38,10 @@ public class MainMenuActivity extends AppCompatActivity {
 
     private PlayerMessageInterpreter playerMessageInterpreter;
     public MessageParser messageParser;
-    private RelativeLayout spielBeitretenRelativeLayout;
+    public RelativeLayout spielBeitretenRelativeLayout;
 
-    boolean mServiceBound = false;
+    public boolean mServiceBound = false;
     public GameConnectionService mGameConnectionService;
-
-    private SharedPreferences sharedPreferences = null;
 
     public static final String SHARED_PREF = "SHARED_PREF";
     public static final String SHARED_PREF_IP_ADRESS = "SHARED_PREF_IP_ADRESS";
@@ -62,8 +60,8 @@ public class MainMenuActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         Intent gameConnectionServiceIntent = new Intent(getApplicationContext(), GameConnectionService.class);
-        getApplicationContext().startService(gameConnectionServiceIntent);
         getApplicationContext().bindService(gameConnectionServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
+        getApplicationContext().startService(gameConnectionServiceIntent);
 
         datasource = new DatabaseHandler(this);
 
@@ -73,8 +71,6 @@ public class MainMenuActivity extends AppCompatActivity {
 
         spielBeitretenRelativeLayout.setEnabled(false);
 
-        sharedPreferences = this.getSharedPreferences(SHARED_PREF, 0); // 0 - for private mode
-
         IntentFilter filter = new IntentFilter();
         filter.addAction(BROADCAST_INTENT);
         LocalBroadcastManager.getInstance(MainMenuActivity.this).registerReceiver(messageReceiver, filter);
@@ -83,6 +79,7 @@ public class MainMenuActivity extends AppCompatActivity {
         mNsdClient.initializeDiscoveryListener();
         mNsdClient.initializeResolveListener();
 
+        Log.d(TAG, "onCreate");
     }
 
     private BroadcastReceiver messageReceiver = new BroadcastReceiver() {
@@ -109,18 +106,36 @@ public class MainMenuActivity extends AppCompatActivity {
     };
 
     public void neuesSpiel(View view) {
+
+        if(mServiceBound) {
+            Intent gameConnectionServiceIntent = new Intent(getApplicationContext(), GameConnectionService.class);
+            getApplicationContext().stopService(gameConnectionServiceIntent);
+            getApplicationContext().unbindService(mServiceConnection);
+        }
+
         Intent intent = new Intent(this, NeuesSpielActivity.class);
         startActivity(intent);
 
     }
 
     public void spielBeitreten(View view) {
+
+        if(mServiceBound) {
+            getApplicationContext().unbindService(mServiceConnection);
+        }
+
         Intent intent = new Intent(this, SpielBeitretenActivity.class);
         intent.putExtra("spiel_datum", neuesSpiel.getSpielDatum());
         startActivity(intent);
     }
 
     public void spielLaden(View view) {
+
+        if(mServiceBound) {
+            Intent gameConnectionServiceIntent = new Intent(getApplicationContext(), GameConnectionService.class);
+            getApplicationContext().stopService(gameConnectionServiceIntent);
+            getApplicationContext().unbindService(mServiceConnection);
+        }
 
         Intent intent = new Intent(this, SpielLadenActivity.class);
         startActivity(intent);
@@ -185,30 +200,26 @@ public class MainMenuActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(!mServiceBound) {
+
+        Log.d(TAG, "onResume");
+
             Intent gameConnectionServiceIntent = new Intent(getApplicationContext(), GameConnectionService.class);
-            getApplicationContext().startService(gameConnectionServiceIntent);
             getApplicationContext().bindService(gameConnectionServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
-        }
+            getApplicationContext().startService(gameConnectionServiceIntent);
+
 
         spielBeitretenRelativeLayout.setEnabled(false);
         if (mNsdClient != null) {
-            mNsdClient = new NsdHelper(getApplicationContext(), this);
-            mNsdClient.initializeDiscoveryListener();
-            mNsdClient.initializeResolveListener();
             mNsdClient.discoverServices();
         }
     }
 
     @Override
     protected void onDestroy() {
-        /*if(mGameConnection != null){
-            mGameConnection.tearDown();
-        }*/
         super.onDestroy();
     }
 
-    private ServiceConnection mServiceConnection = new ServiceConnection() {
+    public ServiceConnection mServiceConnection = new ServiceConnection() {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
