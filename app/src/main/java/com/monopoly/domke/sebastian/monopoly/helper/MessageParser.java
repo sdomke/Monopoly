@@ -6,8 +6,11 @@ import com.monopoly.domke.sebastian.monopoly.common.GameMessage;
 import com.monopoly.domke.sebastian.monopoly.common.Spiel;
 import com.monopoly.domke.sebastian.monopoly.common.Spieler;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 /**
  * Created by Basti-Laptop on 19.12.2016.
@@ -26,6 +29,23 @@ public class MessageParser {
             json.put("game_player_count", aktuellesSpiel.getSpielerAnzahl());
             json.put("game_seed_capital", aktuellesSpiel.getSpielerStartkapital());
             json.put("game_currency", aktuellesSpiel.getWaehrung());
+        }
+        catch(JSONException e){
+            Log.e("JsonException", e.toString());
+        }
+
+        return json;
+    }
+
+    public JSONObject getGameLobbyUpdate(ArrayList<Spieler> currentGameLobby){
+
+        JSONObject json = new JSONObject();
+
+        JSONArray jsArray = new JSONArray(currentGameLobby);
+
+        try {
+            json.put("current_game_lobby", jsArray);
+
         }
         catch(JSONException e){
             Log.e("JsonException", e.toString());
@@ -192,6 +212,12 @@ public class MessageParser {
 
             case "requestJoinGame":
                 return GameMessage.MessageHeader.requestJoinGame;
+
+            case "requestCurrentGameLobby":
+                return GameMessage.MessageHeader.requestCurrentGameLobby;
+
+            case "updateGameLobby":
+                return GameMessage.MessageHeader.updateGameLobby;
 
             default:
                 return null;

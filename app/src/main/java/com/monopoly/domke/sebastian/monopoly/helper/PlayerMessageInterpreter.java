@@ -16,6 +16,7 @@ import com.monopoly.domke.sebastian.monopoly.view.MainMenuActivity;
 import com.monopoly.domke.sebastian.monopoly.view.SpielBeitretenActivity;
 import com.monopoly.domke.sebastian.monopoly.view.SpielStartActivity;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
@@ -55,6 +56,10 @@ public class PlayerMessageInterpreter {
 
         switch(messageHeader){
             case invitation:
+                getInvitationMessage(gameMessage);
+                break;
+
+            case updateGameLobby:
                 getInvitationMessage(gameMessage);
                 break;
 
@@ -128,6 +133,53 @@ public class PlayerMessageInterpreter {
                 Toast.makeText(mainMenuActivity.getApplicationContext(), "Mit Spiel verbunden und du kannst nun beitreten", Toast.LENGTH_SHORT).show();
             }catch(Exception e){
                 Log.e("MessageInterpreter", "getInvitationMessage: " + e.toString());
+                //Toast.makeText(mainMenuActivity.getApplicationContext(), "Spieler nicht eingeladen!!!", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    public void getUpdateGameLobbyMessage(GameMessage gameMessage){
+        if(spielBeitretenActivity != null){
+            try {
+
+                ArrayList<Spieler> updateGameLobby = new ArrayList<>();
+
+
+                JSONArray jsArray = gameMessage.getMessageContent().getJSONArray("current_game_lobby");
+
+
+
+                Spiel aktuellesSpiel = spielBeitretenActivity.aktuellesSpiel;
+
+                Spieler neuerSpieler;
+
+                try{
+                    neuerSpieler = spielBeitretenActivity.datasource.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("player_imei"));
+
+                    neuerSpieler.setSpielerName(gameMessage.getMessageContent().getString("player_name"));
+                    neuerSpieler.setSpielerFarbe(gameMessage.getMessageContent().getInt("player_color"));
+                    neuerSpieler.setSpielerIpAdresse(gameMessage.getMessageContent().getString("player_ip_adress"));
+
+                    spielBeitretenActivity.datasource.updateSpieler(neuerSpieler);
+                }catch(Exception e){
+                    Log.e("MessageInterpreter", "Spieler noch nicht angelegt: " + e.toString());
+
+                    neuerSpieler = new Spieler(gameMessage.getMessageContent().getString("player_imei"), aktuellesSpiel.getSpielID());
+                    neuerSpieler.setSpielerName(gameMessage.getMessageContent().getString("player_name"));
+                    neuerSpieler.setSpielerKapital(aktuellesSpiel.getSpielerStartkapital());
+                    neuerSpieler.setSpielerFarbe(gameMessage.getMessageContent().getInt("player_color"));
+                    neuerSpieler.setSpielerIpAdresse(gameMessage.getMessageContent().getString("player_ip_adress"));
+
+                    spielBeitretenActivity.datasource.addSpieler(neuerSpieler);
+                }
+
+                spielBeitretenActivity.spieler_adapter.objects = updateGameLobby;
+                spielBeitretenActivity.spieler_adapter.notifyDataSetChanged();
+
+                //Toast.makeText(mainMenuActivity.getApplicationContext(), "Spieler eingeladen!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Update der GameLobby erhalten", Toast.LENGTH_SHORT).show();
+            }catch(Exception e){
+                Log.e("MessageInterpreter", "Update der GameLobby nicht erhalten: " + e.toString());
                 //Toast.makeText(mainMenuActivity.getApplicationContext(), "Spieler nicht eingeladen!!!", Toast.LENGTH_SHORT).show();
             }
         }

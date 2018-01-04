@@ -91,6 +91,10 @@ public class HostMessageInterpreter {
             case requestJoinGame:
                 getRequestJoinGameMessage();
                 break;
+
+            case requestCurrentGameLobby:
+                getRequestCurrentGameLobby();
+                break;
         }
     }
 
@@ -115,6 +119,30 @@ public class HostMessageInterpreter {
             }catch(Exception e){
                 Log.e("MessageInterpreter", "getRequestJoinGameMessage: " + e.toString());
                 Toast.makeText(spielBeitretenActivity.getApplicationContext(), "RequestJoinGame nicht erhalten!!!", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    public void getRequestCurrentGameLobby(){
+        if(spielBeitretenActivity != null){
+            try {
+                MessageParser messageParser = new MessageParser();
+
+                ArrayList<Spieler> currentGameLobby = spielBeitretenActivity.spieler_adapter.objects;
+
+                JSONObject messageContent = messageParser.getGameLobbyUpdate(currentGameLobby);
+
+                GameMessage getGameLobbyUpdateGameMessage = new GameMessage(MessageHeader.updateGameLobby, messageContent);
+
+                String jsonString = messageParser.messageToJsonString(getGameLobbyUpdateGameMessage);
+
+                spielBeitretenActivity.mGameConnectionService.mGameConnection.sendMessageToAllClients(jsonString);
+
+                //spielBeitretenActivity.mGameConnection.sendMessage(jsonString);
+                Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Update der GameLobby versendet", Toast.LENGTH_SHORT).show();
+            }catch(Exception e){
+                Log.e("MessageInterpreter", "getRequestJoinGameMessage: " + e.toString());
+                Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Update der GameLobby nicht versendet!!!", Toast.LENGTH_SHORT).show();
             }
         }
     }

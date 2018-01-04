@@ -299,6 +299,16 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         spieler_adapter = new GamelobbySpielerAdapter(this,
                 R.layout.list_item_spieler, values, this);
         gamelobbyListView.setAdapter(spieler_adapter);
+
+        /*if(!neuesSpiel && !spielLaden) {
+            JSONObject messageContent = new JSONObject();
+
+            GameMessage requestJoinGameMessage = new GameMessage(GameMessage.MessageHeader.requestCurrentGameLobby, messageContent);
+
+            String jsonString = messageParser.messageToJsonString(requestJoinGameMessage);
+
+            mGameConnectionService.mGameConnection.sendMessageToAllClients(jsonString);
+        }*/
     }
 
     private BroadcastReceiver messageReceiver = new BroadcastReceiver() {

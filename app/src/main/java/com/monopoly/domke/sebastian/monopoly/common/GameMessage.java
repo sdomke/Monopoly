@@ -26,7 +26,9 @@ public class GameMessage {
         sendMoneyToFreiParken,
         joinGame,
         exitGame,
-        requestJoinGame
+        requestJoinGame,
+        requestCurrentGameLobby,
+        updateGameLobby
     }
 
     public GameMessage(){
