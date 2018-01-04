@@ -43,10 +43,6 @@ public class MainMenuActivity extends AppCompatActivity {
     public boolean mServiceBound = false;
     public GameConnectionService mGameConnectionService;
 
-    public static final String SHARED_PREF = "SHARED_PREF";
-    public static final String SHARED_PREF_IP_ADRESS = "SHARED_PREF_IP_ADRESS";
-    public static final String SHARED_PREF_PORT = "SHARED_PREF_PORT";
-
     public static final String TAG = "NsdGame";
 
     private static final String BROADCAST_INTENT = "BROADCAST_INTENT";
@@ -175,7 +171,7 @@ public class MainMenuActivity extends AppCompatActivity {
 
                 String jsonString = messageParser.messageToJsonString(requestJoinGameMessage);
 
-                mGameConnectionService.mGameConnection.sendMessage(jsonString);
+                mGameConnectionService.mGameConnection.sendMessageToAllClients(jsonString);
 
                 Toast.makeText(getApplicationContext(), "Einladung zum Spiel angefordert", Toast.LENGTH_SHORT).show();
             }
@@ -203,10 +199,9 @@ public class MainMenuActivity extends AppCompatActivity {
 
         Log.d(TAG, "onResume");
 
-            Intent gameConnectionServiceIntent = new Intent(getApplicationContext(), GameConnectionService.class);
-            getApplicationContext().bindService(gameConnectionServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
-            getApplicationContext().startService(gameConnectionServiceIntent);
-
+        Intent gameConnectionServiceIntent = new Intent(getApplicationContext(), GameConnectionService.class);
+        getApplicationContext().bindService(gameConnectionServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
+        getApplicationContext().startService(gameConnectionServiceIntent);
 
         spielBeitretenRelativeLayout.setEnabled(false);
         if (mNsdClient != null) {
@@ -223,6 +218,8 @@ public class MainMenuActivity extends AppCompatActivity {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
+
+            mGameConnectionService = null;
             mServiceBound = false;
         }
 

@@ -108,7 +108,7 @@ public class HostMessageInterpreter {
 
                 String jsonString = messageParser.messageToJsonString(invitePlayerGameMessage);
 
-                spielBeitretenActivity.mGameConnectionService.mGameConnection.sendMessage(jsonString);
+                spielBeitretenActivity.mGameConnectionService.mGameConnection.sendMessageToAllClients(jsonString);
 
                 //spielBeitretenActivity.mGameConnection.sendMessage(jsonString);
                 Toast.makeText(spielBeitretenActivity.getApplicationContext(), "RequestJoinGame erhalten!", Toast.LENGTH_SHORT).show();
@@ -316,12 +316,12 @@ public class HostMessageInterpreter {
         if(spielBeitretenActivity != null) {
             MessageParser messageParser = new MessageParser();
             String jsonString = messageParser.messageToJsonString(gameMessage);
-            spielBeitretenActivity.mGameConnectionService.mGameConnection.sendMessage(jsonString);
+            spielBeitretenActivity.mGameConnectionService.mGameConnection.sendMessageToAllClients(jsonString);
         }
         else if(spielStartActivity != null) {
             MessageParser messageParser = new MessageParser();
             String jsonString = messageParser.messageToJsonString(gameMessage);
-            spielStartActivity.mGameConnectionService.mGameConnection.sendMessage(jsonString);
+            spielStartActivity.mGameConnectionService.mGameConnection.sendMessageToAllClients(jsonString);
         }
         Log.d("MessageInterpreter", "GameMessage forwarded: ");
     }

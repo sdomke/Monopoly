@@ -7,6 +7,7 @@ import android.nfc.Tag;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -19,6 +20,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * Created by Basti on 12.12.2017.
@@ -26,10 +28,10 @@ import java.util.ArrayList;
 
 public class GameConnection {
 
-    public GameClient mGameClient;
+    //public GameClient mGameClient;
     public GameServer mGameServer;
 
-    public ArrayList<GameClient> gameClients;
+    public ArrayList<GameClient> gameClientsArrayList;
 
     public Context mContext;
 
@@ -38,7 +40,7 @@ public class GameConnection {
     private final String SERVER_TAG = "GameConnection";
 
     public GameConnection(Context context) {
-        gameClients = new ArrayList<>();
+        gameClientsArrayList = new ArrayList<>();
         this.mContext = context;
         mGameServer = new GameServer();
     }
@@ -52,22 +54,41 @@ public class GameConnection {
         }
     }
 
-    public void tearDownGameClient() {
+/*    public void tearDownGameClient(GameClient gameClient) {
 
         Log.d(SERVER_TAG, "tearDownGameClient");
 
-        if(mGameClient != null) {
+        if(!gameClientsArrayList.isEmpty()) {
+
+           for(final GameClient mGameClient : gameClientsArrayList) {
+
+                new Thread(new Runnable() {
+                    public void run() {
+                        mGameClient.sendMessage(msg);
+                    }
+                }).start();
+            }
+            gameClientsArrayList.
             mGameClient.tearDown();
         }
-    }
+    }*/
 
     public void connectToServerBySocket(Socket clientSocket) {
-        mGameClient = new GameClient(clientSocket);
-        gameClients.add(mGameClient);
+        //mGameClient = new GameClient(clientSocket);
+
+        if (!gameClientsArrayList.isEmpty()) {
+            for(final GameClient mGameClient : gameClientsArrayList) {
+                if(mGameClient.mClientSocket.getInetAddress().getHostAddress().equals(clientSocket.getInetAddress().getHostAddress())) {
+                    gameClientsArrayList.remove(mGameClient);
+                }
+            }
+        }
+
+        gameClientsArrayList.add(new GameClient(clientSocket));
     }
 
-    public void sendMessage(final String msg) {
-        if (mGameClient != null) {
+    /*public void sendMessageToSpecificClient(final String msg, GameClient gameClient) {
+        if (!gameClientsArrayList.isEmpty()) {
             new Thread(new Runnable() {
                 public void run() {
                     mGameClient.sendMessage(msg);
@@ -75,6 +96,20 @@ public class GameConnection {
             }).start();
 
 
+        }
+    }*/
+
+    public void sendMessageToAllClients(final String msg) {
+        if (!gameClientsArrayList.isEmpty()) {
+
+            for(final GameClient mGameClient : gameClientsArrayList) {
+
+                new Thread(new Runnable() {
+                    public void run() {
+                        mGameClient.sendMessage(msg);
+                    }
+                }).start();
+            }
         }
     }
 
@@ -203,7 +238,7 @@ public class GameConnection {
             }
         }
 
-        public void tearDown() {
+        /*public void tearDown() {
 
             while(gameClients.listIterator().hasNext()) {
 
@@ -216,7 +251,7 @@ public class GameConnection {
                     Log.d(CLIENT_TAG, "Error when interrupting RecordingThread");
                 }
             }
-        }
+        }*/
 
         public void sendMessage(String msg) {
             try {

@@ -14,7 +14,7 @@ import android.util.Log;
 public class GameConnectionService extends Service {
 
     private static String LOG_TAG = "GameConnectionService";
-    private IBinder mBinder = new MyBinder();
+    private IBinder mBinder;
     public GameConnection mGameConnection;
 
     @Override
@@ -22,6 +22,7 @@ public class GameConnectionService extends Service {
         super.onCreate();
         Log.d(LOG_TAG, "in onCreate");
         mGameConnection = new GameConnection(getApplicationContext());
+        mBinder = new MyBinder();
     }
 
     @Nullable
@@ -48,6 +49,7 @@ public class GameConnectionService extends Service {
         super.onDestroy();
         Log.d(LOG_TAG, "in onDestroy");
 
+        mGameConnection.gameClientsArrayList = null;
         mGameConnection = null;
     }
 

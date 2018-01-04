@@ -149,7 +149,7 @@ public class NsdHelper {
 
                             String jsonString = messageParser.messageToJsonString(requestJoinGameMessage);
 
-                            mainMenuActivity.mGameConnectionService.mGameConnection.sendMessage(jsonString);
+                            mainMenuActivity.mGameConnectionService.mGameConnection.sendMessageToAllClients(jsonString);
                             Log.d(TAG, "ConnectedToServer successfully.");
                         } catch (IOException e) {
                             e.printStackTrace();

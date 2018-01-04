@@ -174,7 +174,7 @@ public class PlayerMessageInterpreter {
                 Toast.makeText(spielStartActivity.getApplicationContext(), "Spiel wird beendet...", Toast.LENGTH_SHORT).show();
 
                 if(spielStartActivity.mServiceBound) {
-                    Intent gameConnectionServiceIntent = new Intent(spielBeitretenActivity.getApplicationContext(), GameConnectionService.class);
+                    Intent gameConnectionServiceIntent = new Intent(spielStartActivity.getApplicationContext(), GameConnectionService.class);
                     spielStartActivity.getApplicationContext().stopService(gameConnectionServiceIntent);
                     spielStartActivity.getApplicationContext().unbindService(spielStartActivity.mServiceConnection);
                 }

@@ -90,7 +90,7 @@ public class GamelobbySpielerAdapter extends ArrayAdapter<Spieler>{
 				String ipAdress = sharedPreferences.getString(SHARED_PREF_IP_ADRESS, null);
 				int port = sharedPreferences.getInt(SHARED_PREF_PORT, -1);
 
-				spielBeitretenActivity.mGameConnectionService.mGameConnection.sendMessage(jsonString);
+				spielBeitretenActivity.mGameConnectionService.mGameConnection.sendMessageToAllClients(jsonString);
 
 				Toast.makeText(getContext(), "Du hast die Spiellobby verlassen!", Toast.LENGTH_SHORT).show();
 

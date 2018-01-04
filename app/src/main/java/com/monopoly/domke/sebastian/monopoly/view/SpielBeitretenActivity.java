@@ -178,7 +178,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
                     String jsonString = messageParser.messageToJsonString(startGameMessage);
 
-                    mGameConnectionService.mGameConnection.sendMessage(jsonString);
+                    mGameConnectionService.mGameConnection.sendMessageToAllClients(jsonString);
 
                     mNsdServer.tearDown();
 
@@ -366,7 +366,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
         String jsonString = messageParser.messageToJsonString(requestJoinGameMessage);
 
-        mGameConnectionService.mGameConnection.sendMessage(jsonString);
+        mGameConnectionService.mGameConnection.sendMessageToAllClients(jsonString);
 
         spielLobbyBeitretenButtonLayout.setEnabled(false);
 
@@ -397,7 +397,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
             String jsonString = messageParser.messageToJsonString(invitationGameMessage);
 
-            mGameConnectionService.mGameConnection.sendMessage(jsonString);
+            mGameConnectionService.mGameConnection.sendMessageToAllClients(jsonString);
 
             Toast.makeText(getApplicationContext(), "Spieler wurden eingeladen", Toast.LENGTH_SHORT).show();
         }
@@ -455,6 +455,8 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
+
+            mGameConnectionService = null;
             mServiceBound = false;
         }
 
@@ -476,7 +478,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
             String jsonString = messageParser.messageToJsonString(startGameMessage);
 
-            mGameConnectionService.mGameConnection.sendMessage(jsonString);
+            mGameConnectionService.mGameConnection.sendMessageToAllClients(jsonString);
 
             datasource.deleteSpiel(aktuellesSpiel.getSpielDatum());
 
@@ -505,7 +507,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
             String jsonString = messageParser.messageToJsonString(startGameMessage);
 
-            mGameConnectionService.mGameConnection.sendMessage(jsonString);
+            mGameConnectionService.mGameConnection.sendMessageToAllClients(jsonString);
 
             Toast.makeText(getApplicationContext(), "Spiel wird geschlossen...", Toast.LENGTH_SHORT).show();
 
