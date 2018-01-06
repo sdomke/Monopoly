@@ -92,6 +92,31 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         init();
+
+        if(!neuesSpiel && !spielLaden) {
+
+            new Thread(new Runnable() {
+                public void run() {
+
+                    try {
+
+                        while(!mServiceBound){
+                            Thread.sleep(1000);
+                        }
+
+                        JSONObject messageContent = new JSONObject();
+
+                        GameMessage requestJoinGameMessage = new GameMessage(GameMessage.MessageHeader.requestCurrentGameLobby, messageContent);
+
+                        String jsonString = messageParser.messageToJsonString(requestJoinGameMessage);
+
+                        mGameConnectionService.mGameConnection.sendMessageToAllClients(jsonString);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        }
     }
 
     public void init(){
@@ -300,15 +325,6 @@ public class SpielBeitretenActivity extends AppCompatActivity {
                 R.layout.list_item_spieler, values, this);
         gamelobbyListView.setAdapter(spieler_adapter);
 
-        /*if(!neuesSpiel && !spielLaden) {
-            JSONObject messageContent = new JSONObject();
-
-            GameMessage requestJoinGameMessage = new GameMessage(GameMessage.MessageHeader.requestCurrentGameLobby, messageContent);
-
-            String jsonString = messageParser.messageToJsonString(requestJoinGameMessage);
-
-            mGameConnectionService.mGameConnection.sendMessageToAllClients(jsonString);
-        }*/
     }
 
     private BroadcastReceiver messageReceiver = new BroadcastReceiver() {

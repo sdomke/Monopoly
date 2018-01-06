@@ -37,13 +37,32 @@ public class MessageParser {
         return json;
     }
 
-    public JSONObject getGameLobbyUpdate(ArrayList<Spieler> currentGameLobby){
+    public JSONObject getGameLobbyUpdate(ArrayList<Spieler> currentGameLobby, Spiel aktuellesSpiel){
 
         JSONObject json = new JSONObject();
+        JSONArray jsArray = new JSONArray();
 
-        JSONArray jsArray = new JSONArray(currentGameLobby);
+        for(Spieler gameLobbySpieler : currentGameLobby) {
+
+            try {
+                JSONObject jsonCurrent = new JSONObject();
+
+                jsonCurrent.put("player_name", gameLobbySpieler.getSpielerName());
+                jsonCurrent.put("player_ip_adress", gameLobbySpieler.getSpielerIpAdresse());
+                jsonCurrent.put("player_imei", gameLobbySpieler.getSpielerIMEI());
+                jsonCurrent.put("player_color", gameLobbySpieler.getSpielerFarbe());
+                jsonCurrent.put("player_capital", gameLobbySpieler.getSpielerKapital());
+                jsonCurrent.put("game_date", aktuellesSpiel.getSpielDatum());
+
+                jsArray.put(jsonCurrent);
+            }
+            catch(JSONException e){
+                Log.e("JsonException", e.toString());
+            }
+        }
 
         try {
+
             json.put("current_game_lobby", jsArray);
 
         }

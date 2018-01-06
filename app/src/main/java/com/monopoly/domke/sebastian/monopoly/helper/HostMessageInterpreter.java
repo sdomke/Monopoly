@@ -115,7 +115,7 @@ public class HostMessageInterpreter {
                 spielBeitretenActivity.mGameConnectionService.mGameConnection.sendMessageToAllClients(jsonString);
 
                 //spielBeitretenActivity.mGameConnection.sendMessage(jsonString);
-                Toast.makeText(spielBeitretenActivity.getApplicationContext(), "RequestJoinGame erhalten!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(spielBeitretenActivity.getApplicationContext(), "RequestJoinGame erhalten!", Toast.LENGTH_SHORT).show();
             }catch(Exception e){
                 Log.e("MessageInterpreter", "getRequestJoinGameMessage: " + e.toString());
                 Toast.makeText(spielBeitretenActivity.getApplicationContext(), "RequestJoinGame nicht erhalten!!!", Toast.LENGTH_SHORT).show();
@@ -130,7 +130,7 @@ public class HostMessageInterpreter {
 
                 ArrayList<Spieler> currentGameLobby = spielBeitretenActivity.spieler_adapter.objects;
 
-                JSONObject messageContent = messageParser.getGameLobbyUpdate(currentGameLobby);
+                JSONObject messageContent = messageParser.getGameLobbyUpdate(currentGameLobby, spielBeitretenActivity.aktuellesSpiel);
 
                 GameMessage getGameLobbyUpdateGameMessage = new GameMessage(MessageHeader.updateGameLobby, messageContent);
 
@@ -139,7 +139,7 @@ public class HostMessageInterpreter {
                 spielBeitretenActivity.mGameConnectionService.mGameConnection.sendMessageToAllClients(jsonString);
 
                 //spielBeitretenActivity.mGameConnection.sendMessage(jsonString);
-                Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Update der GameLobby versendet", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Update der GameLobby versendet", Toast.LENGTH_SHORT).show();
             }catch(Exception e){
                 Log.e("MessageInterpreter", "getRequestJoinGameMessage: " + e.toString());
                 Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Update der GameLobby nicht versendet!!!", Toast.LENGTH_SHORT).show();

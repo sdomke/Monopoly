@@ -128,7 +128,7 @@ public class NsdHelper {
 
                 mService = serviceInfo;
 
-                if (mService != null && !mServiceResolved) {
+                if (mService != null && !mServiceResolved && mainMenuActivity.mServiceBound) {
                     Log.d(TAG, "Connecting.");
 
                     //mainMenuActivity.mGameConnectionService.mGameConnection.connectToServer(mService.getHost(), mService.getPort());
