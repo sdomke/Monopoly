@@ -327,7 +327,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
     }
 
-    private BroadcastReceiver messageReceiver = new BroadcastReceiver() {
+    public BroadcastReceiver messageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             switch (intent.getAction()) {
@@ -513,11 +513,19 @@ public class SpielBeitretenActivity extends AppCompatActivity {
             Intent intent = new Intent(getApplicationContext(), NeuesSpielActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
+
+
             if(mServiceBound) {
+
+                mGameConnectionService.mGameConnection.tearDownGameServer();
+                mGameConnectionService.mGameConnection.tearDownGameClient();
+
                 Intent gameConnectionServiceIntent = new Intent(getApplicationContext(), GameConnectionService.class);
                 getApplicationContext().stopService(gameConnectionServiceIntent);
                 getApplicationContext().unbindService(mServiceConnection);
 
+                LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(this);
+                broadcastManager.unregisterReceiver(messageReceiver);
             }
 
             if(mNsdServer != null){
@@ -541,9 +549,16 @@ public class SpielBeitretenActivity extends AppCompatActivity {
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
             if(mServiceBound) {
+
+                mGameConnectionService.mGameConnection.tearDownGameServer();
+                mGameConnectionService.mGameConnection.tearDownGameClient();
+
                 Intent gameConnectionServiceIntent = new Intent(getApplicationContext(), GameConnectionService.class);
                 getApplicationContext().stopService(gameConnectionServiceIntent);
                 getApplicationContext().unbindService(mServiceConnection);
+
+                LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(this);
+                broadcastManager.unregisterReceiver(messageReceiver);
 
             }
 
@@ -557,9 +572,16 @@ public class SpielBeitretenActivity extends AppCompatActivity {
             datasource.deleteSpiel(aktuellesSpiel.getSpielDatum());
 
             if(mServiceBound) {
+
+                mGameConnectionService.mGameConnection.tearDownGameServer();
+                mGameConnectionService.mGameConnection.tearDownGameClient();
+
                 Intent gameConnectionServiceIntent = new Intent(getApplicationContext(), GameConnectionService.class);
                 getApplicationContext().stopService(gameConnectionServiceIntent);
                 getApplicationContext().unbindService(mServiceConnection);
+
+                LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
+                broadcastManager.unregisterReceiver(messageReceiver);
             }
 
             Intent intent = new Intent(getApplicationContext(), MainMenuActivity.class);

@@ -78,7 +78,7 @@ public class MainMenuActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate");
     }
 
-    private BroadcastReceiver messageReceiver = new BroadcastReceiver() {
+    public BroadcastReceiver messageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             switch (intent.getAction()) {

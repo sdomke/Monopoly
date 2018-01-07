@@ -132,7 +132,7 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
         init();
     }
 
-    private BroadcastReceiver messageReceiver = new BroadcastReceiver() {
+    public BroadcastReceiver messageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             switch (intent.getAction()) {
@@ -817,10 +817,16 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
                         }
 
                         if(mServiceBound) {
+
+                            mGameConnectionService.mGameConnection.tearDownGameServer();
+                            mGameConnectionService.mGameConnection.tearDownGameClient();
+
                             Intent gameConnectionServiceIntent = new Intent(getApplicationContext(), GameConnectionService.class);
                             getApplicationContext().stopService(gameConnectionServiceIntent);
                             getApplicationContext().unbindService(mServiceConnection);
 
+                            LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
+                            broadcastManager.unregisterReceiver(messageReceiver);
                         }
 
                         startActivity(intent);

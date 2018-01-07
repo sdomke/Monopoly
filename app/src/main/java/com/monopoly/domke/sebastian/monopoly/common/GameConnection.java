@@ -1,5 +1,6 @@
 package com.monopoly.domke.sebastian.monopoly.common;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -54,7 +55,7 @@ public class GameConnection {
         }
     }
 
-/*    public void tearDownGameClient(GameClient gameClient) {
+    public void tearDownGameClient() {
 
         Log.d(SERVER_TAG, "tearDownGameClient");
 
@@ -62,16 +63,12 @@ public class GameConnection {
 
            for(final GameClient mGameClient : gameClientsArrayList) {
 
-                new Thread(new Runnable() {
-                    public void run() {
-                        mGameClient.sendMessage(msg);
-                    }
-                }).start();
+               mGameClient.tearDown();
             }
-            gameClientsArrayList.
-            mGameClient.tearDown();
+
+            gameClientsArrayList.clear();
         }
-    }*/
+    }
 
     public void connectToServerBySocket(Socket clientSocket) {
         //mGameClient = new GameClient(clientSocket);
@@ -132,16 +129,13 @@ public class GameConnection {
         }
 
         public void tearDown() {
+
             try {
                 mThread.interrupt();
             } catch (Exception e) {
                 Log.e(SERVER_TAG, "Error when interrupting server thread.");
             }
-            try {
-                mServerSocket.close();
-            } catch (IOException ioe) {
-                Log.e(SERVER_TAG, "Error when closing server socket.");
-            }
+
         }
 
         class ServerThread implements Runnable {
@@ -166,6 +160,7 @@ public class GameConnection {
 
                         connectToServerBySocket(newClientSocket);
                     }
+                    mServerSocket.close();
                 } catch (IOException e) {
                     Log.e(SERVER_TAG, "Error creating ServerSocket: ", e);
                     e.printStackTrace();
@@ -231,6 +226,7 @@ public class GameConnection {
                         }
                     }
                     input.close();
+                    mClientSocket.close();
 
                 } catch (IOException e) {
                     Log.e(CLIENT_TAG, "Client-side Server loop error: ", e);
@@ -238,20 +234,16 @@ public class GameConnection {
             }
         }
 
-        /*public void tearDown() {
+        public void tearDown() {
 
-            while(gameClients.listIterator().hasNext()) {
+            try {
+                mRecThread.interrupt();
 
-                GameClient nextGameClient = gameClients.listIterator().next();
-
-                try {
-                    nextGameClient.mRecThread.interrupt();
-
-                } catch (Exception e) {
-                    Log.d(CLIENT_TAG, "Error when interrupting RecordingThread");
-                }
+            } catch (Exception e) {
+                Log.d(CLIENT_TAG, "Error when interrupting RecordingThread");
+                e.printStackTrace();
             }
-        }*/
+        }
 
         public void sendMessage(String msg) {
             try {
