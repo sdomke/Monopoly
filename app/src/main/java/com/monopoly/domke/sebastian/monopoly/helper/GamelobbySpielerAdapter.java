@@ -129,6 +129,12 @@ public class GamelobbySpielerAdapter extends ArrayAdapter<Spieler>{
 					spielerEntfernenItem.setVisibility(View.INVISIBLE);
 				}
 			}
+			else if(i.getSpielerIMEI().equals(spielBeitretenActivity.eigenerSpieler.getSpielerIMEI())) {
+				ImageView spielerEntfernenItem = (ImageView) view.findViewById(R.id.spielerEntfernenItem);
+				if (spielerEntfernenItem != null){
+					spielerEntfernenItem.setVisibility(View.VISIBLE);
+				}
+			}
 		}
 
 		// the view must be returned to our activity

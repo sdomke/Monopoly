@@ -215,6 +215,7 @@ public class NsdHelper {
             mNsdManager.unregisterService(mRegistrationListener);
         }catch(Exception e){
             Log.e(TAG, "Unregister service failed");
+            e.printStackTrace();
         }
         mServiceResolved = false;
     }

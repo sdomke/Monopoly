@@ -242,7 +242,7 @@ public class PlayerMessageInterpreter {
                     spielStartActivity.getApplicationContext().stopService(gameConnectionServiceIntent);
                     spielStartActivity.getApplicationContext().unbindService(spielStartActivity.mServiceConnection);
 
-                    LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(spielStartActivity.getApplicationContext());
+                    LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(spielStartActivity.getBaseContext());
                     broadcastManager.unregisterReceiver(spielStartActivity.messageReceiver);
                 }
 
@@ -270,14 +270,11 @@ public class PlayerMessageInterpreter {
 
                 if(spielBeitretenActivity.mServiceBound) {
 
-                    //spielBeitretenActivity.mGameConnectionService.mGameConnection.tearDownGameServer();
-                    //spielBeitretenActivity.mGameConnectionService.mGameConnection.tearDownGameClient();
-
                     Intent gameConnectionServiceIntent = new Intent(spielBeitretenActivity.getApplicationContext(), GameConnectionService.class);
                     spielBeitretenActivity.getApplicationContext().stopService(gameConnectionServiceIntent);
                     spielBeitretenActivity.getApplicationContext().unbindService(spielBeitretenActivity.mServiceConnection);
 
-                    LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(spielBeitretenActivity.getApplicationContext());
+                    LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(spielBeitretenActivity.getBaseContext());
                     broadcastManager.unregisterReceiver(spielBeitretenActivity.messageReceiver);
                 }
 
@@ -291,24 +288,7 @@ public class PlayerMessageInterpreter {
         else if(mainMenuActivity != null) {
             try {
 
-                if(mainMenuActivity.mServiceBound) {
-
-                    //mainMenuActivity.mGameConnectionService.mGameConnection.tearDownGameServer();
-                    //mainMenuActivity.mGameConnectionService.mGameConnection.tearDownGameClient();
-
-                    Intent gameConnectionServiceIntent = new Intent(mainMenuActivity.getApplicationContext(), GameConnectionService.class);
-                    mainMenuActivity.getApplicationContext().stopService(gameConnectionServiceIntent);
-                    mainMenuActivity.getApplicationContext().unbindService(mainMenuActivity.mServiceConnection);
-
-                    LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(mainMenuActivity.getApplicationContext());
-                    broadcastManager.unregisterReceiver(mainMenuActivity.messageReceiver);
-                }
-
                 mainMenuActivity.spielBeitretenRelativeLayout.setEnabled(false);
-
-                Intent gameConnectionServiceIntent = new Intent(mainMenuActivity.getApplicationContext(), GameConnectionService.class);
-                mainMenuActivity.getApplicationContext().bindService(gameConnectionServiceIntent, mainMenuActivity.mServiceConnection, Context.BIND_AUTO_CREATE);
-                mainMenuActivity.getApplicationContext().startService(gameConnectionServiceIntent);
 
                 Toast.makeText(mainMenuActivity.getApplicationContext(), "Spiel wird geschlossen...", Toast.LENGTH_SHORT).show();
             }catch(Exception e){

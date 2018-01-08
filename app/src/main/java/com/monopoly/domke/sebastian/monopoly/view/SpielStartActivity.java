@@ -69,6 +69,8 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
     double hypothek = 0;
     int empfaengerAuswahl = 0;
 
+    public Context mContext;
+
     ImageView gameStatusButton;
 
     public DatabaseHandler databaseHandler;
@@ -93,6 +95,8 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
         setContentView(R.layout.activity_spiel_start);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        mContext = this;
 
         databaseHandler = new DatabaseHandler(this);
 
@@ -825,7 +829,7 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
                             getApplicationContext().stopService(gameConnectionServiceIntent);
                             getApplicationContext().unbindService(mServiceConnection);
 
-                            LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
+                            LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(mContext);
                             broadcastManager.unregisterReceiver(messageReceiver);
                         }
 

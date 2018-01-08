@@ -471,6 +471,8 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+
+        Log.d(TAG, "onDestroy");
         if(mNsdServer != null) {
             mNsdServer.tearDown();
         }
@@ -526,10 +528,6 @@ public class SpielBeitretenActivity extends AppCompatActivity {
                 broadcastManager.unregisterReceiver(messageReceiver);
             }
 
-            if(mNsdServer != null){
-                mNsdServer.tearDown();
-            }
-
             startActivity(intent);
         }
         else if(spielLaden) {
@@ -560,10 +558,6 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
             }
 
-            if(mNsdServer != null){
-                mNsdServer.tearDown();
-            }
-
             startActivity(intent);
         }
         else {
@@ -587,7 +581,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
                 getApplicationContext().stopService(gameConnectionServiceIntent);
                 getApplicationContext().unbindService(mServiceConnection);
 
-                LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
+                LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(this);
                 broadcastManager.unregisterReceiver(messageReceiver);
             }
 
