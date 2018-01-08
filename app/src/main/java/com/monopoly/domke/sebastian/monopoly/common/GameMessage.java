@@ -26,6 +26,7 @@ public class GameMessage {
         sendMoneyToFreiParken,
         joinGame,
         exitGame,
+        leaveGame,
         requestJoinGame,
         requestCurrentGameLobby,
         updateGameLobby

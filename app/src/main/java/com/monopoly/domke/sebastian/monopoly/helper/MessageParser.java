@@ -229,6 +229,9 @@ public class MessageParser {
             case "exitGame":
                 return GameMessage.MessageHeader.exitGame;
 
+            case "leaveGame":
+                return GameMessage.MessageHeader.leaveGame;
+
             case "requestJoinGame":
                 return GameMessage.MessageHeader.requestJoinGame;
 

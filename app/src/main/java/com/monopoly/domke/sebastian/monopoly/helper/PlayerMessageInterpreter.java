@@ -104,6 +104,10 @@ public class PlayerMessageInterpreter {
             case exitGame:
                 getExitGameMessage(gameMessage);
                 break;
+
+            case leaveGame:
+                getLeaveGameMessage(gameMessage);
+                break;
         }
     }
 
@@ -266,8 +270,8 @@ public class PlayerMessageInterpreter {
 
                 if(spielBeitretenActivity.mServiceBound) {
 
-                    spielBeitretenActivity.mGameConnectionService.mGameConnection.tearDownGameServer();
-                    spielBeitretenActivity.mGameConnectionService.mGameConnection.tearDownGameClient();
+                    //spielBeitretenActivity.mGameConnectionService.mGameConnection.tearDownGameServer();
+                    //spielBeitretenActivity.mGameConnectionService.mGameConnection.tearDownGameClient();
 
                     Intent gameConnectionServiceIntent = new Intent(spielBeitretenActivity.getApplicationContext(), GameConnectionService.class);
                     spielBeitretenActivity.getApplicationContext().stopService(gameConnectionServiceIntent);
@@ -289,8 +293,8 @@ public class PlayerMessageInterpreter {
 
                 if(mainMenuActivity.mServiceBound) {
 
-                    mainMenuActivity.mGameConnectionService.mGameConnection.tearDownGameServer();
-                    mainMenuActivity.mGameConnectionService.mGameConnection.tearDownGameClient();
+                    //mainMenuActivity.mGameConnectionService.mGameConnection.tearDownGameServer();
+                    //mainMenuActivity.mGameConnectionService.mGameConnection.tearDownGameClient();
 
                     Intent gameConnectionServiceIntent = new Intent(mainMenuActivity.getApplicationContext(), GameConnectionService.class);
                     mainMenuActivity.getApplicationContext().stopService(gameConnectionServiceIntent);
@@ -339,12 +343,12 @@ public class PlayerMessageInterpreter {
                         Toast.makeText(spielStartActivity.getApplicationContext(), senderPlayer.getSpielerName() + " hat " + receiverPlayer.getSpielerName() + " " + payment + " M$ überwiesen!", Toast.LENGTH_SHORT).show();
                     }catch(Exception e){
                         Log.e("MessageInterpreter", "getSendMoneyMessage: " + e.toString());
-                        Toast.makeText(spielStartActivity.getApplicationContext(), "Überweisung nicht erfolgreich!!!", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(spielStartActivity.getApplicationContext(), "Überweisung nicht erfolgreich!!!", Toast.LENGTH_SHORT).show();
                     }
                 }
             }catch(Exception e){
                 Log.e("MessageInterpreter", "getSendMoneyMessage: " + e.toString());
-                Toast.makeText(spielStartActivity.getApplicationContext(), "Überweisung nicht erfolgreich!!!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(spielStartActivity.getApplicationContext(), "Überweisung nicht erfolgreich!!!", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -369,12 +373,12 @@ public class PlayerMessageInterpreter {
                         Toast.makeText(spielStartActivity.getApplicationContext(), player.getSpielerName() + " hat " + payment + " M$ von der Bank erhalten!", Toast.LENGTH_SHORT).show();
                     }catch(Exception e){
                         Log.e("MessageInterpreter", "getReceiveMoneyFromBankMessage: " + e.toString());
-                        Toast.makeText(spielStartActivity.getApplicationContext(), "Geld von der Bank nicht erhalten!!!", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(spielStartActivity.getApplicationContext(), "Geld von der Bank nicht erhalten!!!", Toast.LENGTH_SHORT).show();
                     }
                 }
             }catch(Exception e){
                 Log.e("MessageInterpreter", "getReceiveMoneyFromBankMessage: " + e.toString());
-                Toast.makeText(spielStartActivity.getApplicationContext(), "Geld von der Bank nicht erhalten!!!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(spielStartActivity.getApplicationContext(), "Geld von der Bank nicht erhalten!!!", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -399,12 +403,12 @@ public class PlayerMessageInterpreter {
                         Toast.makeText(spielStartActivity.getApplicationContext(), player.getSpielerName() + " hat " + payment + " M$ an die Bank gezahlt!", Toast.LENGTH_SHORT).show();
                     }catch(Exception e){
                         Log.e("MessageInterpreter", "getSendMoneyToBankMessage: " + e.toString());
-                        Toast.makeText(spielStartActivity.getApplicationContext(), "Geld an die Bank nicht gezahlt!!!", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(spielStartActivity.getApplicationContext(), "Geld an die Bank nicht gezahlt!!!", Toast.LENGTH_SHORT).show();
                     }
                 }
             }catch(Exception e){
                 Log.e("MessageInterpreter", "getSendMoneyToBankMessage: " + e.toString());
-                Toast.makeText(spielStartActivity.getApplicationContext(), "Geld an die Bank nicht gezahlt!!!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(spielStartActivity.getApplicationContext(), "Geld an die Bank nicht gezahlt!!!", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -432,12 +436,12 @@ public class PlayerMessageInterpreter {
                         Toast.makeText(spielStartActivity.getApplicationContext(), player.getSpielerName() + " hat " + payment + " M$ in die Mitte gezahlt!", Toast.LENGTH_SHORT).show();
                     }catch(Exception e){
                         Log.e("MessageInterpreter", "getSendMoneyToFreiParkenMessage: " + e.toString());
-                        Toast.makeText(spielStartActivity.getApplicationContext(), "Geld in die Mitte nicht gezahlt!!!", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(spielStartActivity.getApplicationContext(), "Geld in die Mitte nicht gezahlt!!!", Toast.LENGTH_SHORT).show();
                     }
                 }
             }catch(Exception e){
                 Log.e("MessageInterpreter", "getSendMoneyToFreiParkenMessage: " + e.toString());
-                Toast.makeText(spielStartActivity.getApplicationContext(), "Geld in die Mitte nicht gezahlt!!!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(spielStartActivity.getApplicationContext(), "Geld in die Mitte nicht gezahlt!!!", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -463,12 +467,12 @@ public class PlayerMessageInterpreter {
 
                     }catch(Exception e){
                         Log.e("MessageInterpreter", "getReceiveFreiParkenMessage: " + e.toString());
-                        Toast.makeText(spielStartActivity.getApplicationContext(), "Geld aus der Mitte nicht erhalten!!!", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(spielStartActivity.getApplicationContext(), "Geld aus der Mitte nicht erhalten!!!", Toast.LENGTH_SHORT).show();
                     }
                 }
             }catch(Exception e){
                 Log.e("MessageInterpreter", "getReceiveFreiParkenMessage: " + e.toString());
-                Toast.makeText(spielStartActivity.getApplicationContext(), "Geld aus der Mitte nicht erhalten!!!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(spielStartActivity.getApplicationContext(), "Geld aus der Mitte nicht erhalten!!!", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -508,12 +512,12 @@ public class PlayerMessageInterpreter {
                         Toast.makeText(spielBeitretenActivity.getApplicationContext(), neuerSpieler.getSpielerName() +  " ist der Spiellobby beigetreten!", Toast.LENGTH_SHORT).show();
                     }catch(Exception e){
                         Log.e("MessageInterpreter", "getJoinGameMessage: " + e.toString());
-                        Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spieler nicht beigetreten!!!", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spieler nicht beigetreten!!!", Toast.LENGTH_SHORT).show();
                     }
                 }
             }catch(Exception e){
                 Log.e("MessageInterpreter", "getJoinGameMessage: " + e.toString());
-                Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spieler nicht beigetreten!!!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spieler nicht beigetreten!!!", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -544,12 +548,48 @@ public class PlayerMessageInterpreter {
                         Toast.makeText(spielBeitretenActivity.getApplicationContext(), neuerSpieler.getSpielerName() + " hat die Spiellobby verlassen!", Toast.LENGTH_SHORT).show();
                     } catch (Exception e) {
                         Log.e("MessageInterpreter", "getExitGameMessage: " + e.toString());
-                        Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spieler hat die Gamelobby nicht verlassen!!!", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spieler hat die Gamelobby nicht verlassen!!!", Toast.LENGTH_SHORT).show();
                     }
                 }
             }catch(Exception e){
                 Log.e("MessageInterpreter", "getExitGameMessage: " + e.toString());
-                Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spieler hat die Gamelobby nicht verlassen!!!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spieler hat die Gamelobby nicht verlassen!!!", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    public void getLeaveGameMessage(GameMessage gameMessage){
+        if(spielBeitretenActivity != null){
+            try {
+                if (!gameMessage.getMessageContent().getString("host_imei").equals(spielBeitretenActivity.eigenerSpieler.getSpielerIMEI())) {
+                    try {
+                        Spiel aktuellesSpiel = spielBeitretenActivity.aktuellesSpiel;
+
+                        Spieler neuerSpieler;
+
+                        neuerSpieler = spielBeitretenActivity.datasource.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), gameMessage.getMessageContent().getString("host_imei"));
+
+                        spielBeitretenActivity.datasource.deleteSpieler(neuerSpieler.getSpielerIMEI(), aktuellesSpiel.getSpielID());
+
+                        for (int i = 0; i < spielBeitretenActivity.spieler_adapter.getCount(); i++) {
+
+                            Spieler spielerToDelete = spielBeitretenActivity.spieler_adapter.getItem(i);
+
+                            if (spielerToDelete.getSpielerIMEI().equals(neuerSpieler.getSpielerIMEI())) {
+                                spielBeitretenActivity.spieler_adapter.objects.remove(i);
+                                spielBeitretenActivity.spieler_adapter.notifyDataSetChanged();
+                            }
+                        }
+
+                        Toast.makeText(spielBeitretenActivity.getApplicationContext(), neuerSpieler.getSpielerName() + " hat das Spiel verlassen!", Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                        Log.e("MessageInterpreter", "getLeaveGameMessage: " + e.toString());
+                        //Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spieler hat die Gamelobby nicht verlassen!!!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }catch(Exception e){
+                Log.e("MessageInterpreter", "getLeaveGameMessage: " + e.toString());
+                //Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Spieler hat die Gamelobby nicht verlassen!!!", Toast.LENGTH_SHORT).show();
             }
         }
     }

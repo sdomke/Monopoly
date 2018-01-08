@@ -513,8 +513,6 @@ public class SpielBeitretenActivity extends AppCompatActivity {
             Intent intent = new Intent(getApplicationContext(), NeuesSpielActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-
-
             if(mServiceBound) {
 
                 mGameConnectionService.mGameConnection.tearDownGameServer();
@@ -569,6 +567,15 @@ public class SpielBeitretenActivity extends AppCompatActivity {
             startActivity(intent);
         }
         else {
+
+            JSONObject messageContent = messageParser.gameStatusToJson(eigenerSpieler, aktuellesSpiel);
+
+            GameMessage startGameMessage = new GameMessage(GameMessage.MessageHeader.leaveGame, messageContent);
+
+            String jsonString = messageParser.messageToJsonString(startGameMessage);
+
+            mGameConnectionService.mGameConnection.sendMessageToAllClients(jsonString);
+
             datasource.deleteSpiel(aktuellesSpiel.getSpielDatum());
 
             if(mServiceBound) {

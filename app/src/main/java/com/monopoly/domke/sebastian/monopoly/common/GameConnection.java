@@ -70,6 +70,24 @@ public class GameConnection {
         }
     }
 
+    public void tearDownSpecificGameClient(Spieler spielerToDelete) {
+
+        Log.d(SERVER_TAG, "tearDownGameClient");
+
+        if(!gameClientsArrayList.isEmpty()) {
+
+            for(final GameClient mGameClient : gameClientsArrayList) {
+
+                if(mGameClient.mClientSocket.getInetAddress().getHostAddress().equals(spielerToDelete.getSpielerIpAdresse())) {
+                    Log.d(SERVER_TAG, "tearDown searched GameClient!");
+                    mGameClient.tearDown();
+                }
+            }
+
+            gameClientsArrayList.clear();
+        }
+    }
+
     public void connectToServerBySocket(Socket clientSocket) {
         //mGameClient = new GameClient(clientSocket);
 
