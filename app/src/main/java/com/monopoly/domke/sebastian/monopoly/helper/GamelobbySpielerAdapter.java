@@ -73,7 +73,6 @@ public class GamelobbySpielerAdapter extends ArrayAdapter<Spieler>{
 
 		spielerEntfernen.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				//ToDo Löschen-Button von EigenerSpieler wird nicht mehr angezeigt wenn zuvor ein GegenSpieler gelöscht wurde
 
 				Spieler i = objects.get(position);
 				spielBeitretenActivity.datasource.deleteSpieler(i.getSpielerIMEI(), spielBeitretenActivity.aktuellesSpiel.getSpielID());
