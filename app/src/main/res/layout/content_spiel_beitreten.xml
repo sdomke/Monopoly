@@ -8,6 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@color/colorPrimaryLight"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.monopoly.domke.sebastian.monopoly.view.SpielBeitretenActivity"
     tools:showIn="@layout/activity_spiel_beitreten">
@@ -41,7 +42,7 @@
         android:id="@+id/spielerFarbeGelbButtonView"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:background="@color/gelb_spieler_farbe"
+        android:background="@drawable/layout_circle_8"
         android:layout_marginRight="5dp"
         android:layout_below="@+id/startkapitalTextView"
         android:layout_alignParentLeft="true"
@@ -51,11 +52,11 @@
 
     <RelativeLayout
         android:id="@+id/spielLobbyBeitretenButtonLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="400dp"
+        android:layout_height="60dp"
         android:clickable="true"
         android:onClick="spielLobbyBeitreten"
-        android:background="@color/colorPrimaryLight"
+        android:background="@drawable/relative_layout_background"
         android:layout_marginTop="13dp"
         android:layout_below="@+id/spielerFarbeGelbButtonView"
         android:layout_alignParentLeft="true"
@@ -65,9 +66,10 @@
             android:id="@+id/neuesSpielButtonImage"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:background="#6af66a"
+            android:padding="4dp"
+            android:background="@drawable/layout_circle_10"
             android:contentDescription="@string/spiel_lobby_beitreten_button_name"
-            android:src="@drawable/spiel_beitreten"
+            android:src="@drawable/baseline_person_add_black_24"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />
@@ -76,13 +78,13 @@
             android:id="@+id/spielLobbyBeitretenButtonText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="#ffffffff"
             android:text="@string/spiel_lobby_beitreten_button_name"
             android:textSize="20sp"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/neuesSpielButtonImage"
             android:layout_toStartOf="@+id/neuesSpielButtonImage"
-            android:layout_marginRight="70dp"
-            android:layout_marginEnd="70dp" />
+            android:layout_marginRight="40dp"/>
     </RelativeLayout>
 
     <ImageView
@@ -90,6 +92,8 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:src="@drawable/spieler"
+        android:padding="3dp"
+        android:background="@drawable/layout_circle_transparent"
         android:clickable="false"
         android:layout_alignParentTop="true"
         android:layout_toLeftOf="@+id/gegenspieler1ButtonView"
@@ -139,7 +143,7 @@
         android:id="@+id/spielerFarbeWeißButtonView"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:background="@color/weiß_spieler_farbe"
+        android:background="@drawable/layout_circle_5"
         android:clickable="true"
         android:layout_above="@+id/spielLobbyBeitretenButtonLayout"
         android:layout_alignParentRight="true"
@@ -149,7 +153,7 @@
         android:id="@+id/spielerFarbeGrauButtonView"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:background="@color/grau_spieler_farbe"
+        android:background="@drawable/layout_circle_4"
         android:clickable="true"
         android:layout_above="@+id/spielLobbyBeitretenButtonLayout"
         android:layout_toRightOf="@+id/gegenspieler2ButtonView"
@@ -160,18 +164,19 @@
         android:id="@+id/gegenspieler2ButtonView"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:background="@color/blau_spieler_farbe"
+        android:background="@drawable/layout_circle_9"
         android:clickable="true"
         android:layout_above="@+id/spielLobbyBeitretenButtonLayout"
         android:layout_toRightOf="@+id/gegenspieler3ButtonView"
         android:layout_toEndOf="@+id/gegenspieler3ButtonView"
-        android:layout_marginRight="5dp" />
+        android:layout_marginRight="5dp" >
+    </ImageView>
 
     <ImageView
         android:id="@+id/gegenspieler3ButtonView"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:background="@color/gruen_spieler_farbe"
+        android:background="@drawable/layout_circle_6"
         android:clickable="true"
         android:layout_above="@+id/spielLobbyBeitretenButtonLayout"
         android:layout_toRightOf="@+id/gegenspieler1ButtonView"
@@ -183,7 +188,7 @@
         android:id="@+id/gegenspieler1ButtonView"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:background="@color/rot_spieler_farbe"
+        android:background="@drawable/layout_circle_7"
         android:clickable="true"
         android:layout_marginRight="5dp"
         android:layout_above="@+id/spielLobbyBeitretenButtonLayout"

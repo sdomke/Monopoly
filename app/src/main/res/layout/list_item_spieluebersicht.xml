@@ -12,13 +12,16 @@
         android:id="@+id/spielItemNameView"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:background="@color/rot_spieler_farbe"
         android:layout_below="@+id/eigenerSpielerFarbeButtonView"
+        android:background="@drawable/layout_circle_7"
         android:hint="B"
         android:gravity="center"
         android:textSize="40sp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         android:layout_marginRight="20dp"/>
 
     <TextView

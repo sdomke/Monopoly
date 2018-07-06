@@ -10,15 +10,17 @@
 		android:id="@+id/list_image"
 		android:layout_width="50dip"
 		android:layout_height="50dip"
-		android:src="@drawable/spieler" />
+		android:src="@drawable/spieler"
+        android:padding="3dp"
+		android:background="@drawable/layout_circle_transparent"/>
 
 	<ImageView
         android:id="@+id/spielerEntfernenItem"
         android:layout_width="30dip"
         android:layout_height="30dip"
         android:clickable="true"
-        android:src="@drawable/entfernen_klein"
-        android:background="#c90606"
+        android:src="@drawable/baseline_clear_black_24"
+        android:background="@drawable/layout_circle_7"
 		android:layout_centerVertical="true"
 		android:layout_alignParentRight="true"
 		android:layout_alignParentEnd="true"

@@ -15,7 +15,7 @@
 
     <color name="red">#FF0000</color>
 
-    <color name="custom_button_pressed">#B80026</color>
+    <color name="custom_button_pressed">#4d90fe</color>
     <color name="custom_button_normal">#F21C0A</color>
     <color name="custom_button_disabled">#FFB4A0</color>
 
