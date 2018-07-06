@@ -55,7 +55,7 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:onClick="spielLobbyBeitreten"
-        android:background="@drawable/layout_selector"
+        android:background="@color/colorPrimaryLight"
         android:layout_marginTop="13dp"
         android:layout_below="@+id/spielerFarbeGelbButtonView"
         android:layout_alignParentLeft="true"

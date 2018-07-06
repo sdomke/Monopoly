@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -53,7 +54,9 @@ public class MainMenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setLogo(R.drawable.ic_account_balance_black_24dp);
         setSupportActionBar(toolbar);
+
 
         Intent gameConnectionServiceIntent = new Intent(getApplicationContext(), GameConnectionService.class);
         getApplicationContext().bindService(gameConnectionServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
