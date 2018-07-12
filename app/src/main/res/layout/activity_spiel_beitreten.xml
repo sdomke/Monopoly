@@ -29,6 +29,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/spiel_start"
-        app:backgroundTint="@android:color/holo_green_dark" />
+        android:src="@drawable/baseline_play_arrow_black_24"
+        app:backgroundTint="#6af66a" />
 </android.support.design.widget.CoordinatorLayout>

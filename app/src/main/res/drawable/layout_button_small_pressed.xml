@@ -6,17 +6,10 @@
         android:color="@color/colorPrimaryDark" />
 
     <solid
-        android:color="@color/colorSecondaryLight"
+        android:color="@color/colorSecondaryDark"
         />
 
     // Reduce the corner radius value
     <corners android:radius="200dp" />
-
-    <padding
-        android:left="20dp"
-        android:top="10dp"
-        android:right="20dp"
-        android:bottom="10dp"    >
-    </padding>
 
 </shape>

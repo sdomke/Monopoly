@@ -18,7 +18,7 @@
         android:layout_below="@+id/neuesSpielButtonLayout"
         android:clickable="true"
         android:onClick="spielBeitreten"
-        android:background="@drawable/relative_layout_background" >
+        android:background="@drawable/layout_selector_button" >
 
         <ImageView
             android:id="@+id/spielBeitretenButtonImage"
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:text="@string/spiel_beitreten_button_name"
             android:textSize="20sp"
-            android:textColor="@color/default_color"
+            android:textColor="@color/weis"
             android:layout_marginLeft="50dp"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
@@ -54,7 +54,7 @@
         android:layout_below="@+id/spielBeitretenButtonLayout"
         android:clickable="true"
         android:onClick="spielLaden"
-        android:background="@drawable/relative_layout_background" >
+        android:background="@drawable/layout_selector_button" >
 
         <ImageView
             android:id="@+id/spielLadenButtonImage"
@@ -74,7 +74,7 @@
             android:layout_height="wrap_content"
             android:text="@string/spiel_laden_button_name"
             android:textSize="20sp"
-            android:textColor="@color/default_color"
+            android:textColor="@color/weis"
             android:layout_marginLeft="50dp"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
@@ -90,7 +90,7 @@
         android:layout_below="@+id/spielLadenButtonLayout"
         android:clickable="true"
         android:onClick="einstellungen"
-        android:background="@drawable/relative_layout_background" >
+        android:background="@drawable/layout_selector_button" >
 
         <ImageView
             android:id="@+id/einstellungenButtonImage"
@@ -110,7 +110,7 @@
             android:layout_height="wrap_content"
             android:text="@string/einstellungen_button_name"
             android:textSize="20sp"
-            android:textColor="@color/default_color"
+            android:textColor="@color/weis"
             android:layout_marginLeft="50dp"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
@@ -126,7 +126,7 @@
         android:layout_below="@+id/einstellungenButtonLayout"
         android:clickable="true"
         android:onClick="highscore"
-        android:background="@drawable/relative_layout_background">
+        android:background="@drawable/layout_selector_button">
 
         <ImageView
             android:id="@+id/highscoreButtonImage"
@@ -146,7 +146,7 @@
             android:layout_height="wrap_content"
             android:text="@string/highscore_button_name"
             android:textSize="20sp"
-            android:textColor="@color/default_color"
+            android:textColor="@color/weis"
             android:layout_marginLeft="46dp"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
@@ -160,7 +160,7 @@
         android:layout_marginTop="20dp"
         android:clickable="true"
         android:onClick="neuesSpiel"
-        android:background="@drawable/relative_layout_background"
+        android:background="@drawable/layout_selector_button"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true">
 
@@ -182,7 +182,7 @@
             android:layout_height="wrap_content"
             android:text="@string/neues_spiel_button_name"
             android:textSize="20sp"
-            android:textColor="@color/default_color"
+            android:textColor="@color/weis"
             android:layout_marginLeft="47dp"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"

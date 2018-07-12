@@ -6,7 +6,7 @@
         android:color="@color/colorPrimaryDark" />
 
     <solid
-        android:color="@color/colorSecondaryLight"
+        android:color="@color/disabled_color"
         />
 
     // Reduce the corner radius value
