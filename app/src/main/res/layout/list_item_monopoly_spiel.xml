@@ -13,7 +13,7 @@
 		android:clickable="true"
 		android:src="@drawable/spiel_laden"
 		android:padding="2dp"
-		android:background="@drawable/layout_circle_3" />
+		android:background="@drawable/layout_circle_orange" />
 
 	<ImageView
         android:id="@+id/monopolySpielEntfernenItem"
@@ -21,7 +21,7 @@
         android:layout_height="30dp"
         android:clickable="true"
         android:src="@drawable/baseline_clear_black_24"
-        android:background="@drawable/layout_circle_7"
+        android:background="@drawable/layout_circle_rot"
 		android:layout_centerVertical="true"
 		android:layout_alignParentRight="true"
 		android:layout_alignParentEnd="true"
