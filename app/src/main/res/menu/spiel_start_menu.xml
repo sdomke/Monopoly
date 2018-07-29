@@ -5,7 +5,7 @@
 
     <item
         android:id="@+id/spiel_beenden_action"
-        android:icon="@drawable/baseline_clear_black_36"
+        android:icon="@drawable/baseline_close_white_48"
         android:title="@string/spiel_beenden"
         app:showAsAction="ifRoom" />
 

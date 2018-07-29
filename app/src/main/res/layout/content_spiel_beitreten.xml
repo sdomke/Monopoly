@@ -20,7 +20,9 @@
         android:ems="20"
         android:id="@+id/meinSpielerNameEditText"
         android:hint="Dein Name"
-        android:background="#a4f5ee0a"
+        android:textColor="@color/weis"
+
+        android:background="@android:color/transparent"
         android:layout_alignBottom="@+id/meinNameTextView"
         android:layout_toRightOf="@+id/meinNameTextView"
         android:layout_toEndOf="@+id/meinNameTextView"
@@ -33,6 +35,7 @@
         android:layout_height="wrap_content"
         android:text="@string/mein_spieler_farbe"
         android:textSize="20sp"
+        android:textColor="@color/weis"
         android:layout_marginTop="11dp"
         android:layout_below="@+id/meinNameTextView"
         android:layout_alignParentLeft="true"
@@ -49,95 +52,6 @@
         android:layout_alignParentStart="true"
         android:layout_marginTop="14dp"
         android:clickable="true"/>
-
-    <RelativeLayout
-        android:id="@+id/spielLobbyBeitretenButtonLayout"
-        android:layout_width="400dp"
-        android:layout_height="60dp"
-        android:clickable="true"
-        android:onClick="spielLobbyBeitreten"
-        android:background="@drawable/layout_selector_button"
-        android:layout_marginTop="13dp"
-        android:layout_below="@+id/spielerFarbeGelbButtonView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
-
-        <ImageView
-            android:id="@+id/neuesSpielButtonImage"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:padding="4dp"
-            android:background="@drawable/layout_circle_10"
-            android:contentDescription="@string/spiel_lobby_beitreten_button_name"
-            android:src="@drawable/baseline_person_add_black_24"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
-
-        <TextView
-            android:id="@+id/spielLobbyBeitretenButtonText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#ffffffff"
-            android:text="@string/spiel_lobby_beitreten_button_name"
-            android:textSize="20sp"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/neuesSpielButtonImage"
-            android:layout_toStartOf="@+id/neuesSpielButtonImage"
-            android:layout_marginRight="40dp"/>
-    </RelativeLayout>
-
-    <ImageView
-        android:id="@+id/meineEinstellungenView"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:src="@drawable/spieler"
-        android:padding="3dp"
-        android:background="@drawable/layout_circle_transparent"
-        android:clickable="false"
-        android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/gegenspieler1ButtonView"
-        android:layout_toStartOf="@+id/gegenspieler1ButtonView" />
-
-    <TextView
-        android:id="@+id/meinNameTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/mein_spieler_name"
-        android:textSize="20sp"
-        android:layout_marginTop="11dp"
-        android:layout_below="@+id/meineEinstellungenView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:id="@+id/meineEinstellungenTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/meine_einstellungen"
-        android:textSize="20sp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="11dp" />
-
-    <ListView
-        android:id="@+id/gameLobbyList"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_below="@+id/spielLobbyTextView" />
-
-    <TextView
-        android:id="@+id/spielLobbyTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/spiellobby"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="10dp"
-        android:layout_below="@+id/spielLobbyBeitretenButtonLayout"
-        android:layout_alignLeft="@+id/meinSpielerNameEditText"
-        android:layout_alignStart="@+id/meinSpielerNameEditText" />
 
     <ImageView
         android:id="@+id/spielerFarbeWeißButtonView"
@@ -182,7 +96,7 @@
         android:layout_toRightOf="@+id/gegenspieler1ButtonView"
         android:layout_toEndOf="@+id/gegenspieler1ButtonView"
         android:layout_marginRight="5dp"
-         />
+        />
 
     <ImageView
         android:id="@+id/gegenspieler1ButtonView"
@@ -194,5 +108,97 @@
         android:layout_above="@+id/spielLobbyBeitretenButtonLayout"
         android:layout_toRightOf="@+id/spielerFarbeGelbButtonView"
         android:layout_toEndOf="@+id/spielerFarbeGelbButtonView" />
+
+    <RelativeLayout
+        android:id="@+id/spielLobbyBeitretenButtonLayout"
+        android:layout_width="400dp"
+        android:layout_height="60dp"
+        android:clickable="true"
+        android:onClick="spielLobbyBeitreten"
+        android:background="@drawable/layout_selector_button"
+        android:layout_marginTop="13dp"
+        android:layout_below="@+id/spielerFarbeGelbButtonView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <ImageView
+            android:id="@+id/neuesSpielButtonImage"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:padding="4dp"
+            android:background="@drawable/layout_circle_10"
+            android:contentDescription="@string/spiel_lobby_beitreten_button_name"
+            android:src="@drawable/baseline_person_add_white_24"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
+            android:id="@+id/spielLobbyBeitretenButtonText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffffff"
+            android:text="@string/spiel_lobby_beitreten_button_name"
+            android:textSize="20sp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/neuesSpielButtonImage"
+            android:layout_toStartOf="@+id/neuesSpielButtonImage"
+            android:layout_marginRight="40dp"/>
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/meineEinstellungenView"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/baseline_account_circle_white_24"
+        android:padding="3dp"
+        android:background="@drawable/layout_circle_transparent"
+        android:clickable="false"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/gegenspieler1ButtonView"
+        android:layout_toStartOf="@+id/gegenspieler1ButtonView" />
+
+    <TextView
+        android:id="@+id/meinNameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/mein_spieler_name"
+        android:textSize="20sp"
+        android:layout_marginTop="11dp"
+        android:textColor="@color/weis"
+        android:layout_below="@+id/meineEinstellungenView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/meineEinstellungenTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/meine_einstellungen"
+        android:textSize="20sp"
+        android:textColor="@color/weis"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="11dp" />
+
+    <ListView
+        android:id="@+id/gameLobbyList"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/spielLobbyTextView" />
+
+    <TextView
+        android:id="@+id/spielLobbyTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/weis"
+        android:text="@string/spiellobby"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="10dp"
+        android:layout_below="@+id/spielLobbyBeitretenButtonLayout"
+        android:layout_alignLeft="@+id/meinSpielerNameEditText"
+        android:layout_alignStart="@+id/meinSpielerNameEditText" />
 
 </RelativeLayout>

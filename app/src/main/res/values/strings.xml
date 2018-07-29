@@ -20,7 +20,7 @@
     <string name="mein_spieler_farbe">Meine Farbe</string>
     <string name="spiel_lobby_beitreten_button_name">Spiellobby beitreten</string>
     <string name="spiellobby">Spiellobby</string>
-    <string name="kapital">Dein Kapital:</string>
+    <string name="kapital">Dein Guthaben:</string>
     <string name="betrag">Betrag:</string>
     <string name="bank_button_name">Bank</string>
     <string name="los_button_name">Bank</string>

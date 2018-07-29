@@ -34,6 +34,7 @@
          android:textSize="25sp"
          android:textStyle="bold"
          android:ellipsize="marquee"
+		android:textColor="@color/weis"
          android:text="Spieler"
 		 android:gravity="center"
 		android:layout_centerVertical="true"

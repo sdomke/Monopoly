@@ -54,7 +54,7 @@ public class MainMenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setLogo(R.drawable.ic_account_balance_black_24dp);
+        toolbar.setLogo(R.drawable.baseline_account_balance_white_24);
         setSupportActionBar(toolbar);
 
 

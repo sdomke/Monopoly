@@ -27,7 +27,7 @@
             android:padding="5dp"
             android:background="@drawable/layout_circle_2"
             android:contentDescription="@string/spiel_beitreten_button_name"
-            android:src="@drawable/baseline_group_add_black_24"
+            android:src="@drawable/baseline_group_add_white_24"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />
@@ -63,7 +63,7 @@
             android:padding="5dp"
             android:background="@drawable/layout_circle_3"
             android:contentDescription="@string/spiel_laden_button_name"
-            android:src="@drawable/baseline_save_black_24"
+            android:src="@drawable/baseline_save_white_24"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />
@@ -99,7 +99,7 @@
             android:background="@drawable/layout_circle_4"
             android:padding="5dp"
             android:contentDescription="@string/einstellungen_button_name"
-            android:src="@drawable/baseline_settings_black_24"
+            android:src="@drawable/baseline_settings_white_24"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />
@@ -135,7 +135,7 @@
             android:padding="5dp"
             android:background="@drawable/layout_circle_5"
             android:contentDescription="@string/highscore_button_name"
-            android:src="@drawable/baseline_equalizer_black_24"
+            android:src="@drawable/baseline_bar_chart_white_24"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />
