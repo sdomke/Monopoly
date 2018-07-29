@@ -86,6 +86,8 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
     private static final String BROADCAST_INTENT = "BROADCAST_INTENT";
     private static final String BROADCAST_INTENT_EXTRA = "BROADCAST_INTENT_EXTRA";
 
+    private ArrayList<TextView> empfaengerImageViewLayouts = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -134,6 +136,18 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
         }
 
         init();
+    }
+
+    public void changeActivatedButtonState(TextView selectedImageView) {
+
+        for (TextView textView: empfaengerImageViewLayouts) {
+            if(textView == selectedImageView) {
+                selectedImageView.setActivated(true);
+            } else {
+                textView.setActivated(false);
+            }
+        }
+
     }
 
     public BroadcastReceiver messageReceiver = new BroadcastReceiver() {
@@ -212,8 +226,11 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
             aktuellesKapitalEigenerSpielerTextView.setText("0");
         }
 
-        TextView bankIconImageView = (TextView) findViewById(R.id.bankButtonView);
-        TextView mitteIconImageView = (TextView) findViewById(R.id.mitteButtonView);
+        final TextView bankIconImageView = (TextView) findViewById(R.id.bankButtonView);
+        final TextView mitteIconImageView = (TextView) findViewById(R.id.mitteButtonView);
+
+        empfaengerImageViewLayouts.add(bankIconImageView);
+        empfaengerImageViewLayouts.add(mitteIconImageView);
 
         aktuellerBetragEditText = (EditText) findViewById(R.id.aktuellerBetragEditTextView);
 
@@ -258,6 +275,7 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
             @Override
             public void onClick(View v) {
 
+                changeActivatedButtonState(bankIconImageView);
                 empfaengerAuswahl = 2;
                 Toast.makeText(getApplicationContext(), "Bank ausgewählt", Toast.LENGTH_SHORT).show();
             }
@@ -267,6 +285,7 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
             @Override
             public void onClick(View v) {
 
+                changeActivatedButtonState(mitteIconImageView);
                 empfaengerAuswahl = 3;
                 Toast.makeText(getApplicationContext(), "Mitte ausgewählt", Toast.LENGTH_SHORT).show();
             }
@@ -691,17 +710,19 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
     }
 
     public void gegenspieler1ButtonViewInit(){
-        TextView gegenspieler1IconImageView = (TextView) findViewById(R.id.gegenspieler1ButtonView);
+        final TextView gegenspieler1IconImageView = (TextView) findViewById(R.id.gegenspieler1ButtonView);
         Spieler spieler = gegenspielerListe.get(0);
 
         gegenspieler1IconImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), spieler.getSpielerFarbe()));
         gegenspieler1IconImageView.setText(String.valueOf(spieler.getSpielerName().charAt(0)));
         gegenspieler1IconImageView.setVisibility(View.VISIBLE);
+        empfaengerImageViewLayouts.add(gegenspieler1IconImageView);
 
         gegenspieler1IconImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                changeActivatedButtonState(gegenspieler1IconImageView);
                 empfaengerAuswahl = 4;
                 Toast.makeText(getApplicationContext(), "Spieler 1 ausgewählt", Toast.LENGTH_SHORT).show();
             }
@@ -709,17 +730,20 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
     }
 
     public void gegenspieler2ButtonViewInit(){
-        TextView gegenspieler2IconImageView = (TextView) findViewById(R.id.gegenspieler2ButtonView);
+        final TextView gegenspieler2IconImageView = (TextView) findViewById(R.id.gegenspieler2ButtonView);
         Spieler spieler = gegenspielerListe.get(1);
 
         gegenspieler2IconImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), spieler.getSpielerFarbe()));
         gegenspieler2IconImageView.setText(String.valueOf(spieler.getSpielerName().charAt(0)));
         gegenspieler2IconImageView.setVisibility(View.VISIBLE);
 
+        empfaengerImageViewLayouts.add(gegenspieler2IconImageView);
+
         gegenspieler2IconImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                changeActivatedButtonState(gegenspieler2IconImageView);
                 empfaengerAuswahl = 5;
                 Toast.makeText(getApplicationContext(), "Spieler 2 ausgewählt", Toast.LENGTH_SHORT).show();
             }
@@ -727,17 +751,20 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
     }
 
     public void gegenspieler3ButtonViewInit(){
-        TextView gegenspieler3IconImageView = (TextView) findViewById(R.id.gegenspieler3ButtonView);
+        final TextView gegenspieler3IconImageView = (TextView) findViewById(R.id.gegenspieler3ButtonView);
         Spieler spieler = gegenspielerListe.get(2);
 
         gegenspieler3IconImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), spieler.getSpielerFarbe()));
         gegenspieler3IconImageView.setText(String.valueOf(spieler.getSpielerName().charAt(0)));
         gegenspieler3IconImageView.setVisibility(View.VISIBLE);
 
+        empfaengerImageViewLayouts.add(gegenspieler3IconImageView);
+
         gegenspieler3IconImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                changeActivatedButtonState(gegenspieler3IconImageView);
                 empfaengerAuswahl = 5;
                 Toast.makeText(getApplicationContext(), "Spieler 3 ausgewählt", Toast.LENGTH_SHORT).show();
             }
@@ -745,17 +772,20 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
     }
 
     public void gegenspieler4ButtonViewInit(){
-        TextView gegenspieler4IconImageView = (TextView) findViewById(R.id.gegenspieler4ButtonView);
+        final TextView gegenspieler4IconImageView = (TextView) findViewById(R.id.gegenspieler4ButtonView);
         Spieler spieler = gegenspielerListe.get(3);
 
         gegenspieler4IconImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), spieler.getSpielerFarbe()));
         gegenspieler4IconImageView.setText(String.valueOf(spieler.getSpielerName().charAt(0)));
         gegenspieler4IconImageView.setVisibility(View.VISIBLE);
 
+        empfaengerImageViewLayouts.add(gegenspieler4IconImageView);
+
         gegenspieler4IconImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                changeActivatedButtonState(gegenspieler4IconImageView);
                 empfaengerAuswahl = 6;
                 Toast.makeText(getApplicationContext(), "Spieler 4 ausgewählt", Toast.LENGTH_SHORT).show();
             }
@@ -763,17 +793,20 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
     }
 
     public void gegenspieler5ButtonViewInit(){
-        TextView gegenspieler5IconImageView = (TextView) findViewById(R.id.gegenspieler5ButtonView);
+        final TextView gegenspieler5IconImageView = (TextView) findViewById(R.id.gegenspieler5ButtonView);
         Spieler spieler = gegenspielerListe.get(4);
 
         gegenspieler5IconImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), spieler.getSpielerFarbe()));
         gegenspieler5IconImageView.setText(String.valueOf(spieler.getSpielerName().charAt(0)));
         gegenspieler5IconImageView.setVisibility(View.VISIBLE);
 
+        empfaengerImageViewLayouts.add(gegenspieler5IconImageView);
+
         gegenspieler5IconImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                changeActivatedButtonState(gegenspieler5IconImageView);
                 empfaengerAuswahl = 7;
                 Toast.makeText(getApplicationContext(), "Spieler 5 ausgewählt", Toast.LENGTH_SHORT).show();
             }
@@ -781,15 +814,18 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
     }
 
     public void eigenerSpielerButtonViewInit(){
-        TextView eigenerSpielerIconImageView = (TextView) findViewById(R.id.eigenerSpielerFarbeButtonView);
+        final TextView eigenerSpielerIconImageView = (TextView) findViewById(R.id.eigenerSpielerFarbeButtonView);
 
         eigenerSpielerIconImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), eigenerSpieler.getSpielerFarbe()));
         eigenerSpielerIconImageView.setText(String.valueOf(eigenerSpieler.getSpielerName().charAt(0)));
+
+        empfaengerImageViewLayouts.add(eigenerSpielerIconImageView);
 
         eigenerSpielerIconImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                changeActivatedButtonState(eigenerSpielerIconImageView);
                 empfaengerAuswahl = 1;
                 Toast.makeText(getApplicationContext(), "Eigener Spieler ausgewählt", Toast.LENGTH_SHORT).show();
             }

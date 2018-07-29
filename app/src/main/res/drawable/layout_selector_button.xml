@@ -5,6 +5,6 @@
     <item android:state_enabled="false" android:drawable="@drawable/layout_button_inactive" />
     <item android:state_enabled="true" android:drawable="@drawable/layout_button_active" />
     <item android:state_activated="false" android:drawable="@drawable/layout_button_inactive"/>
-    <item android:state_activated="true" android:drawable="@drawable/layout_button_active"/>
+    <item android:state_activated="true" android:drawable="@drawable/layout_button_activated"/>
     <item android:drawable="@drawable/layout_button_active"/>
 </selector>

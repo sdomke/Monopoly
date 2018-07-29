@@ -84,6 +84,8 @@ public class SpielBeitretenActivity extends AppCompatActivity {
     private HostMessageInterpreter hostMessageInterpreter;
     public MessageParser messageParser;
 
+    private ArrayList<ImageView> colorImageViewLayouts = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -250,12 +252,19 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
         final ImageView meineEinstellungenImageView = (ImageView) findViewById(R.id.meineEinstellungenView);
 
-        ImageView farbeGelbImageView = (ImageView) findViewById(R.id.spielerFarbeGelbButtonView);
-        ImageView farbeGruenImageView = (ImageView) findViewById(R.id.gegenspieler3ButtonView);
-        ImageView farbeBlauImageView = (ImageView) findViewById(R.id.gegenspieler2ButtonView);
-        ImageView farbeRotImageView = (ImageView) findViewById(R.id.gegenspieler1ButtonView);
-        ImageView farbeGrauImageView = (ImageView) findViewById(R.id.spielerFarbeGrauButtonView);
-        ImageView farbeSchwarzImageView = (ImageView) findViewById(R.id.spielerFarbeWeißButtonView);
+        final ImageView farbeGelbImageView = (ImageView) findViewById(R.id.spielerFarbeGelbButtonView);
+        final ImageView farbeGruenImageView = (ImageView) findViewById(R.id.gegenspieler3ButtonView);
+        final ImageView farbeBlauImageView = (ImageView) findViewById(R.id.gegenspieler2ButtonView);
+        final ImageView farbeRotImageView = (ImageView) findViewById(R.id.gegenspieler1ButtonView);
+        final ImageView farbeGrauImageView = (ImageView) findViewById(R.id.spielerFarbeGrauButtonView);
+        final ImageView farbeSchwarzImageView = (ImageView) findViewById(R.id.spielerFarbeWeißButtonView);
+
+        colorImageViewLayouts.add(farbeGelbImageView);
+        colorImageViewLayouts.add(farbeGruenImageView);
+        colorImageViewLayouts.add(farbeBlauImageView);
+        colorImageViewLayouts.add(farbeRotImageView);
+        colorImageViewLayouts.add(farbeGrauImageView);
+        colorImageViewLayouts.add(farbeSchwarzImageView);
 
         farbeGelbImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -263,6 +272,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
                 eigenerSpieler.setSpielerFarbe(R.color.gelb_spieler_farbe);
                 datasource.updateSpieler(eigenerSpieler);
                 meineEinstellungenImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.gelb_spieler_farbe));
+                changeActivatedButtonState(farbeGelbImageView);
                 //spieler_adapter.notifyDataSetChanged();
             }
         });
@@ -273,6 +283,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
                 eigenerSpieler.setSpielerFarbe(R.color.gruen_spieler_farbe);
                 datasource.updateSpieler(eigenerSpieler);
                 meineEinstellungenImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.gruen_spieler_farbe));
+                changeActivatedButtonState(farbeGruenImageView);
                 //spieler_adapter.notifyDataSetChanged();
             }
         });
@@ -283,6 +294,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
                 eigenerSpieler.setSpielerFarbe(R.color.blau_spieler_farbe);
                 datasource.updateSpieler(eigenerSpieler);
                 meineEinstellungenImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.blau_spieler_farbe));
+                changeActivatedButtonState(farbeBlauImageView);
                 //spieler_adapter.notifyDataSetChanged();
             }
         });
@@ -293,6 +305,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
                 eigenerSpieler.setSpielerFarbe(R.color.rot_spieler_farbe);
                 datasource.updateSpieler(eigenerSpieler);
                 meineEinstellungenImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.rot_spieler_farbe));
+                changeActivatedButtonState(farbeRotImageView);
                 //spieler_adapter.notifyDataSetChanged();
             }
         });
@@ -303,6 +316,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
                 eigenerSpieler.setSpielerFarbe(R.color.grau_spieler_farbe);
                 datasource.updateSpieler(eigenerSpieler);
                 meineEinstellungenImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.grau_spieler_farbe));
+                changeActivatedButtonState(farbeGrauImageView);
                 //spieler_adapter.notifyDataSetChanged();
             }
         });
@@ -313,6 +327,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
                 eigenerSpieler.setSpielerFarbe(R.color.weiß_spieler_farbe);
                 datasource.updateSpieler(eigenerSpieler);
                 meineEinstellungenImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.weiß_spieler_farbe));
+                changeActivatedButtonState(farbeSchwarzImageView);
                 //spieler_adapter.notifyDataSetChanged();
             }
         });
@@ -324,6 +339,18 @@ public class SpielBeitretenActivity extends AppCompatActivity {
         spieler_adapter = new GamelobbySpielerAdapter(this,
                 R.layout.list_item_spieler, values, this);
         gamelobbyListView.setAdapter(spieler_adapter);
+
+    }
+
+    public void changeActivatedButtonState(ImageView selectedImageView) {
+
+        for (ImageView imageView: colorImageViewLayouts) {
+            if(imageView == selectedImageView) {
+                selectedImageView.setActivated(true);
+            } else {
+                imageView.setActivated(false);
+            }
+        }
 
     }
 

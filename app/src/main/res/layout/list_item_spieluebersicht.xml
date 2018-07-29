@@ -13,7 +13,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_below="@+id/eigenerSpielerFarbeButtonView"
-        android:background="@drawable/layout_circle_7"
+        android:background="@drawable/layout_circle_rot"
         android:hint="B"
         android:gravity="center"
         android:textSize="40sp"
