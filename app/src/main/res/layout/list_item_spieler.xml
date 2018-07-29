@@ -10,7 +10,7 @@
 		android:id="@+id/list_image"
 		android:layout_width="50dip"
 		android:layout_height="50dip"
-		android:src="@drawable/spieler"
+		android:src="@drawable/baseline_account_circle_white_24"
         android:padding="3dp"
 		android:background="@drawable/layout_circle_transparent"/>
 
