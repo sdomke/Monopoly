@@ -35,9 +35,8 @@
         android:textStyle="bold"
         android:gravity="center"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginLeft="5dp"/>
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/trennlinie"/>
 
     <TextView
         android:id="@+id/spielItemCapitalView"
@@ -48,6 +47,27 @@
         android:text="Kapital"
         android:textColor="@color/weis"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-/>
+        android:layout_marginLeft="100dp"/>
+
+    <ImageView
+        android:id="@+id/trennlinie"
+        android:layout_height="50dip"
+        android:background="#b7b7b7"
+        android:layout_width="2dip"
+        android:layout_toLeftOf="@+id/verlauf"
+        android:layout_marginLeft="9dp"
+        android:layout_centerVertical="true"/>
+
+    <ImageView
+        android:id="@+id/verlauf"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/baseline_trending_flat_white_24"
+        android:background="@drawable/layout_selector_circle_orange"
+        android:padding="5dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginLeft="9dp"
+        android:layout_marginRight="9dp"/>
 </RelativeLayout>
