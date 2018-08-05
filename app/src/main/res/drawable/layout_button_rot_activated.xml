@@ -4,8 +4,12 @@
     android:useLevel="false" >
 
     <solid
-        android:color="#f6ae6a"
+        android:color="@color/rot_spieler_farbe"
         />
+
+    <stroke
+        android:width="4dp"
+        android:color="@color/colorSecondary" />
 
     // Reduce the corner radius value
     <corners android:radius="200dp" />
