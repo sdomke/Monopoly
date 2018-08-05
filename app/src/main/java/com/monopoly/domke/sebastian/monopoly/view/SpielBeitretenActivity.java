@@ -271,7 +271,8 @@ public class SpielBeitretenActivity extends AppCompatActivity {
             public void onClick(View v) {
                 eigenerSpieler.setSpielerFarbe(R.color.gelb_spieler_farbe);
                 datasource.updateSpieler(eigenerSpieler);
-                meineEinstellungenImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.gelb_spieler_farbe));
+                //meineEinstellungenImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.gelb_spieler_farbe));
+                meineEinstellungenImageView.setBackgroundResource(R.drawable.layout_circle_gelb_background);
                 changeActivatedButtonState(farbeGelbImageView);
                 //spieler_adapter.notifyDataSetChanged();
             }
@@ -283,6 +284,7 @@ public class SpielBeitretenActivity extends AppCompatActivity {
                 eigenerSpieler.setSpielerFarbe(R.color.gruen_spieler_farbe);
                 datasource.updateSpieler(eigenerSpieler);
                 meineEinstellungenImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.gruen_spieler_farbe));
+                meineEinstellungenImageView.setBackgroundResource(R.drawable.layout_circle_dunkel_gruen_background);
                 changeActivatedButtonState(farbeGruenImageView);
                 //spieler_adapter.notifyDataSetChanged();
             }
@@ -293,7 +295,8 @@ public class SpielBeitretenActivity extends AppCompatActivity {
             public void onClick(View v) {
                 eigenerSpieler.setSpielerFarbe(R.color.blau_spieler_farbe);
                 datasource.updateSpieler(eigenerSpieler);
-                meineEinstellungenImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.blau_spieler_farbe));
+                //meineEinstellungenImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.blau_spieler_farbe));
+                meineEinstellungenImageView.setBackgroundResource(R.drawable.layout_circle_dunkel_blau_background);
                 changeActivatedButtonState(farbeBlauImageView);
                 //spieler_adapter.notifyDataSetChanged();
             }
@@ -304,7 +307,8 @@ public class SpielBeitretenActivity extends AppCompatActivity {
             public void onClick(View v) {
                 eigenerSpieler.setSpielerFarbe(R.color.rot_spieler_farbe);
                 datasource.updateSpieler(eigenerSpieler);
-                meineEinstellungenImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.rot_spieler_farbe));
+                //meineEinstellungenImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.rot_spieler_farbe));
+                meineEinstellungenImageView.setBackgroundResource(R.drawable.layout_circle_rot_background);
                 changeActivatedButtonState(farbeRotImageView);
                 //spieler_adapter.notifyDataSetChanged();
             }
@@ -315,7 +319,8 @@ public class SpielBeitretenActivity extends AppCompatActivity {
             public void onClick(View v) {
                 eigenerSpieler.setSpielerFarbe(R.color.grau_spieler_farbe);
                 datasource.updateSpieler(eigenerSpieler);
-                meineEinstellungenImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.grau_spieler_farbe));
+               // meineEinstellungenImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.grau_spieler_farbe));
+                meineEinstellungenImageView.setBackgroundResource(R.drawable.layout_circle_braun_background);
                 changeActivatedButtonState(farbeGrauImageView);
                 //spieler_adapter.notifyDataSetChanged();
             }
@@ -326,7 +331,8 @@ public class SpielBeitretenActivity extends AppCompatActivity {
             public void onClick(View v) {
                 eigenerSpieler.setSpielerFarbe(R.color.weiß_spieler_farbe);
                 datasource.updateSpieler(eigenerSpieler);
-                meineEinstellungenImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.weiß_spieler_farbe));
+                //meineEinstellungenImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.weiß_spieler_farbe));
+                meineEinstellungenImageView.setBackgroundResource(R.drawable.layout_circle_grau_background);
                 changeActivatedButtonState(farbeSchwarzImageView);
                 //spieler_adapter.notifyDataSetChanged();
             }

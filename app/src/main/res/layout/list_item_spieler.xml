@@ -19,7 +19,7 @@
         android:layout_width="30dip"
         android:layout_height="30dip"
         android:clickable="true"
-        android:src="@drawable/baseline_clear_black_24"
+        android:src="@drawable/baseline_close_white_24"
         android:background="@drawable/layout_circle_rot"
 		android:layout_centerVertical="true"
 		android:layout_alignParentRight="true"

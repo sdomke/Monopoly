@@ -120,7 +120,22 @@ public class GamelobbySpielerAdapter extends ArrayAdapter<Spieler>{
 				spielerName.setText(i.getSpielerName());
 			}
 			if (spielerFarbe != null){
-				spielerFarbe.setBackgroundColor(ContextCompat.getColor(getContext(), i.getSpielerFarbe()));
+				switch (i.getSpielerFarbe()) {
+					case R.color.gruen_spieler_farbe: spielerFarbe.setBackgroundResource(R.drawable.layout_circle_dunkel_gruen_background);
+						break;
+					case R.color.gelb_spieler_farbe: spielerFarbe.setBackgroundResource(R.drawable.layout_circle_gelb_background);
+						break;
+					case R.color.blau_spieler_farbe: spielerFarbe.setBackgroundResource(R.drawable.layout_circle_dunkel_blau_background);
+						break;
+					case R.color.rot_spieler_farbe: spielerFarbe.setBackgroundResource(R.drawable.layout_circle_rot_background);
+						break;
+					case R.color.grau_spieler_farbe: spielerFarbe.setBackgroundResource(R.drawable.layout_circle_braun_background);
+						break;
+					case R.color.weiß_spieler_farbe: spielerFarbe.setBackgroundResource(R.drawable.layout_circle_grau_background);
+						break;
+					default: spielerFarbe.setBackgroundResource(R.drawable.layout_circle_transparent);
+						break;
+				}
 			}
 			if(!i.getSpielerIMEI().equals(spielBeitretenActivity.eigenerSpieler.getSpielerIMEI())){
 				ImageView spielerEntfernenItem = (ImageView) view.findViewById(R.id.spielerEntfernenItem);

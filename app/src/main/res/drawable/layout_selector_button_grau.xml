@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_activated="false" android:drawable="@drawable/layout_button_grau"/>
+    <item android:state_activated="true" android:drawable="@drawable/layout_button_grau_activated"/>
+    <item android:drawable="@drawable/layout_circle_grau"/>
+</selector>

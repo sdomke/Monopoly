@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- -->
-    <color name="colorPrimary">#424242</color>
-    <color name="colorPrimaryDark">#1b1b1b</color>
-    <color name="colorPrimaryLight">#6d6d6d</color>
+    <color name="colorPrimary">#607d8b</color>
+    <color name="colorPrimaryDark">#34515e</color>
+    <color name="colorPrimaryLight">#8eacbb</color>
     <color name="colorSecondary">#0277bd</color>
     <color name="colorSecondaryDark">#004c8c</color>
     <color name="colorSecondaryLight">#58a5f0</color>
@@ -29,12 +29,12 @@
 
 
 
-    <color name="gelb_spieler_farbe">#fbff0c</color>
-    <color name="gruen_spieler_farbe">#6af66a</color>
+    <color name="gelb_spieler_farbe">#e9ed00</color>
+    <color name="gruen_spieler_farbe">#05510c</color>
     <color name="blau_spieler_farbe">#024cf7</color>
     <color name="rot_spieler_farbe">#c90606</color>
-    <color name="grau_spieler_farbe">#8b8b8b</color>
+    <color name="grau_spieler_farbe">#693a08</color>
     <color name="schwarz_spieler_farbe">#693a08</color>
-    <color name="weiß_spieler_farbe">#ffffff</color>
+    <color name="weiß_spieler_farbe">#8b8b8b</color>
     <color name="mitte_farbe">@android:color/holo_blue_bright</color>
 </resources>

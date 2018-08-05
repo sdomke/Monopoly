@@ -67,6 +67,7 @@
             android:background="@drawable/layout_circle_transparent"
             android:layout_marginTop="5dp"
             android:hint="B"
+            android:clickable="true"
             android:gravity="center"
             android:textSize="40sp"
             android:layout_alignParentLeft="true"
@@ -76,9 +77,10 @@
             android:id="@+id/bankButtonView"
             android:layout_width="100dp"
             android:layout_height="50dp"
-            android:background="@drawable/layout_selector_button"
+            android:background="@drawable/layout_selector_button_bank"
             android:text="@string/bank_button_name"
             android:gravity="center"
+            android:clickable="true"
             android:textSize="20sp"
             android:textColor="@color/weis"
             android:textAlignment="center"
@@ -90,10 +92,11 @@
             android:layout_width="100dp"
             android:layout_height="50dp"
             android:textColor="@color/weis"
-            android:background="@drawable/layout_selector_button"
+            android:background="@drawable/layout_selector_button_mitte"
             android:text="@string/mitte_button_name"
             android:textSize="20sp"
             android:gravity="center"
+            android:clickable="true"
             android:layout_alignTop="@+id/bankButtonView"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />
@@ -109,6 +112,7 @@
             android:textColor="@color/weis"
             android:gravity="center"
             android:textSize="40sp"
+            android:clickable="true"
             android:visibility="invisible"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
@@ -123,9 +127,11 @@
             android:gravity="center"
             android:textSize="40sp"
             android:visibility="invisible"
+            android:clickable="true"
             android:background="@drawable/layout_selector_small_button"
             android:layout_toRightOf="@+id/gegenspieler1ButtonView"
             android:layout_toEndOf="@+id/gegenspieler1ButtonView"
+            android:layout_alignBottom="@+id/gegenspieler1ButtonView"
             android:layout_marginRight="20dp"/>
 
         <TextView
@@ -133,6 +139,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:hint="B"
+            android:clickable="true"
             android:gravity="center"
             android:textSize="40sp"
             android:visibility="invisible"
@@ -140,7 +147,8 @@
             android:background="@drawable/layout_circle_dunkel_blau"
             android:layout_toRightOf="@+id/gegenspieler2ButtonView"
             android:layout_toEndOf="@+id/gegenspieler2ButtonView"
-            android:layout_marginRight="20dp"/>
+            android:layout_alignBottom="@+id/gegenspieler1ButtonView"
+            android:layout_marginRight="15dp"/>
 
         <TextView
             android:id="@+id/gegenspieler4ButtonView"
@@ -149,11 +157,13 @@
             android:hint="B"
             android:gravity="center"
             android:textSize="40sp"
+            android:clickable="true"
             android:visibility="invisible"
             android:background="@color/grau_spieler_farbe"
             android:layout_toRightOf="@+id/gegenspieler3ButtonView"
             android:layout_toEndOf="@+id/gegenspieler3ButtonView"
-            android:layout_marginRight="20dp"/>
+            android:layout_alignBottom="@+id/gegenspieler1ButtonView"
+            android:layout_marginRight="15dp"/>
 
         <TextView
             android:id="@+id/gegenspieler5ButtonView"
@@ -161,10 +171,11 @@
             android:layout_height="50dp"
             android:hint="B"
             android:gravity="center"
+            android:clickable="true"
             android:textSize="40sp"
             android:visibility="invisible"
-            android:background="@color/weiß_spieler_farbe"
             android:layout_toRightOf="@+id/gegenspieler4ButtonView"
+            android:layout_alignBottom="@+id/gegenspieler1ButtonView"
             android:layout_toEndOf="@+id/gegenspieler4ButtonView" />
     </RelativeLayout>
 
@@ -406,7 +417,7 @@
             android:layout_height="45dp"
             android:textColor="@color/weis"
             android:background="@drawable/layout_selector_small_button"
-            android:backgroundTint="@android:color/holo_green_light"
+            android:backgroundTint="@android:color/holo_green_dark"
             android:layout_width="45dp"
             android:layout_below="@+id/erhalteBetrag"
             android:layout_marginTop="5dp"
@@ -422,7 +433,7 @@
             android:layout_height="45dp"
             android:textColor="@color/weis"
             android:background="@drawable/layout_selector_small_button"
-            android:backgroundTint="@android:color/holo_green_light"
+            android:backgroundTint="@android:color/holo_green_dark"
             android:layout_width="45dp"
             android:layout_below="@+id/erhalteBetrag"
             android:layout_toRightOf="@+id/erhalteLos"
@@ -438,7 +449,7 @@
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:background="@drawable/layout_selector_small_button"
-            android:backgroundTint="@android:color/holo_green_light"
+            android:backgroundTint="@android:color/holo_green_dark"
             android:layout_below="@+id/erhalteBetrag"
             android:layout_toRightOf="@+id/erhalteFreiParken"
             android:layout_marginTop="5dp"/>
