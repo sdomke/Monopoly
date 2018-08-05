@@ -145,6 +145,7 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
                 if(selectedImageView.isActivated()) {
                     selectedImageView.setActivated(false);
+                    empfaengerAuswahl = 0;
                 } else {
                     selectedImageView.setActivated(true);
                 }
