@@ -142,10 +142,29 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
         for (TextView textView: empfaengerImageViewLayouts) {
             if(textView == selectedImageView) {
-                selectedImageView.setActivated(true);
+
+                if(selectedImageView.isActivated()) {
+                    selectedImageView.setActivated(false);
+                } else {
+                    selectedImageView.setActivated(true);
+                }
+//                if(selectedImageView.getId() == R.id.eigenerSpielerFarbeButtonView) {
+//                    selectedImageView.setBackgroundColor(getResources().getColor(R.color.transaktionAnMich));
+//                }
+//                else {
+//                    selectedImageView.setBackgroundColor(getResources().getColor(R.color.transaktionAnAndere));
+//                }
             } else {
-                textView.setActivated(false);
+                selectedImageView.setActivated(false);
             }
+        }
+
+    }
+
+    public void resetActivatedButtonState() {
+
+        for (TextView textView: empfaengerImageViewLayouts) {
+                textView.setActivated(false);
         }
 
     }
@@ -514,6 +533,7 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
                 break;
 
         }
+        resetActivatedButtonState();
     }
 
     public void transaktionAnMich() {
@@ -709,11 +729,51 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
     }
 
+    public void eigenerspielerFarbeInit(TextView eigenerspielerIconImagView) {
+        switch (eigenerSpieler.getSpielerFarbe()) {
+            case R.color.gruen_spieler_farbe: eigenerspielerIconImagView.setBackgroundResource(R.drawable.layout_selector_button_gruen);
+                break;
+            case R.color.gelb_spieler_farbe: eigenerspielerIconImagView.setBackgroundResource(R.drawable.layout_selector_button_gelb);
+                break;
+            case R.color.blau_spieler_farbe: eigenerspielerIconImagView.setBackgroundResource(R.drawable.layout_selector_button_blau);
+                break;
+            case R.color.rot_spieler_farbe: eigenerspielerIconImagView.setBackgroundResource(R.drawable.layout_selector_button_rot);
+                break;
+            case R.color.grau_spieler_farbe: eigenerspielerIconImagView.setBackgroundResource(R.drawable.layout_selector_button_braun);
+                break;
+            case R.color.weiß_spieler_farbe: eigenerspielerIconImagView.setBackgroundResource(R.drawable.layout_selector_button_grau);
+                break;
+            default: eigenerspielerIconImagView.setBackgroundResource(R.drawable.layout_circle_transparent);
+                break;
+        }
+    }
+
+    public void gegenspielerFarbeInit(Spieler spieler, TextView gegenspielerIconImagView) {
+        switch (spieler.getSpielerFarbe()) {
+            case R.color.gruen_spieler_farbe: gegenspielerIconImagView.setBackgroundResource(R.drawable.layout_selector_circle_dunkel_gruen);
+                break;
+            case R.color.gelb_spieler_farbe: gegenspielerIconImagView.setBackgroundResource(R.drawable.layout_selector_circle_gelb);
+                break;
+            case R.color.blau_spieler_farbe: gegenspielerIconImagView.setBackgroundResource(R.drawable.layout_selector_circle_dunkel_blau);
+                break;
+            case R.color.rot_spieler_farbe: gegenspielerIconImagView.setBackgroundResource(R.drawable.layout_selector_circle_rot);
+                break;
+            case R.color.grau_spieler_farbe: gegenspielerIconImagView.setBackgroundResource(R.drawable.layout_selector_circle_braun);
+                break;
+            case R.color.weiß_spieler_farbe: gegenspielerIconImagView.setBackgroundResource(R.drawable.layout_selector_circle_grau);
+                break;
+            default: gegenspielerIconImagView.setBackgroundResource(R.drawable.layout_circle_transparent);
+                break;
+        }
+    }
+
     public void gegenspieler1ButtonViewInit(){
         final TextView gegenspieler1IconImageView = (TextView) findViewById(R.id.gegenspieler1ButtonView);
         Spieler spieler = gegenspielerListe.get(0);
 
-        gegenspieler1IconImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), spieler.getSpielerFarbe()));
+        gegenspielerFarbeInit(spieler, gegenspieler1IconImageView);
+
+        //gegenspieler1IconImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), spieler.getSpielerFarbe()));
         gegenspieler1IconImageView.setText(String.valueOf(spieler.getSpielerName().charAt(0)));
         gegenspieler1IconImageView.setVisibility(View.VISIBLE);
         empfaengerImageViewLayouts.add(gegenspieler1IconImageView);
@@ -733,7 +793,9 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
         final TextView gegenspieler2IconImageView = (TextView) findViewById(R.id.gegenspieler2ButtonView);
         Spieler spieler = gegenspielerListe.get(1);
 
-        gegenspieler2IconImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), spieler.getSpielerFarbe()));
+        gegenspielerFarbeInit(spieler, gegenspieler2IconImageView);
+
+        //gegenspieler2IconImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), spieler.getSpielerFarbe()));
         gegenspieler2IconImageView.setText(String.valueOf(spieler.getSpielerName().charAt(0)));
         gegenspieler2IconImageView.setVisibility(View.VISIBLE);
 
@@ -754,7 +816,9 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
         final TextView gegenspieler3IconImageView = (TextView) findViewById(R.id.gegenspieler3ButtonView);
         Spieler spieler = gegenspielerListe.get(2);
 
-        gegenspieler3IconImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), spieler.getSpielerFarbe()));
+        gegenspielerFarbeInit(spieler, gegenspieler3IconImageView);
+
+        //gegenspieler3IconImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), spieler.getSpielerFarbe()));
         gegenspieler3IconImageView.setText(String.valueOf(spieler.getSpielerName().charAt(0)));
         gegenspieler3IconImageView.setVisibility(View.VISIBLE);
 
@@ -775,7 +839,9 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
         final TextView gegenspieler4IconImageView = (TextView) findViewById(R.id.gegenspieler4ButtonView);
         Spieler spieler = gegenspielerListe.get(3);
 
-        gegenspieler4IconImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), spieler.getSpielerFarbe()));
+        gegenspielerFarbeInit(spieler, gegenspieler4IconImageView);
+
+        //gegenspieler4IconImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), spieler.getSpielerFarbe()));
         gegenspieler4IconImageView.setText(String.valueOf(spieler.getSpielerName().charAt(0)));
         gegenspieler4IconImageView.setVisibility(View.VISIBLE);
 
@@ -796,7 +862,9 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
         final TextView gegenspieler5IconImageView = (TextView) findViewById(R.id.gegenspieler5ButtonView);
         Spieler spieler = gegenspielerListe.get(4);
 
-        gegenspieler5IconImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), spieler.getSpielerFarbe()));
+        gegenspielerFarbeInit(spieler, gegenspieler5IconImageView);
+
+        //gegenspieler5IconImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), spieler.getSpielerFarbe()));
         gegenspieler5IconImageView.setText(String.valueOf(spieler.getSpielerName().charAt(0)));
         gegenspieler5IconImageView.setVisibility(View.VISIBLE);
 
@@ -816,7 +884,8 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
     public void eigenerSpielerButtonViewInit(){
         final TextView eigenerSpielerIconImageView = (TextView) findViewById(R.id.eigenerSpielerFarbeButtonView);
 
-        eigenerSpielerIconImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), eigenerSpieler.getSpielerFarbe()));
+        eigenerspielerFarbeInit(eigenerSpielerIconImageView);
+        //eigenerSpielerIconImageView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), eigenerSpieler.getSpielerFarbe()));
         eigenerSpielerIconImageView.setText(String.valueOf(eigenerSpieler.getSpielerName().charAt(0)));
 
         empfaengerImageViewLayouts.add(eigenerSpielerIconImageView);

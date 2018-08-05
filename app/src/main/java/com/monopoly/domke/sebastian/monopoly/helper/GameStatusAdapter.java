@@ -63,6 +63,26 @@ public class GameStatusAdapter extends ArrayAdapter<Spieler>{
 
 			if (spielItemName != null){
 				spielItemName.setBackgroundColor(ContextCompat.getColor(getContext(), i.getSpielerFarbe()));
+
+				switch (i.getSpielerFarbe()) {
+					case R.color.gruen_spieler_farbe: spielItemName.setBackgroundResource(R.drawable.layout_circle_dunkel_gruen);
+						break;
+					case R.color.gelb_spieler_farbe: spielItemName.setBackgroundResource(R.drawable.layout_circle_gelb);
+						break;
+					case R.color.blau_spieler_farbe: spielItemName.setBackgroundResource(R.drawable.layout_circle_dunkel_blau);
+						break;
+					case R.color.rot_spieler_farbe: spielItemName.setBackgroundResource(R.drawable.layout_circle_rot);
+						break;
+					case R.color.grau_spieler_farbe: spielItemName.setBackgroundResource(R.drawable.layout_circle_braun);
+						break;
+					case R.color.weiß_spieler_farbe: spielItemName.setBackgroundResource(R.drawable.layout_circle_grau);
+						break;
+					case R.color.mitte_farbe: spielItemName.setBackgroundResource(R.drawable.layout_circle_hell_blau);
+						break;
+					default: spielItemName.setBackgroundResource(R.drawable.layout_circle_transparent);
+						break;
+				}
+
 				spielItemName.setText(String.valueOf(i.getSpielerName().charAt(0)));
 			}
 			if (spielItemCapital != null){

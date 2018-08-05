@@ -36,5 +36,9 @@
     <color name="grau_spieler_farbe">#693a08</color>
     <color name="schwarz_spieler_farbe">#693a08</color>
     <color name="weiß_spieler_farbe">#8b8b8b</color>
-    <color name="mitte_farbe">@android:color/holo_blue_bright</color>
+    <color name="mitte_farbe">#58a5f0</color>
+    <color name="bank_farbe">#f6ae6a</color>
+
+    <color name="transaktionAnMich">@android:color/holo_green_dark</color>
+    <color name="transaktionAnAndere">@android:color/holo_red_dark</color>
 </resources>
