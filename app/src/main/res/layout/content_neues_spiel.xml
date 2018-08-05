@@ -204,6 +204,7 @@
         android:id="@+id/startKapitalEditText"
         android:textColor="@color/weis"
         android:hint="Monopoly-Dollar"
+        android:gravity="right"
         android:background="@android:color/transparent"
         android:layout_below="@+id/startkapitalTextView"
         android:layout_toLeftOf="@+id/waehrungStartKapitalImageView"

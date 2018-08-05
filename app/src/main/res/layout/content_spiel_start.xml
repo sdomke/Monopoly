@@ -203,6 +203,7 @@
             android:hint="Gewünschter Betrag"
             android:background="@android:color/transparent"
             android:inputType="number"
+            android:gravity="right"
             android:textSize="20sp"
             android:textColor="@color/weis"
             android:layout_toLeftOf="@id/waehrungBetragImageView"/>
