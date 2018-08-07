@@ -455,27 +455,32 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
                 double betrag = aktuellesSpiel.getFreiParken();
 
-                eigenerSpieler.setSpielerKapital(roundDouble(eigenerSpieler.getSpielerKapital() + betrag));
-                aktuellesKapitalEigenerSpielerTextView.setText(String.valueOf(eigenerSpieler.getSpielerKapital()));
-                aktuellesSpiel.setFreiParken(0);
+                if(betrag > 0) {
+                    eigenerSpieler.setSpielerKapital(roundDouble(eigenerSpieler.getSpielerKapital() + betrag));
+                    aktuellesKapitalEigenerSpielerTextView.setText(String.valueOf(eigenerSpieler.getSpielerKapital()));
+                    aktuellesSpiel.setFreiParken(0);
 
-                databaseHandler.updateSpieler(eigenerSpieler);
-                databaseHandler.updateSpiel(aktuellesSpiel);
+                    databaseHandler.updateSpieler(eigenerSpieler);
+                    databaseHandler.updateSpiel(aktuellesSpiel);
 
-                JSONObject messageContent = messageParser.moneyTransactionToJson(eigenerSpieler, betrag);
+                    JSONObject messageContent = messageParser.moneyTransactionToJson(eigenerSpieler, betrag);
 
-                GameMessage receiveFreiParkenGameMessage = new GameMessage(GameMessage.MessageHeader.receiveFreiParken, messageContent);
+                    GameMessage receiveFreiParkenGameMessage = new GameMessage(GameMessage.MessageHeader.receiveFreiParken, messageContent);
 
-                String jsonString = messageParser.messageToJsonString(receiveFreiParkenGameMessage);
+                    String jsonString = messageParser.messageToJsonString(receiveFreiParkenGameMessage);
 
-                mGameConnectionService.mGameConnection.sendMessageToAllClients(jsonString);
+                    mGameConnectionService.mGameConnection.sendMessageToAllClients(jsonString);
 
-                eigenerSpieler.setHistory(1);
-                mitteSpieler.setHistory(2);
+                    eigenerSpieler.setHistory(1);
+                    mitteSpieler.setHistory(2);
 
-                resetHistory(eigenerSpieler, mitteSpieler);
+                    resetHistory(eigenerSpieler, mitteSpieler);
 
-                Toast.makeText(getApplicationContext(), "Du hast " + betrag + " M$ von Frei Parken erhalten!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Du hast " + betrag + " M$ von Frei Parken erhalten!", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Hier gibt es momentan nichts zu holen!", Toast.LENGTH_SHORT).show();
+                }
 
             }
         });

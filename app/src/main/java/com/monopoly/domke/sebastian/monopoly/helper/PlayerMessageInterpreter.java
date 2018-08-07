@@ -320,6 +320,7 @@ public class PlayerMessageInterpreter {
 
                         senderPlayer.setHistory(2);
                         receiverPlayer.setHistory(1);
+                        spielStartActivity.resetHistory(senderPlayer, receiverPlayer);
                         updatePlayerCredit(senderPlayer, receiverPlayer);
 
                         Toast.makeText(spielStartActivity.getApplicationContext(), senderPlayer.getSpielerName() + " hat " + receiverPlayer.getSpielerName() + " " + payment + " M$ überwiesen!", Toast.LENGTH_SHORT).show();
@@ -351,6 +352,7 @@ public class PlayerMessageInterpreter {
                         spielStartActivity.databaseHandler.updateSpieler(player);
 
                         player.setHistory(1);
+                        spielStartActivity.resetHistory(player);
                         updateGegenSpielerCredit(player);
 
                         Toast.makeText(spielStartActivity.getApplicationContext(), player.getSpielerName() + " hat " + payment + " M$ von der Bank erhalten!", Toast.LENGTH_SHORT).show();
@@ -382,6 +384,7 @@ public class PlayerMessageInterpreter {
                         spielStartActivity.databaseHandler.updateSpieler(player);
 
                         player.setHistory(2);
+                        spielStartActivity.resetHistory(player);
                         updateGegenSpielerCredit(player);
 
                         Toast.makeText(spielStartActivity.getApplicationContext(), player.getSpielerName() + " hat " + payment + " M$ an die Bank gezahlt!", Toast.LENGTH_SHORT).show();
@@ -416,6 +419,7 @@ public class PlayerMessageInterpreter {
 
                         spielStartActivity.mitteSpieler.setHistory(1);
                         player.setHistory(2);
+                        spielStartActivity.resetHistory(player, spielStartActivity.mitteSpieler);
 
                         updateGegenSpielerCredit(player);
                         updateAktuellesSpiel(aktuellesSpiel);
@@ -452,6 +456,7 @@ public class PlayerMessageInterpreter {
                         spielStartActivity.mitteSpieler.setHistory(2);
                         player.setHistory(1);
 
+                        spielStartActivity.resetHistory(player, spielStartActivity.mitteSpieler);
                         updateGegenSpielerCredit(player);
                         updateAktuellesSpiel(aktuellesSpiel);
 
