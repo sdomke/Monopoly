@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.monopoly.domke.sebastian.monopoly.R;
@@ -60,6 +61,7 @@ public class GameStatusAdapter extends ArrayAdapter<Spieler>{
 
 			TextView spielItemName = (TextView) view.findViewById(R.id.spielItemNameView);
 			TextView spielItemCapital = (TextView) view.findViewById(R.id.spielItemCapitalView);
+			ImageView spielVerlauf = (ImageView) view.findViewById(R.id.verlauf);
 
 			if (spielItemName != null){
 				spielItemName.setBackgroundColor(ContextCompat.getColor(getContext(), i.getSpielerFarbe()));
@@ -87,6 +89,19 @@ public class GameStatusAdapter extends ArrayAdapter<Spieler>{
 			}
 			if (spielItemCapital != null){
 				spielItemCapital.setText(String.valueOf(i.getSpielerKapital()));
+			}
+
+			if(spielVerlauf != null) {
+				if(i.getHistory() == 0) {
+					spielVerlauf.setBackgroundResource(R.drawable.layout_selector_circle_orange);
+					spielVerlauf.setImageResource(R.drawable.baseline_trending_flat_white_24);
+				} else if(i.getHistory() == 1) {
+					spielVerlauf.setBackgroundResource(R.drawable.layout_selector_circle_hell_gruen);
+					spielVerlauf.setImageResource(R.drawable.baseline_trending_up_white_24);
+				} else if(i.getHistory() == 2) {
+					spielVerlauf.setBackgroundResource(R.drawable.layout_selector_circle_rot);
+					spielVerlauf.setImageResource(R.drawable.baseline_trending_down_white_24);
+				}
 			}
 
 		}

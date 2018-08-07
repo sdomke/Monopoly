@@ -65,7 +65,7 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
     int aktuellesSpielID;
     public Spiel aktuellesSpiel;
     public Spieler eigenerSpieler;
-    Spieler mitteSpieler;
+    public Spieler mitteSpieler;
     public TextView aktuellesKapitalEigenerSpielerTextView;
     EditText aktuellerBetragEditText;
     double hypothek = 0;
@@ -177,6 +177,26 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
         transaktionButtonView.getBackground().setColorFilter(getResources().getColor(R.color.disabled_color),
                 PorterDuff.Mode.SRC_ATOP);
 
+    }
+
+    public void resetHistory(Spieler searchedSpielerOne, Spieler searchedSpielerTwo) {
+
+        for (Spieler spieler: gameStatusListe) {
+
+            if(!spieler.getSpielerIMEI().equals(searchedSpielerOne.getSpielerIMEI()) && !spieler.getSpielerIMEI().equals(searchedSpielerTwo.getSpielerIMEI())) {
+                spieler.setHistory(0);
+            }
+        }
+    }
+
+    public void resetHistory(Spieler searchedSpieler) {
+
+        for (Spieler spieler: gameStatusListe) {
+
+            if(!spieler.getSpielerIMEI().equals(searchedSpieler.getSpielerIMEI())) {
+                spieler.setHistory(0);
+            }
+        }
     }
 
     public BroadcastReceiver messageReceiver = new BroadcastReceiver() {
@@ -421,6 +441,9 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
                 mGameConnectionService.mGameConnection.sendMessageToAllClients(jsonString);
 
+                eigenerSpieler.setHistory(2);
+                resetHistory(eigenerSpieler);
+
                 Toast.makeText(getApplicationContext(), "Du hast " + betrag + " M$ für Los erhalten!", Toast.LENGTH_SHORT).show();
 
             }
@@ -446,6 +469,11 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
                 String jsonString = messageParser.messageToJsonString(receiveFreiParkenGameMessage);
 
                 mGameConnectionService.mGameConnection.sendMessageToAllClients(jsonString);
+
+                eigenerSpieler.setHistory(1);
+                mitteSpieler.setHistory(2);
+
+                resetHistory(eigenerSpieler, mitteSpieler);
 
                 Toast.makeText(getApplicationContext(), "Du hast " + betrag + " M$ von Frei Parken erhalten!", Toast.LENGTH_SHORT).show();
 
@@ -492,6 +520,10 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
                 mGameConnectionService.mGameConnection.sendMessageToAllClients(jsonString);
 
+                eigenerSpieler.setHistory(2);
+                mitteSpieler.setHistory(1);
+
+                resetHistory(eigenerSpieler, mitteSpieler);
                 Toast.makeText(getApplicationContext(), "Du hast " + betrag + " M$ in die Mitte gezahlt!", Toast.LENGTH_SHORT).show();
 
             }
@@ -583,6 +615,8 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
         Toast.makeText(getApplicationContext(), "Du hast " + betrag + " M$ von der Bank erhalten!", Toast.LENGTH_SHORT).show();
 
+        eigenerSpieler.setHistory(1);
+        resetHistory(eigenerSpieler);
         aktuellerBetragEditText.setText("");
         empfaengerAuswahl = 0;
 
@@ -613,6 +647,8 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
         Toast.makeText(getApplicationContext(), "Du hast " + betrag + " M$ an die Bank überwiesen!", Toast.LENGTH_SHORT).show();
 
+        eigenerSpieler.setHistory(2);
+        resetHistory(eigenerSpieler);
         aktuellerBetragEditText.setText("");
         empfaengerAuswahl = 0;
     }
@@ -639,6 +675,9 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
         Toast.makeText(getApplicationContext(), "Du hast " + betrag + " M$ in die Mitte gezahlt!", Toast.LENGTH_SHORT).show();
 
+        eigenerSpieler.setHistory(2);
+        mitteSpieler.setHistory(1);
+        resetHistory(eigenerSpieler, mitteSpieler);
         aktuellerBetragEditText.setText("");
         empfaengerAuswahl = 0;
     }
@@ -680,6 +719,10 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 
         Toast.makeText(getApplicationContext(), "Du hast " + betrag + " M$ an " + gegenSpieler.getSpielerName() + " überwiesen!", Toast.LENGTH_SHORT).show();
 
+
+        eigenerSpieler.setHistory(2);
+        gegenSpieler.setHistory(1);
+        resetHistory(eigenerSpieler, gegenSpieler);
         aktuellerBetragEditText.setText("");
         empfaengerAuswahl = 0;
     }

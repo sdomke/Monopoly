@@ -318,6 +318,8 @@ public class PlayerMessageInterpreter {
                         spielStartActivity.databaseHandler.updateSpieler(senderPlayer);
                         spielStartActivity.databaseHandler.updateSpieler(receiverPlayer);
 
+                        senderPlayer.setHistory(2);
+                        receiverPlayer.setHistory(1);
                         updatePlayerCredit(senderPlayer, receiverPlayer);
 
                         Toast.makeText(spielStartActivity.getApplicationContext(), senderPlayer.getSpielerName() + " hat " + receiverPlayer.getSpielerName() + " " + payment + " M$ überwiesen!", Toast.LENGTH_SHORT).show();
@@ -348,6 +350,7 @@ public class PlayerMessageInterpreter {
 
                         spielStartActivity.databaseHandler.updateSpieler(player);
 
+                        player.setHistory(1);
                         updateGegenSpielerCredit(player);
 
                         Toast.makeText(spielStartActivity.getApplicationContext(), player.getSpielerName() + " hat " + payment + " M$ von der Bank erhalten!", Toast.LENGTH_SHORT).show();
@@ -378,6 +381,7 @@ public class PlayerMessageInterpreter {
 
                         spielStartActivity.databaseHandler.updateSpieler(player);
 
+                        player.setHistory(2);
                         updateGegenSpielerCredit(player);
 
                         Toast.makeText(spielStartActivity.getApplicationContext(), player.getSpielerName() + " hat " + payment + " M$ an die Bank gezahlt!", Toast.LENGTH_SHORT).show();
@@ -410,6 +414,9 @@ public class PlayerMessageInterpreter {
                         spielStartActivity.databaseHandler.updateSpieler(player);
                         spielStartActivity.databaseHandler.updateSpiel(aktuellesSpiel);
 
+                        spielStartActivity.mitteSpieler.setHistory(1);
+                        player.setHistory(2);
+
                         updateGegenSpielerCredit(player);
                         updateAktuellesSpiel(aktuellesSpiel);
 
@@ -441,6 +448,9 @@ public class PlayerMessageInterpreter {
 
                         spielStartActivity.databaseHandler.updateSpieler(player);
                         spielStartActivity.databaseHandler.updateSpiel(aktuellesSpiel);
+
+                        spielStartActivity.mitteSpieler.setHistory(2);
+                        player.setHistory(1);
 
                         updateGegenSpielerCredit(player);
                         updateAktuellesSpiel(aktuellesSpiel);
@@ -581,6 +591,7 @@ public class PlayerMessageInterpreter {
     public void updateEigenerSpielerCredit(Spieler eigenerSpieler){
 
         spielStartActivity.eigenerSpieler.setSpielerKapital(eigenerSpieler.getSpielerKapital());
+        spielStartActivity.eigenerSpieler.setHistory(eigenerSpieler.getHistory());
 
         double eigenerSpielerKapital = spielStartActivity.databaseHandler.getSpielerBySpielIdAndSpielerIMEI(spielStartActivity.aktuellesSpiel.getSpielID(), spielStartActivity.eigenerSpieler.getSpielerIMEI()).getSpielerKapital();
         spielStartActivity.aktuellesKapitalEigenerSpielerTextView.setText(String.valueOf(eigenerSpielerKapital));
@@ -605,7 +616,7 @@ public class PlayerMessageInterpreter {
 
                 if(gegenSpielerListe.get(i).getSpielerIMEI().equals(sender.getSpielerIMEI())){
                     gegenSpieler.setSpielerKapital(sender.getSpielerKapital());
-
+                    gegenSpieler.setHistory(sender.getHistory());
                     spielStartActivity.gegenspielerListe.set(i, gegenSpieler);
                     break;
                 }
@@ -618,13 +629,13 @@ public class PlayerMessageInterpreter {
 
                 if (gegenSpielerListe.get(i).getSpielerIMEI().equals(sender.getSpielerIMEI())) {
                     gegenSpieler.setSpielerKapital(sender.getSpielerKapital());
-
+                    gegenSpieler.setHistory(sender.getHistory());
                     spielStartActivity.gegenspielerListe.set(i, gegenSpieler);
                 }
 
                 if (gegenSpielerListe.get(i).getSpielerIMEI().equals(receiver.getSpielerIMEI())) {
                     gegenSpieler.setSpielerKapital(receiver.getSpielerKapital());
-
+                    gegenSpieler.setHistory(receiver.getHistory());
                     spielStartActivity.gegenspielerListe.set(i, gegenSpieler);
                 }
             }
@@ -641,7 +652,7 @@ public class PlayerMessageInterpreter {
 
             if (gegenSpielerListe.get(i).getSpielerIMEI().equals(receiver.getSpielerIMEI())) {
                 gegenSpieler.setSpielerKapital(receiver.getSpielerKapital());
-
+                gegenSpieler.setHistory(receiver.getHistory());
                 spielStartActivity.gegenspielerListe.set(i, gegenSpieler);
                 break;
             }

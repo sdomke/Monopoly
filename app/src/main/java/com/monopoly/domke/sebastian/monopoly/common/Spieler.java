@@ -13,6 +13,7 @@ public class Spieler {
     private String spielerIpAdresse;
     private String spielerIMEI;
     private int idMonopolySpiel;
+    private int history = 0;
 
     public Spieler (String spielerIMEI, int idMonopolySpiel){
         this.spielerIMEI = spielerIMEI;
@@ -87,5 +88,13 @@ public class Spieler {
     public int getIdMonopolySpiel(){
 
         return this.idMonopolySpiel;
+    }
+
+    public int getHistory() {
+        return history;
+    }
+
+    public void setHistory(int history) {
+        this.history = history;
     }
 }
