@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -72,6 +74,8 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
     public Context mContext;
 
     ImageView gameStatusButton;
+
+    ImageView transaktionButtonView;
 
     public DatabaseHandler databaseHandler;
 
@@ -143,11 +147,14 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
         for (TextView textView: empfaengerImageViewLayouts) {
             if(textView == selectedImageView) {
 
-                if(selectedImageView.isActivated()) {
-                    selectedImageView.setActivated(false);
+                if(textView.isActivated()) {
+                    textView.setActivated(false);
                     empfaengerAuswahl = 0;
+                    transaktionButtonView.getBackground().setColorFilter(getResources().getColor(R.color.disabled_color),
+                            PorterDuff.Mode.SRC_ATOP);
+
                 } else {
-                    selectedImageView.setActivated(true);
+                    textView.setActivated(true);
                 }
 //                if(selectedImageView.getId() == R.id.eigenerSpielerFarbeButtonView) {
 //                    selectedImageView.setBackgroundColor(getResources().getColor(R.color.transaktionAnMich));
@@ -156,7 +163,7 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
 //                    selectedImageView.setBackgroundColor(getResources().getColor(R.color.transaktionAnAndere));
 //                }
             } else {
-                selectedImageView.setActivated(false);
+                textView.setActivated(false);
             }
         }
 
@@ -167,6 +174,8 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
         for (TextView textView: empfaengerImageViewLayouts) {
                 textView.setActivated(false);
         }
+        transaktionButtonView.getBackground().setColorFilter(getResources().getColor(R.color.disabled_color),
+                PorterDuff.Mode.SRC_ATOP);
 
     }
 
@@ -209,6 +218,8 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
         mitteSpieler.setSpielerName("Mitte");
         mitteSpieler.setSpielerFarbe(R.color.mitte_farbe);
         mitteSpieler.setSpielerKapital(aktuellesSpiel.getFreiParken());
+
+        gameStatusListe.add(eigenerSpieler);
 
         gameStatusListe.add(mitteSpieler);
 
@@ -272,7 +283,7 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
         TextView bezahleGefaengnisButtonView = (TextView) findViewById(R.id.zahleGefaengnis);
         TextView bezahleHypothekButtonView = (TextView) findViewById(R.id.zahleHypothek);
 
-        ImageView transaktionButtonView = (ImageView) findViewById(R.id.transaktionButton);
+        transaktionButtonView = (ImageView) findViewById(R.id.transaktionButton);
         ImageView deleteButtonView = (ImageView) findViewById(R.id.deleteButton);
 
         transaktionButtonView.setOnClickListener(new View.OnClickListener() {
@@ -296,8 +307,14 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
             public void onClick(View v) {
 
                 changeActivatedButtonState(bankIconImageView);
-                empfaengerAuswahl = 2;
-                Toast.makeText(getApplicationContext(), "Bank ausgewählt", Toast.LENGTH_SHORT).show();
+
+                if(bankIconImageView.isActivated()) {
+                    empfaengerAuswahl = 2;
+                    transaktionButtonView.getBackground().setColorFilter(getResources().getColor(R.color.transaktionAnAndere),
+                            PorterDuff.Mode.SRC_ATOP);
+
+                    Toast.makeText(getApplicationContext(), "Bank ausgewählt", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -306,8 +323,13 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
             public void onClick(View v) {
 
                 changeActivatedButtonState(mitteIconImageView);
-                empfaengerAuswahl = 3;
-                Toast.makeText(getApplicationContext(), "Mitte ausgewählt", Toast.LENGTH_SHORT).show();
+
+                if(mitteIconImageView.isActivated()) {
+                    empfaengerAuswahl = 3;
+                    transaktionButtonView.getBackground().setColorFilter(getResources().getColor(R.color.transaktionAnAndere),
+                            PorterDuff.Mode.SRC_ATOP);
+                    Toast.makeText(getApplicationContext(), "Mitte ausgewählt", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -784,8 +806,13 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
             public void onClick(View v) {
 
                 changeActivatedButtonState(gegenspieler1IconImageView);
-                empfaengerAuswahl = 4;
-                Toast.makeText(getApplicationContext(), "Spieler 1 ausgewählt", Toast.LENGTH_SHORT).show();
+
+                if(gegenspieler1IconImageView.isActivated()) {
+                    empfaengerAuswahl = 4;
+                    transaktionButtonView.getBackground().setColorFilter(getResources().getColor(R.color.transaktionAnAndere),
+                            PorterDuff.Mode.SRC_ATOP);
+                    Toast.makeText(getApplicationContext(), "Spieler 1 ausgewählt", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -807,8 +834,13 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
             public void onClick(View v) {
 
                 changeActivatedButtonState(gegenspieler2IconImageView);
-                empfaengerAuswahl = 5;
-                Toast.makeText(getApplicationContext(), "Spieler 2 ausgewählt", Toast.LENGTH_SHORT).show();
+
+                if(gegenspieler2IconImageView.isActivated()) {
+                    empfaengerAuswahl = 5;
+                    transaktionButtonView.getBackground().setColorFilter(getResources().getColor(R.color.transaktionAnAndere),
+                            PorterDuff.Mode.SRC_ATOP);
+                    Toast.makeText(getApplicationContext(), "Spieler 2 ausgewählt", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -830,8 +862,13 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
             public void onClick(View v) {
 
                 changeActivatedButtonState(gegenspieler3IconImageView);
-                empfaengerAuswahl = 5;
-                Toast.makeText(getApplicationContext(), "Spieler 3 ausgewählt", Toast.LENGTH_SHORT).show();
+
+                if(gegenspieler3IconImageView.isActivated()) {
+                    empfaengerAuswahl = 6;
+                    transaktionButtonView.getBackground().setColorFilter(getResources().getColor(R.color.transaktionAnAndere),
+                            PorterDuff.Mode.SRC_ATOP);
+                    Toast.makeText(getApplicationContext(), "Spieler 3 ausgewählt", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -853,8 +890,13 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
             public void onClick(View v) {
 
                 changeActivatedButtonState(gegenspieler4IconImageView);
-                empfaengerAuswahl = 6;
-                Toast.makeText(getApplicationContext(), "Spieler 4 ausgewählt", Toast.LENGTH_SHORT).show();
+
+                if(gegenspieler4IconImageView.isActivated()) {
+                    empfaengerAuswahl = 7;
+                    transaktionButtonView.getBackground().setColorFilter(getResources().getColor(R.color.transaktionAnAndere),
+                            PorterDuff.Mode.SRC_ATOP);
+                    Toast.makeText(getApplicationContext(), "Spieler 4 ausgewählt", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -876,8 +918,13 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
             public void onClick(View v) {
 
                 changeActivatedButtonState(gegenspieler5IconImageView);
-                empfaengerAuswahl = 7;
-                Toast.makeText(getApplicationContext(), "Spieler 5 ausgewählt", Toast.LENGTH_SHORT).show();
+
+                if(gegenspieler5IconImageView.isActivated()) {
+                    empfaengerAuswahl = 8;
+                    transaktionButtonView.getBackground().setColorFilter(getResources().getColor(R.color.transaktionAnAndere),
+                            PorterDuff.Mode.SRC_ATOP);
+                    Toast.makeText(getApplicationContext(), "Spieler 5 ausgewählt", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -896,8 +943,13 @@ public class SpielStartActivity extends AppCompatActivity implements GameStatusF
             public void onClick(View v) {
 
                 changeActivatedButtonState(eigenerSpielerIconImageView);
-                empfaengerAuswahl = 1;
-                Toast.makeText(getApplicationContext(), "Eigener Spieler ausgewählt", Toast.LENGTH_SHORT).show();
+
+                if(eigenerSpielerIconImageView.isActivated()) {
+                    empfaengerAuswahl = 1;
+                    transaktionButtonView.getBackground().setColorFilter(getResources().getColor(R.color.transaktionAnMich),
+                            PorterDuff.Mode.SRC_ATOP);
+                    Toast.makeText(getApplicationContext(), "Eigener Spieler ausgewählt", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
