@@ -93,13 +93,13 @@ public class GameStatusAdapter extends ArrayAdapter<Spieler>{
 
 			if(spielVerlauf != null) {
 				if(i.getHistory() == 0) {
-					spielVerlauf.setBackgroundResource(R.drawable.layout_selector_circle_orange);
+					spielVerlauf.setBackgroundResource(R.drawable.layout_circle_history_flat);
 					spielVerlauf.setImageResource(R.drawable.baseline_trending_flat_white_24);
 				} else if(i.getHistory() == 1) {
-					spielVerlauf.setBackgroundResource(R.drawable.layout_selector_circle_hell_gruen);
+					spielVerlauf.setBackgroundResource(R.drawable.layout_circle_history_up);
 					spielVerlauf.setImageResource(R.drawable.baseline_trending_up_white_24);
 				} else if(i.getHistory() == 2) {
-					spielVerlauf.setBackgroundResource(R.drawable.layout_selector_circle_rot);
+					spielVerlauf.setBackgroundResource(R.drawable.layout_circle_history_down);
 					spielVerlauf.setImageResource(R.drawable.baseline_trending_down_white_24);
 				}
 			}
