@@ -146,49 +146,52 @@ public class PlayerMessageInterpreter {
 
     public void getUpdateGameLobbyMessage(GameMessage gameMessage){
         if(spielBeitretenActivity != null){
-            try {
 
-                ArrayList<Spieler> updateGameLobby = new ArrayList<>();
+            if(spielBeitretenActivity.spieler_adapter.isEmpty()) {
 
-                JSONArray jsArrayObject = gameMessage.getMessageContent().getJSONArray("current_game_lobby");
+                try {
+                    ArrayList<Spieler> updateGameLobby = new ArrayList<>();
 
-                for(int i=0; i < jsArrayObject.length(); i++) {
+                    JSONArray jsArrayObject = gameMessage.getMessageContent().getJSONArray("current_game_lobby");
 
-                    JSONObject currentJsonObject;
-                    currentJsonObject = (JSONObject) jsArrayObject.get(i);
+                    for (int i = 0; i < jsArrayObject.length(); i++) {
 
-                    Spieler currentGameLobbySpieler = new Spieler(currentJsonObject.getString("player_imei"), spielBeitretenActivity.aktuellesSpiel.getSpielID());
-                    currentGameLobbySpieler.setSpielerName(currentJsonObject.getString("player_name"));
-                    currentGameLobbySpieler.setSpielerKapital(spielBeitretenActivity.aktuellesSpiel.getSpielerStartkapital());
-                    currentGameLobbySpieler.setSpielerFarbe(currentJsonObject.getInt("player_color"));
-                    currentGameLobbySpieler.setSpielerIpAdresse(currentJsonObject.getString("player_ip_adress"));
+                        JSONObject currentJsonObject;
+                        currentJsonObject = (JSONObject) jsArrayObject.get(i);
 
-                    updateGameLobby.add(currentGameLobbySpieler);
-                }
+                        Spieler currentGameLobbySpieler = new Spieler(currentJsonObject.getString("player_imei"), spielBeitretenActivity.aktuellesSpiel.getSpielID());
+                        currentGameLobbySpieler.setSpielerName(currentJsonObject.getString("player_name"));
+                        currentGameLobbySpieler.setSpielerKapital(spielBeitretenActivity.aktuellesSpiel.getSpielerStartkapital());
+                        currentGameLobbySpieler.setSpielerFarbe(currentJsonObject.getInt("player_color"));
+                        currentGameLobbySpieler.setSpielerIpAdresse(currentJsonObject.getString("player_ip_adress"));
 
-                Spiel aktuellesSpiel = spielBeitretenActivity.aktuellesSpiel;
-
-                for(Spieler newGameLobbySpieler : updateGameLobby) {
-
-                    try {
-                        spielBeitretenActivity.datasource.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), newGameLobbySpieler.getSpielerIMEI());
-                        spielBeitretenActivity.datasource.updateSpieler(newGameLobbySpieler);
-                    } catch (Exception e) {
-                        Log.e("MessageInterpreter", "Spieler noch nicht angelegt: " + e.toString());
-
-                        spielBeitretenActivity.datasource.addSpieler(newGameLobbySpieler);
+                        updateGameLobby.add(currentGameLobbySpieler);
                     }
 
-                    spielBeitretenActivity.spieler_adapter.add(newGameLobbySpieler);
+                    Spiel aktuellesSpiel = spielBeitretenActivity.aktuellesSpiel;
+
+                    for (Spieler newGameLobbySpieler : updateGameLobby) {
+
+                        try {
+                            Spieler oldSpieler = spielBeitretenActivity.datasource.getSpielerBySpielIdAndSpielerIMEI(aktuellesSpiel.getSpielID(), newGameLobbySpieler.getSpielerIMEI());
+                            spielBeitretenActivity.datasource.updateSpieler(newGameLobbySpieler);
+                            spielBeitretenActivity.spieler_adapter.remove(oldSpieler);
+                        } catch (Exception e) {
+                            Log.e("MessageInterpreter", "Spieler noch nicht angelegt: " + e.toString());
+
+                            spielBeitretenActivity.datasource.addSpieler(newGameLobbySpieler);
+                        }
+                        spielBeitretenActivity.spieler_adapter.add(newGameLobbySpieler);
+                    }
+
+                    spielBeitretenActivity.spieler_adapter.notifyDataSetChanged();
+
+                    //Toast.makeText(mainMenuActivity.getApplicationContext(), "Spieler eingeladen!", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Update der GameLobby erhalten", Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    Log.e("MessageInterpreter", "Update der GameLobby nicht erhalten: " + e.toString());
+                    //Toast.makeText(mainMenuActivity.getApplicationContext(), "Spieler nicht eingeladen!!!", Toast.LENGTH_SHORT).show();
                 }
-
-                //spielBeitretenActivity.spieler_adapter.notifyDataSetChanged();
-
-                //Toast.makeText(mainMenuActivity.getApplicationContext(), "Spieler eingeladen!", Toast.LENGTH_SHORT).show();
-                //Toast.makeText(spielBeitretenActivity.getApplicationContext(), "Update der GameLobby erhalten", Toast.LENGTH_SHORT).show();
-            }catch(Exception e){
-                Log.e("MessageInterpreter", "Update der GameLobby nicht erhalten: " + e.toString());
-                //Toast.makeText(mainMenuActivity.getApplicationContext(), "Spieler nicht eingeladen!!!", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -212,6 +215,8 @@ public class PlayerMessageInterpreter {
 
                 if(spielBeitretenActivity.mServiceBound) {
                     spielBeitretenActivity.getApplicationContext().unbindService(spielBeitretenActivity.mServiceConnection);
+
+                    LocalBroadcastManager.getInstance(spielBeitretenActivity).unregisterReceiver(spielBeitretenActivity.messageReceiver);
                 }
 
                 spielBeitretenActivity.startActivity(intent);

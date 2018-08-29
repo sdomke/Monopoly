@@ -110,6 +110,8 @@ public class MainMenuActivity extends AppCompatActivity {
             Intent gameConnectionServiceIntent = new Intent(getApplicationContext(), GameConnectionService.class);
             getApplicationContext().stopService(gameConnectionServiceIntent);
             getApplicationContext().unbindService(mServiceConnection);
+
+            LocalBroadcastManager.getInstance(MainMenuActivity.this).unregisterReceiver(messageReceiver);
         }
 
         Intent intent = new Intent(this, NeuesSpielActivity.class);
@@ -121,6 +123,8 @@ public class MainMenuActivity extends AppCompatActivity {
 
         if(mServiceBound) {
             getApplicationContext().unbindService(mServiceConnection);
+
+            LocalBroadcastManager.getInstance(MainMenuActivity.this).unregisterReceiver(messageReceiver);
         }
 
         Intent intent = new Intent(this, SpielBeitretenActivity.class);
@@ -134,6 +138,8 @@ public class MainMenuActivity extends AppCompatActivity {
             Intent gameConnectionServiceIntent = new Intent(getApplicationContext(), GameConnectionService.class);
             getApplicationContext().stopService(gameConnectionServiceIntent);
             getApplicationContext().unbindService(mServiceConnection);
+
+            LocalBroadcastManager.getInstance(MainMenuActivity.this).unregisterReceiver(messageReceiver);
         }
 
         Intent intent = new Intent(this, SpielLadenActivity.class);

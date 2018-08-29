@@ -211,6 +211,8 @@ public class SpielBeitretenActivity extends AppCompatActivity {
 
                     if(mServiceBound) {
                         getApplicationContext().unbindService(mServiceConnection);
+
+                        LocalBroadcastManager.getInstance(SpielBeitretenActivity.this).unregisterReceiver(messageReceiver);
                     }
 
                     startActivity(intent);

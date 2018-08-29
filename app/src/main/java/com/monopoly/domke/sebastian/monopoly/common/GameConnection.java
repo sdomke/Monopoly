@@ -50,7 +50,7 @@ public class GameConnection {
 
         Log.d(SERVER_TAG, "tearDownGameServer");
 
-        if(mGameServer != null) {
+        if (mGameServer != null) {
             mGameServer.tearDown();
         }
     }
@@ -59,11 +59,11 @@ public class GameConnection {
 
         Log.d(SERVER_TAG, "tearDownGameClient");
 
-        if(!gameClientsArrayList.isEmpty()) {
+        if (!gameClientsArrayList.isEmpty()) {
 
-           for(final GameClient mGameClient : gameClientsArrayList) {
+            for (final GameClient mGameClient : gameClientsArrayList) {
 
-               mGameClient.tearDown();
+                mGameClient.tearDown();
             }
 
             gameClientsArrayList.clear();
@@ -74,17 +74,16 @@ public class GameConnection {
 
         Log.d(SERVER_TAG, "tearDownGameClient");
 
-        if(!gameClientsArrayList.isEmpty()) {
+        if (!gameClientsArrayList.isEmpty()) {
 
-            for(final GameClient mGameClient : gameClientsArrayList) {
+            for (final GameClient mGameClient : gameClientsArrayList) {
 
-                if(mGameClient.mClientSocket.getInetAddress().getHostAddress().equals(spielerToDelete.getSpielerIpAdresse())) {
+                if (mGameClient.mClientSocket.getInetAddress().getHostAddress().equals(spielerToDelete.getSpielerIpAdresse())) {
                     Log.d(SERVER_TAG, "tearDown searched GameClient!");
+                    gameClientsArrayList.remove(mGameClient);
                     mGameClient.tearDown();
                 }
             }
-
-            gameClientsArrayList.clear();
         }
     }
 
@@ -92,8 +91,8 @@ public class GameConnection {
         //mGameClient = new GameClient(clientSocket);
 
         if (!gameClientsArrayList.isEmpty()) {
-            for(final GameClient mGameClient : gameClientsArrayList) {
-                if(mGameClient.mClientSocket.getInetAddress().getHostAddress().equals(clientSocket.getInetAddress().getHostAddress())) {
+            for (final GameClient mGameClient : gameClientsArrayList) {
+                if (mGameClient.mClientSocket.getInetAddress().getHostAddress().equals(clientSocket.getInetAddress().getHostAddress())) {
                     gameClientsArrayList.remove(mGameClient);
                 }
             }
@@ -116,8 +115,7 @@ public class GameConnection {
 
     public void sendMessageToAllClients(final String msg) {
         if (!gameClientsArrayList.isEmpty()) {
-
-            for(final GameClient mGameClient : gameClientsArrayList) {
+            for (final GameClient mGameClient : gameClientsArrayList) {
 
                 new Thread(new Runnable() {
                     public void run() {
